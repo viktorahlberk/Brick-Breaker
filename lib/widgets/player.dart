@@ -7,7 +7,7 @@ class Player extends StatelessWidget {
   var y;
   var playerWidth;
 
-  Player({this.x, this.y, this.playerWidth});
+  Player({super.key, this.x, this.y, this.playerWidth});
   @override
   Widget build(BuildContext context) {
     return Container(
