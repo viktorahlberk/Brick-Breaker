@@ -1,4 +1,3 @@
-import 'package:bouncer/controllers/gameController.dart';
 import 'package:bouncer/controllers/platformWidgetController.dart';
 import 'package:bouncer/controllers/ballWidgetController.dart'; // Make sure to import this
 import 'package:bouncer/screens/game_screen.dart';
@@ -38,9 +37,6 @@ class MainApp extends StatelessWidget {
                   screenWidth: screenWidth,
                   screenHeight: screenHeight,
                 ),
-              ),
-              ChangeNotifierProvider(
-                create: (context) => GameController(),
               ),
             ],
             child: GameScreen(),

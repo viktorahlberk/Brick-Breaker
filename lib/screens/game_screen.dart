@@ -1,91 +1,15 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:bouncer/controllers/ballWidgetController.dart';
-import 'package:bouncer/controllers/gameController.dart';
 import 'package:bouncer/controllers/platformWidgetController.dart';
 import 'package:bouncer/widgets/ballWidget.dart';
 import 'package:bouncer/widgets/brick.dart';
 import 'package:bouncer/widgets/platformWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sensors_plus/sensors_plus.dart';
 import 'cover_screen.dart';
-import 'gameover_screen.dart';
 
-// Add a method to your GameScreen class to visualize collision boundaries
-// Widget buildDebugOverlay(BallWidgetController ball, PlatformWidgetController platform, context) {
-//   double radiusAlignment = (ball.radius / MediaQuery.of(context).size.width) * 2;
-  
-//   return CustomPaint(
-//     painter: CollisionDebugPainter(
-//       ballX: ball.x,
-//       ballY: ball.y,
-//       ballRadius: radiusAlignment,
-//       platformX: platform.x,
-//       platformY: platform.y,
-//       platformWidth: platform.width,
-//     ),
-//     child: Container(),
-//   );
-// }
-
-// // Create a custom painter for debug visualization
-// class CollisionDebugPainter extends CustomPainter {
-//   final double ballX, ballY, ballRadius;
-//   final double platformX, platformY, platformWidth;
-  
-//   CollisionDebugPainter({
-//     required this.ballX,
-//     required this.ballY,
-//     required this.ballRadius,
-//     required this.platformX,
-//     required this.platformY,
-//     required this.platformWidth,
-//   });
-  
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final Paint ballPaint = Paint()
-//       ..color = Colors.red.withOpacity(0.3)
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2;
-      
-//     final Paint platformPaint = Paint()
-//       ..color = Colors.green.withOpacity(0.3)
-//       ..style = PaintingStyle.stroke
-//       ..strokeWidth = 2;
-    
-//     // Convert from alignment to pixel coordinates
-//     double centerX = size.width / 2;
-//     double centerY = size.height / 2;
-    
-//     double ballCenterX = centerX + (ballX * centerX);
-//     double ballCenterY = centerY + (ballY * centerY);
-//     double ballRadiusPixels = ballRadius * centerX;
-    
-//     double platformLeft = centerX + ((platformX - platformWidth/2) * centerX);
-//     double platformRight = centerX + ((platformX + platformWidth/2) * centerX);
-//     double platformTop = centerY + (platformY * centerY);
-    
-//     // Draw ball boundary
-//     canvas.drawCircle(Offset(ballCenterX, ballCenterY), ballRadiusPixels, ballPaint);
-    
-//     // Draw platform boundary
-//     canvas.drawRect(
-//       Rect.fromPoints(
-//         Offset(platformLeft, platformTop),
-//         Offset(platformRight, platformTop + 10),
-//       ),
-//       platformPaint,
-//     );
-//   }
-  
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-// }
-
-class GameScreen extends StatefulWidget with ChangeNotifier {
-  GameScreen({super.key});
+class GameScreen extends StatefulWidget {
+  const GameScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => GameScreenState();
@@ -181,20 +105,12 @@ class GameScreenState extends State {
     return ball.y > ball.screenHeight;
   }
 
-  void resetGame(BallWidgetController ball) {
+  void resetGame() {
     setState(() {
-      ball.reset();
-      ball.x = 0.5;
-      ball.y = 0.5;
-      ball.xDirection = BallDirection.LEFT;
-      ball.yDirection = BallDirection.DOWN;
-      ball.speed = 0.01;
       isGameStarted = true;
       isGameOver = false;
     });
   }
-
-  
 
   checkForBrokenBricks(BallWidgetController ball) {
     for (int i = 0; i < myBricks.length; i++) {
@@ -213,7 +129,8 @@ class GameScreenState extends State {
     }
   }
 
-  void startGame(BallWidgetController ball, PlatformWidgetController platform, BuildContext context) {
+  void startGame(BallWidgetController ball, PlatformWidgetController platform,
+      BuildContext context) {
     if (!isGameStarted) {
       isGameStarted = true;
       Timer.periodic(const Duration(milliseconds: 16), (timer) {
@@ -221,7 +138,11 @@ class GameScreenState extends State {
         ball.moveBall();
 
         if (gameIsOver(ball) || isNoBricksLeft()) {
-          timer.cancel();
+          Future.delayed(
+            Duration(seconds: 2),
+            () => timer.cancel(),
+          );
+
           isGameOver = true;
         }
         checkForBrokenBricks(ball);
@@ -229,23 +150,11 @@ class GameScreenState extends State {
     }
   }
 
-  // makeTail(){
-  //   // Update the trail positions
-  //       if (previousPositions.length >= trailLength) {
-  //         previousPositions.removeAt(0);
-  //       }
-  //       previousPositions.add(Offset(ball.x, ball.y));
-  //       // print(ball.x, );
-  //       // print(ball.y);
-  // }
-
   @override
   Widget build(BuildContext context) {
-    return Consumer3<GameController, PlatformWidgetController,
-        BallWidgetController>(
+    return Consumer2<PlatformWidgetController, BallWidgetController>(
       builder: (
         BuildContext context,
-        GameController gameController,
         PlatformWidgetController platform,
         BallWidgetController ball,
         Widget? child,
@@ -271,10 +180,30 @@ class GameScreenState extends State {
                     child: Stack(
                       children: [
                         // buildDebugOverlay(ball, platform, context),
-                        CoverScreen(isGameStarted: isGameStarted),
+                        isGameStarted ? SizedBox() : CoverScreen(),
                         BallWidget(),
                         PlatformWidget(),
-                        // GameOverScreen(state: isGameOver,f: resetGame(ball),),
+                        isGameOver
+                            ? Center(
+                                child: Column(
+                                  children: [
+                                    const Text('G A M E  O V E R',
+                                        style: TextStyle(color: Colors.white)),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Provider.of<BallWidgetController>(
+                                                context,
+                                                listen: false)
+                                            .reset();
+                                        resetGame();
+                                        setState(() {});
+                                      },
+                                      child: const Text('Play again'),
+                                    )
+                                  ],
+                                ),
+                              )
+                            : SizedBox(),
                         // myBricks[0]
                         Brick(
                           brickHeight: myBricks[0][0],
