@@ -4,6 +4,7 @@ import 'package:bouncer/controllers/platformWidgetController.dart';
 import 'package:bouncer/widgets/ballWidget.dart';
 import 'package:bouncer/widgets/brick.dart';
 import 'package:bouncer/widgets/platformWidget.dart';
+import 'package:bouncer/widgets/platformWidget2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'cover_screen.dart';
@@ -170,19 +171,17 @@ class GameScreenState extends State {
                     onKeyEvent: (KeyEvent key) {
                       if (key.character == 'a') {
                         platform.moveLeft();
-                        // print(platform.x);
                       }
                       if (key.character == 'd') {
                         platform.moveRight();
-                        // print(platform.x);
                       }
                     },
                     child: Stack(
                       children: [
-                        // buildDebugOverlay(ball, platform, context),
                         isGameStarted ? SizedBox() : CoverScreen(),
                         BallWidget(),
-                        PlatformWidget(),
+                        // PlatformWidget(),
+                        PlatformWidget2(),
                         isGameOver
                             ? Center(
                                 child: Column(

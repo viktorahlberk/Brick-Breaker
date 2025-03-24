@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:bouncer/controllers/platformWidgetController.dart';
 import 'package:bouncer/controllers/ballWidgetController.dart'; // Make sure to import this
 import 'package:bouncer/screens/game_screen.dart';
@@ -5,9 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+late FragmentProgram fragmentProgram;
+Future<void> makeFragmentProgram() async {
+  fragmentProgram =
+      await FragmentProgram.fromAsset('assets/shaders/platform_shader.frag');
+}
+
+void main() async {
+  makeFragmentProgram();
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
   runApp(const MainApp());
 }
 

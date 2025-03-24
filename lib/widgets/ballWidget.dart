@@ -39,7 +39,6 @@ class BallPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Рисуем хвост мяча
     for (int i = 0; i < positions.length - 1; i++) {
       final pos = positions[i];
 
@@ -52,7 +51,6 @@ class BallPainter extends CustomPainter {
       canvas.drawCircle(pos, trailSize, trailPaint);
     }
 
-    // Рисуем сам мяч
     final ballPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
