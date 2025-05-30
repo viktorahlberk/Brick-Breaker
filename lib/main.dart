@@ -34,6 +34,7 @@ class MainApp extends StatelessWidget {
           final double screenWidth = constraints.maxWidth;
           final double screenHeight = constraints.maxHeight;
 
+        
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(

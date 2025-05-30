@@ -39,6 +39,7 @@ class GameScreenState extends State {
         platformController.moveLeft();
       }
     });
+    // resetGame();
   }
 
   @override
@@ -133,12 +134,12 @@ class GameScreenState extends State {
     }
   }
 
-  void startGame(BallWidgetController ball, PlatformWidgetController platform,
+  void startGame(BallWidgetController ball,
       BuildContext context) {
     if (!isGameStarted) {
       isGameStarted = true;
       Timer.periodic(const Duration(milliseconds: 16), (timer) {
-        ball.updateBallDirection(platform);
+        ball.updateBallDirection(platformController);
         ball.moveBall();
 
         if (isBallDownScreen(ball) || isNoBricksLeft()) {
@@ -164,7 +165,7 @@ class GameScreenState extends State {
         Widget? child,
       ) =>
           GestureDetector(
-              onTap: () => startGame(ball, platform, context),
+              onTap: () => startGame(ball, context),
               child: Scaffold(
                 backgroundColor: Colors.black,
                 body: Center(
