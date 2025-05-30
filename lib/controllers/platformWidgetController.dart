@@ -23,7 +23,7 @@ class PlatformWidgetController extends ChangeNotifier {
   double height = 5.0; // Fixed height in pixels
 
   // Speed in pixels per movement
-  double speed = 14.0;
+  double speed = 7;
 
   // Get the rect for collision detection
   Rect get platformRect => Rect.fromCenter(
@@ -31,6 +31,16 @@ class PlatformWidgetController extends ChangeNotifier {
         width: width,
         height: height,
       );
+
+  // void updateFromAccelerometer(double accelerometerY) {
+  //   double tiltSensitivity = 0.1;
+  //   double newX = x + (-accelerometerY * tiltSensitivity);
+
+  //   if (newX >= -1 && newX + width <= 1) {
+  //     x = newX;
+  //     notifyListeners();
+  //   }
+  // }
 
   void moveLeft() {
     // Don't let platform go off screen (accounting for platform width)

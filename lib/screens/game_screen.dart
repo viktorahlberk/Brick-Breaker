@@ -1,12 +1,14 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:bouncer/controllers/ballWidgetController.dart';
 import 'package:bouncer/controllers/platformWidgetController.dart';
 import 'package:bouncer/widgets/ballWidget.dart';
 import 'package:bouncer/widgets/brick.dart';
 import 'package:bouncer/widgets/platformWidget.dart';
-import 'package:bouncer/widgets/platformWidget2.dart';
+// import 'package:bouncer/dev/platformWidget2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'cover_screen.dart';
 
 class GameScreen extends StatefulWidget {
@@ -18,31 +20,31 @@ class GameScreen extends StatefulWidget {
 
 class GameScreenState extends State {
   final FocusNode _focusNode = FocusNode();
-
-  late double x, y, z;
+  late StreamSubscription<AccelerometerEvent> sub;
+  // late double x, y, z;
+  late BallWidgetController ballController;
+  late PlatformWidgetController platformController;
   @override
   void initState() {
     super.initState();
+    ballController = Provider.of<BallWidgetController>(context, listen: false);
+    platformController =
+        Provider.of<PlatformWidgetController>(context, listen: false);
 
-    // accelerometerEvents.listen((AccelerometerEvent event) {
-    //   setState(() {
-    //     x = event.x;
-    //     y = event.y;
-    //     z = event.z;
-    //       // if (y / 100 + playerX > -1 && y / 100 + playerX + playerWidth < 1) {
-    //       //   playerX = playerX + y / 100;
-    //       // }
-
-    //       if (y / 100 + platform.x > -1 && y / 100 + platform.x + platform.width < 1) {
-    //         platform.x = platform.x + y / 100;
-    //       }
-    //   });
-    // });
+    sub = accelerometerEventStream().listen((AccelerometerEvent event) {
+      // log('Accelerometer event: $event');
+      if (event.y > 1) {
+        platformController.moveRight();
+      } else if (event.y < -1) {
+        platformController.moveLeft();
+      }
+    });
   }
 
   @override
   void dispose() {
     _focusNode.dispose();
+    sub.cancel();
     super.dispose();
   }
 
@@ -102,14 +104,15 @@ class GameScreenState extends State {
     return true;
   }
 
-  bool gameIsOver(BallWidgetController ball) {
+  bool isBallDownScreen(BallWidgetController ball) {
     return ball.y > ball.screenHeight;
   }
 
   void resetGame() {
     setState(() {
-      isGameStarted = true;
+      isGameStarted = false;
       isGameOver = false;
+      ballController.reset();
     });
   }
 
@@ -138,7 +141,7 @@ class GameScreenState extends State {
         ball.updateBallDirection(platform);
         ball.moveBall();
 
-        if (gameIsOver(ball) || isNoBricksLeft()) {
+        if (isBallDownScreen(ball) || isNoBricksLeft()) {
           Future.delayed(
             Duration(seconds: 2),
             () => timer.cancel(),
@@ -180,22 +183,18 @@ class GameScreenState extends State {
                       children: [
                         isGameStarted ? SizedBox() : CoverScreen(),
                         BallWidget(),
-                        // PlatformWidget(),
-                        PlatformWidget2(),
+                        PlatformWidget(),
                         isGameOver
                             ? Center(
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Text('G A M E  O V E R',
                                         style: TextStyle(color: Colors.white)),
+                                    // Divider(),
                                     ElevatedButton(
                                       onPressed: () {
-                                        Provider.of<BallWidgetController>(
-                                                context,
-                                                listen: false)
-                                            .reset();
                                         resetGame();
-                                        setState(() {});
                                       },
                                       child: const Text('Play again'),
                                     )

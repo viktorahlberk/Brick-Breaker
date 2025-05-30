@@ -7,12 +7,8 @@ class PlatformWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final screenWidth = MediaQuery.of(context).size.width;
-    // final screenHeight = MediaQuery.of(context).size.height;
-
     return Consumer<PlatformWidgetController>(
       builder: (context, platform, _) {
-        // Convert platform's Cartesian coordinates to a position in the Stack
         return Positioned(
           left: platform.x - (platform.width / 2),
           top: platform.y - (platform.height / 2),
