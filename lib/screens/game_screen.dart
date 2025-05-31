@@ -1,18 +1,14 @@
 import 'dart:async';
 import 'dart:developer' as log;
-import 'dart:math';
 import 'package:bouncer/controllers/ballWidgetController.dart';
 import 'package:bouncer/controllers/platformWidgetController.dart';
 import 'package:bouncer/particles.dart';
-import 'package:bouncer/screens/gameover_screen.dart';
 import 'package:bouncer/widgets/ballWidget.dart';
 import 'package:bouncer/widgets/brick.dart';
 import 'package:bouncer/widgets/platformWidget.dart';
-// import 'package:bouncer/dev/platformWidget2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
-import 'cover_screen.dart';
 
 // Определяем enum для состояний игры
 enum GameState {

@@ -121,7 +121,7 @@ class ParticleSystem {
           -_random.nextDouble() * 30 - 20,
         ),
         acceleration: const Offset(0, -10),
-        color: Colors.grey.withOpacity(0.4),
+        color: Colors.grey.withValues(alpha: 0.4),
         size: _random.nextDouble() * 8 + 4,
         life: _random.nextDouble() * 2 + 1,
         shape: ParticleShape.circle,
