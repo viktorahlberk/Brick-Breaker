@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 
 class PlatformWidgetController extends ChangeNotifier {
-  PlatformWidgetController({
-    required this.screenWidth,
-    required this.screenHeight,
-  }) {
+  PlatformWidgetController({required this.screenSize}) {
     // Initialize platform position at bottom center
-    x = screenWidth / 2;
-    y = screenHeight * 0.97; // Near bottom of screen
-    width = screenWidth * 0.2; // 20% of screen width
+    x = screenSize.width / 2;
+    y = screenSize.height * 0.97; // Near bottom of screen
+    width = screenSize.width * 0.2; // 20% of screen width
   }
 
   // Screen dimensions
-  final double screenWidth;
-  final double screenHeight;
+  final Size screenSize;
 
   // Platform properties in actual pixels
   late double x; // Center X position
@@ -32,16 +28,6 @@ class PlatformWidgetController extends ChangeNotifier {
         height: height,
       );
 
-  // void updateFromAccelerometer(double accelerometerY) {
-  //   double tiltSensitivity = 0.1;
-  //   double newX = x + (-accelerometerY * tiltSensitivity);
-
-  //   if (newX >= -1 && newX + width <= 1) {
-  //     x = newX;
-  //     notifyListeners();
-  //   }
-  // }
-
   void moveLeft() {
     // Don't let platform go off screen (accounting for platform width)
     if (x > width / 2) {
@@ -52,7 +38,7 @@ class PlatformWidgetController extends ChangeNotifier {
 
   void moveRight() {
     // Don't let platform go off screen (accounting for platform width)
-    if (x < screenWidth - width / 2) {
+    if (x < screenSize.width - width / 2) {
       x += speed;
       notifyListeners();
     }

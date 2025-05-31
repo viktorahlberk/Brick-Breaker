@@ -4,30 +4,26 @@ import 'package:bouncer/controllers/platformWidgetController.dart';
 enum BallDirection { UP, DOWN, LEFT, RIGHT }
 
 class BallWidgetController with ChangeNotifier {
-  BallWidgetController({
-    required this.screenWidth,
-    required this.screenHeight,
-  }) {
+  BallWidgetController({required this.screenSize}) {
     // Initialize ball position
-    x = screenWidth * 0.5;
-    y = screenHeight * 0.5;
+    x = screenSize.width * 0.5;
+    y = screenSize.height * 0.5;
   }
 
   List<Offset> lastBallPositions = [];
 
   // Screen dimensions
-  final double screenWidth;
-  final double screenHeight;
+  final Size screenSize;
 
   // Ball properties in actual pixels
   late double x; // x-position of center
   late double y; // y-position of center
-  double radius = 10.0;
+  double radius = 15.0;
 
   // Movement properties
   BallDirection xDirection = BallDirection.LEFT;
   BallDirection yDirection = BallDirection.DOWN;
-  double speed = 5.0; // pixels per update
+  double speed = 2.0; // pixels per update
 
   // Collision detection
   Rect get ballRect => Rect.fromCircle(
@@ -45,15 +41,9 @@ class BallWidgetController with ChangeNotifier {
       xDirection = BallDirection.RIGHT;
     }
 
-    if (x + radius >= screenWidth) {
+    if (x + radius >= screenSize.width) {
       xDirection = BallDirection.LEFT;
     }
-
-    // if (y + radius >= screenHeight) {
-    //   // Ball hit bottom - game over logic would go here
-    //   reset();
-    //   return;
-    // }
 
     // Check platform collision
     if (yDirection == BallDirection.DOWN) {
@@ -64,12 +54,12 @@ class BallWidgetController with ChangeNotifier {
 
         // Optional: change x direction based on where ball hits platform
         // If ball hits left side of platform, go left, otherwise go right
-        double hitPosition = (x - platform.x) / (platform.width / 2);
-        if (hitPosition < 0) {
-          xDirection = BallDirection.LEFT;
-        } else {
-          xDirection = BallDirection.RIGHT;
-        }
+        // double hitPosition = (x - platform.x) / (platform.width / 2);
+        // if (hitPosition < 0) {
+        //   xDirection = BallDirection.LEFT;
+        // } else {
+        //   xDirection = BallDirection.RIGHT;
+        // }
       }
     }
 
@@ -99,8 +89,8 @@ class BallWidgetController with ChangeNotifier {
   }
 
   void reset() {
-    x = screenWidth * 0.5;
-    y = screenHeight * 0.3;
+    x = screenSize.width * 0.5;
+    y = screenSize.height * 0.5;
     yDirection = BallDirection.DOWN;
     notifyListeners();
   }
