@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/widgets.dart';
 import 'package:bouncer/controllers/platformWidgetController.dart';
 
@@ -10,7 +12,7 @@ class BallWidgetController with ChangeNotifier {
     y = screenSize.height * 0.5;
   }
 
-  List<Offset> lastBallPositions = [];
+  Queue<Offset> lastBallPositions = Queue();
 
   // Screen dimensions
   final Size screenSize;
@@ -48,29 +50,17 @@ class BallWidgetController with ChangeNotifier {
     // Check platform collision
     if (yDirection == BallDirection.DOWN) {
       bool isColliding = ballRect.overlaps(platform.platformRect);
-
       if (isColliding) {
         yDirection = BallDirection.UP;
-
-        // Optional: change x direction based on where ball hits platform
-        // If ball hits left side of platform, go left, otherwise go right
-        // double hitPosition = (x - platform.x) / (platform.width / 2);
-        // if (hitPosition < 0) {
-        //   xDirection = BallDirection.LEFT;
-        // } else {
-        //   xDirection = BallDirection.RIGHT;
-        // }
       }
     }
-
-    notifyListeners();
   }
 
   void moveBall() {
-    lastBallPositions.add(Offset(x, y));
-    if (lastBallPositions.length > 10) {
-      lastBallPositions.removeAt(0);
+    if (lastBallPositions.length > 20) {
+      lastBallPositions.removeFirst();
     }
+    lastBallPositions.add(Offset(x, y));
     // Update x position
     if (xDirection == BallDirection.LEFT) {
       x -= speed;
@@ -84,7 +74,11 @@ class BallWidgetController with ChangeNotifier {
     } else {
       y -= speed;
     }
+  }
 
+  void updateAndMoveBall(PlatformWidgetController platform) {
+    updateBallDirection(platform);
+    moveBall();
     notifyListeners();
   }
 

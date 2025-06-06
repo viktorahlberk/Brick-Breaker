@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:bouncer/controllers/ballWidgetController.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +30,7 @@ class BallPainter extends CustomPainter {
   final double x;
   final double y;
   final double radius;
-  final List<Offset> positions;
+  final Queue<Offset> positions;
 
   BallPainter({
     required this.x,
@@ -40,7 +42,7 @@ class BallPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (int i = 0; i < positions.length - 1; i++) {
-      final pos = positions[i];
+      final pos = positions.elementAt(i);
 
       final alpha = 0.2 * (i + 1) / positions.length;
       final trailPaint = Paint()

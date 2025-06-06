@@ -7,6 +7,7 @@ import 'package:bouncer/particles.dart';
 import 'package:bouncer/widgets/ballWidget.dart';
 import 'package:bouncer/widgets/brick.dart';
 import 'package:bouncer/widgets/platformWidget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -46,12 +47,16 @@ class GameScreenState extends State {
     ballController = Provider.of<BallWidgetController>(context, listen: false);
     platformController =
         Provider.of<PlatformWidgetController>(context, listen: false);
-    if (Platform.isAndroid) {
-      sub = accelerometerEventStream().listen((AccelerometerEvent event) {
-        if (currentGameState == GameState.playing) {
-          platformController.x += -event.y;
-        }
-      });
+
+    if (kIsWeb) {
+    } else {
+      if (Platform.isAndroid) {
+        sub = accelerometerEventStream().listen((AccelerometerEvent event) {
+          if (currentGameState == GameState.playing) {
+            platformController.x += -event.y;
+          }
+        });
+      }
     }
   }
 
@@ -118,8 +123,7 @@ class GameScreenState extends State {
       }
 
       // Обновляем игровые объекты
-      ballController.updateBallDirection(platformController);
-      ballController.moveBall();
+      ballController.updateAndMoveBall(platformController);
       particleSystem.update(0.016);
       checkForBrokenBricks(ballController);
 
