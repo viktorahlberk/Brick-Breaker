@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as log;
+import 'dart:io';
 import 'package:bouncer/controllers/ballWidgetController.dart';
 import 'package:bouncer/controllers/platformWidgetController.dart';
 import 'package:bouncer/particles.dart';
@@ -45,17 +46,13 @@ class GameScreenState extends State {
     ballController = Provider.of<BallWidgetController>(context, listen: false);
     platformController =
         Provider.of<PlatformWidgetController>(context, listen: false);
-
-    sub = accelerometerEventStream().listen((AccelerometerEvent event) {
-      // Акселерометр работает только во время игры
-      if (currentGameState == GameState.playing) {
-        if (event.y > 1) {
-          platformController.moveRight();
-        } else if (event.y < -1) {
-          platformController.moveLeft();
+    if (Platform.isAndroid) {
+      sub = accelerometerEventStream().listen((AccelerometerEvent event) {
+        if (currentGameState == GameState.playing) {
+          platformController.x += -event.y;
         }
-      }
-    });
+      });
+    }
   }
 
   // Метод для смены состояния с логированием
