@@ -68,6 +68,8 @@ class BallViewModel extends ChangeNotifier {
   }
 
   void reset() {
+    _isBelowScreen = false;
+    _model.trail.clear();
     _model.position = Offset(screenSize.width / 2, screenSize.height / 2);
     yDirection = BallDirection.down;
     notifyListeners();

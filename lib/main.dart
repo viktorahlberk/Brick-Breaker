@@ -1,9 +1,8 @@
+import 'package:bouncer/gameScreen.dart';
 import 'package:bouncer/nvvm/viewModels/ballViewModel.dart';
 import 'package:bouncer/nvvm/viewModels/brickViewModel.dart';
 import 'package:bouncer/nvvm/viewModels/gameScreenViewModel.dart';
 import 'package:bouncer/nvvm/viewModels/platformViewModel.dart';
-// import 'package:bouncer/nvvm/view/game_screen.dart';
-import 'package:bouncer/nvvm/views/gameScreen.dart' show GameScreen;
 import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,6 +55,7 @@ class MainApp extends StatelessWidget {
                     ballViewModel: ball,
                     platformViewModel: platform,
                     brickViewModel: bricks,
+                    particleSystem: ps,
                   );
                   return gameViewModel;
                 },
