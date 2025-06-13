@@ -1,23 +1,20 @@
-import 'dart:ui';
-
-import 'package:bouncer/controllers/platformWidgetController.dart';
-import 'package:bouncer/controllers/ballWidgetController.dart'; // Make sure to import this
-import 'package:bouncer/screens/game_screen.dart';
+import 'package:bouncer/nvvm/viewModels/ballViewModel.dart';
+import 'package:bouncer/nvvm/viewModels/brickViewModel.dart';
+import 'package:bouncer/nvvm/viewModels/gameScreenViewModel.dart';
+import 'package:bouncer/nvvm/viewModels/platformViewModel.dart';
+// import 'package:bouncer/nvvm/view/game_screen.dart';
+import 'package:bouncer/nvvm/views/gameScreen.dart' show GameScreen;
+import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-late FragmentProgram fragmentProgram;
-Future<void> makeFragmentProgram() async {
-  fragmentProgram =
-      await FragmentProgram.fromAsset('assets/shaders/platform_shader.frag');
-}
-
 void main() async {
-  makeFragmentProgram();
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(const MainApp());
 }
@@ -27,19 +24,46 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => PlatformWidgetController(screenSize: size),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => BallWidgetController(screenSize: size),
-          ),
-        ],
-        child: GameScreen(),
+      home: LayoutBuilder(
+        builder: (context, constraints) {
+          final size = Size(constraints.maxWidth, constraints.maxHeight);
+          var ps = ParticleSystem();
+          var ball = BallViewModel(screenSize: size);
+          var platform = PlatformViewModel(size);
+          var bricks = BrickViewModel(particleSystem: ps);
+
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => ball),
+              ChangeNotifierProvider(create: (_) => platform),
+              ChangeNotifierProvider(create: (_) => bricks),
+              ChangeNotifierProxyProvider3(
+                create: (_) {
+                  return GameViewModel(
+                    ballViewModel: ball,
+                    platformViewModel: platform,
+                    brickViewModel: bricks,
+                    particleSystem: ps,
+                  );
+                },
+                update: (BuildContext context,
+                    BallViewModel ball,
+                    PlatformViewModel platform,
+                    BrickViewModel bricks,
+                    gameViewModel) {
+                  gameViewModel!.updateDependencies(
+                    ballViewModel: ball,
+                    platformViewModel: platform,
+                    brickViewModel: bricks,
+                  );
+                  return gameViewModel;
+                },
+              ),
+            ],
+            child: GameScreen(),
+          );
+        },
       ),
     );
   }
