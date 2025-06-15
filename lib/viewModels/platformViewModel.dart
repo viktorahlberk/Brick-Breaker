@@ -1,4 +1,4 @@
-import 'package:bouncer/nvvm/models/platformModel.dart';
+import 'package:bouncer/models/platformModel.dart';
 import 'package:flutter/material.dart';
 
 class PlatformViewModel extends ChangeNotifier {

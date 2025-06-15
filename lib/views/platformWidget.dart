@@ -1,4 +1,4 @@
-import 'package:bouncer/nvvm/viewModels/platformViewModel.dart';
+import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

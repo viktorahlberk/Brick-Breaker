@@ -1,6 +1,5 @@
-// view_models/ball_view_model.dart
-import 'package:bouncer/nvvm/models/ballModel.dart';
-import 'package:bouncer/nvvm/viewModels/platformViewModel.dart';
+import 'package:bouncer/models/ballModel.dart';
+import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:flutter/material.dart';
 
 enum BallDirection { up, down, left, right }
@@ -8,16 +7,19 @@ enum BallDirection { up, down, left, right }
 class BallViewModel extends ChangeNotifier {
   final Size screenSize;
   final BallModel _model;
+  final Offset _startingPosition;
 
   BallDirection xDirection = BallDirection.left;
-  BallDirection yDirection = BallDirection.down;
+  BallDirection yDirection = BallDirection.up;
   double speed = 2.0;
   bool _isBelowScreen = false;
   bool get isBelowScreen => _isBelowScreen;
 
   BallViewModel({required this.screenSize})
-      : _model = BallModel(
-            position: Offset(screenSize.width / 2, screenSize.height / 2));
+      : _startingPosition =
+            Offset(screenSize.width / 2, screenSize.height * 0.95),
+        _model = BallModel(
+            position: Offset(screenSize.width / 2, screenSize.height * 0.95));
 
   BallModel get model => _model;
   get ballRect => Rect.fromCircle(
@@ -70,8 +72,8 @@ class BallViewModel extends ChangeNotifier {
   void reset() {
     _isBelowScreen = false;
     _model.trail.clear();
-    _model.position = Offset(screenSize.width / 2, screenSize.height / 2);
-    yDirection = BallDirection.down;
+    _model.position = _startingPosition;
+    yDirection = BallDirection.up;
     notifyListeners();
   }
 }

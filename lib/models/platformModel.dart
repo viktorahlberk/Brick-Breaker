@@ -11,7 +11,7 @@ class PlatformModel {
   PlatformModel({required this.screenSize}) {
     x = screenSize.width / 2;
     y = screenSize.height * 0.97;
-    width = screenSize.width * 0.2;
+    width = screenSize.width * 0.125;
   }
 
   Rect get rect =>

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
@@ -80,15 +81,18 @@ class ParticleSystem {
         shape: _randomShape(),
         rotationSpeed: (_random.nextDouble() - 0.5) * 10,
       ));
+      // print(
+      //     'Adding particle: ${particles.last.position}, life: ${particles.last.life}');
     }
 
     // Искры
     _addSparks(position, intensity);
 
     // Дым (опционально)
-    if (intensity > 0.8) {
-      _addSmoke(position);
-    }
+    // if (intensity > 0.8) {
+    //   _addSmoke(position);
+    // }
+    // print('Added ${particles.length} particles');
   }
 
   void _addSparks(Offset position, double intensity) {
@@ -158,6 +162,7 @@ class ParticleSystem {
   }
 
   void update(double dt) {
+    // print('updating');
     // Обновляем все частицы
     for (var particle in particles) {
       particle.update(dt);
@@ -179,7 +184,9 @@ class ParticlePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // print('🎨 Painting ${particleSystem.particles.length} particles');
     for (var particle in particleSystem.particles) {
+      // print('painting particle: ${particle.position}, life: ${particle.life}');
       if (particle.life > 0) {
         final paint = Paint()
           ..color = particle.color.withValues(alpha: particle.opacity)

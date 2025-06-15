@@ -8,7 +8,7 @@ class BallModel {
 
   BallModel({
     required this.position,
-    this.radius = 15.0,
+    this.radius = 5.0,
     Queue<Offset>? trail,
   }) : trail = trail ?? Queue<Offset>();
 }

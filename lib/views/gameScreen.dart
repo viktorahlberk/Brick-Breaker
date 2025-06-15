@@ -1,7 +1,7 @@
-import 'package:bouncer/nvvm/viewModels/gameScreenViewModel.dart';
-import 'package:bouncer/nvvm/views/ballWidget.dart';
-import 'package:bouncer/nvvm/views/brickWidget.dart';
-import 'package:bouncer/nvvm/views/platformWidget.dart';
+import 'package:bouncer/viewModels/gameScreenViewModel.dart';
+import 'package:bouncer/views/ballWidget.dart';
+import 'package:bouncer/views/brickWidget.dart';
+import 'package:bouncer/views/platformWidget.dart';
 import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,6 +33,10 @@ class GameScreen extends StatelessWidget {
           children: [
             const BallWidget(),
             const PlatformWidget(),
+            // CustomPaint(
+            //   painter: ParticlePainter(gameViewModel.particleSystem),
+            //   size: Size.infinite,
+            // ),
             ...gameViewModel.brickViewModel.bricks
                 .map((brick) => BrickWidget(model: brick)),
 
@@ -97,46 +101,6 @@ class GameScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
-            // Индикатор состояния для отладки
-            Positioned(
-              top: 50,
-              left: 20,
-              child: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  'State: ${gameViewModel.gameState}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ),
-            // Align(
-            //   alignment: Alignment.bottomLeft,
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(16.0),
-            //     child: Row(
-            //       children: [
-            //         IconButton(
-            //             icon: const Icon(Icons.arrow_left, color: Colors.white),
-            //             onPressed: () =>
-            //                 gameViewModel.platformViewModel.moveLeft()),
-            //         // gameViewModel.onKeyDown('a')),
-            //         IconButton(
-            //           icon: const Icon(Icons.arrow_right, color: Colors.white),
-            //           onPressed: () =>
-            //               gameViewModel.platformViewModel.moveRight(),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

@@ -1,8 +1,8 @@
-import 'package:bouncer/gameScreen.dart';
-import 'package:bouncer/nvvm/viewModels/ballViewModel.dart';
-import 'package:bouncer/nvvm/viewModels/brickViewModel.dart';
-import 'package:bouncer/nvvm/viewModels/gameScreenViewModel.dart';
-import 'package:bouncer/nvvm/viewModels/platformViewModel.dart';
+import 'package:bouncer/views/gameScreen.dart';
+import 'package:bouncer/viewModels/ballViewModel.dart';
+import 'package:bouncer/viewModels/brickViewModel.dart';
+import 'package:bouncer/viewModels/gameScreenViewModel.dart';
+import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,10 +27,10 @@ class MainApp extends StatelessWidget {
       home: LayoutBuilder(
         builder: (context, constraints) {
           final size = Size(constraints.maxWidth, constraints.maxHeight);
-          var ps = ParticleSystem();
-          var ball = BallViewModel(screenSize: size);
-          var platform = PlatformViewModel(size);
-          var bricks = BrickViewModel(particleSystem: ps);
+          ParticleSystem ps = ParticleSystem();
+          BallViewModel ball = BallViewModel(screenSize: size);
+          PlatformViewModel platform = PlatformViewModel(size);
+          BrickViewModel bricks = BrickViewModel(particleSystem: ps);
 
           return MultiProvider(
             providers: [

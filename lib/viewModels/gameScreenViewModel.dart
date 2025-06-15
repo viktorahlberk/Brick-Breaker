@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'dart:developer';
-import 'package:bouncer/nvvm/viewModels/ballViewModel.dart';
-import 'package:bouncer/nvvm/viewModels/brickViewModel.dart';
-import 'package:bouncer/nvvm/viewModels/platformViewModel.dart';
+import 'dart:io';
+import 'package:bouncer/viewModels/ballViewModel.dart';
+import 'package:bouncer/viewModels/brickViewModel.dart';
+import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/foundation.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 enum GameState {
   initial,
@@ -25,6 +29,8 @@ class GameViewModel extends ChangeNotifier {
   GameState _gameState = GameState.initial;
   GameState get gameState => _gameState;
   bool get shouldShowActionButton => _gameState != GameState.playing;
+  final _platform = kIsWeb ? 'web' : Platform.operatingSystem;
+  StreamSubscription<AccelerometerEvent>? accelometerSubscription;
 
   GameViewModel({
     required this.ballViewModel,
@@ -33,10 +39,30 @@ class GameViewModel extends ChangeNotifier {
     required this.particleSystem,
   }) {
     _ticker = Ticker(_onTick);
+    if (_platform == 'android') {
+      // Инициализация для веба, если нужно
+      log('🎮 Game initialized for android');
+      accelometerSubscription = accelerometerEventStream().listen((event) {
+        if (event.y < -1) {
+          _isMovingLeft = true;
+          _isMovingRight = false;
+        } else if (event.y > 1) {
+          _isMovingRight = true;
+          _isMovingLeft = false;
+        } else {
+          _isMovingLeft = false;
+          _isMovingRight = false;
+        }
+      });
+    } else {
+      log('🎮 Game initialized for web');
+    }
   }
 
   void _onTick(Duration _) {
-    particleSystem.update(0.016);
+    // print(particleSystem.particles.length);
+    // particleSystem.update(0.016);
+    particleSystem.update(0.008);
     if (_isMovingLeft) {
       platformViewModel.moveLeft();
     } else if (_isMovingRight) {
@@ -108,11 +134,15 @@ class GameViewModel extends ChangeNotifier {
   }
 
   void checkCollisions() {
-    ballViewModel.updateAndMove(platformViewModel);
+    final start = DateTime.now();
     brickViewModel.checkCollision(ballViewModel);
+    final duration = DateTime.now().difference(start);
+    if (duration.inMilliseconds > 5) {
+      log('⚠️ checkCollisions took ${duration.inMilliseconds} ms');
+    }
   }
 
-  gameOverCheck() {
+  void gameOverCheck() {
     if (ballViewModel.isBelowScreen || brickViewModel.isEmpty) {
       _gameState = GameState.gameOver;
     }
@@ -120,8 +150,6 @@ class GameViewModel extends ChangeNotifier {
 
   void startNewGame() {
     log('🎮 Starting new game');
-    ballViewModel.reset();
-    brickViewModel.restoreBricks();
     ballViewModel.reset();
     _gameState = GameState.playing;
     _ticker.start();
@@ -135,7 +163,6 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Пауза игры
   void pauseGame() {
     log('🎮 Pausing game');
     _ticker.stop();
@@ -162,6 +189,7 @@ class GameViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _ticker.dispose();
+    accelometerSubscription?.cancel();
     super.dispose();
   }
 }

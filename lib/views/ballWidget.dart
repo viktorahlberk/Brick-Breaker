@@ -1,7 +1,7 @@
 // views/ball_widget.dart
 import 'dart:collection';
 
-import 'package:bouncer/nvvm/viewModels/ballViewModel.dart';
+import 'package:bouncer/viewModels/ballViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

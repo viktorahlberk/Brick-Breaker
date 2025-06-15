@@ -1,4 +1,4 @@
-import 'package:bouncer/nvvm/models/brickModel.dart';
+import 'package:bouncer/models/brickModel.dart';
 import 'package:flutter/material.dart';
 
 class BrickWidget extends StatelessWidget {
