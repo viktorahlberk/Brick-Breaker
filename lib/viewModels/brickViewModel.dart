@@ -23,7 +23,7 @@ class BrickViewModel extends ChangeNotifier {
   }
 
   // Константы размещения
-  static const int bricksQuantity = 50;
+  static const int bricksQuantity = 7;
   static const int maxBricksPerRow = 7;
   static const double brickWidth = 0.23;
   static const double brickHeight = 0.09;
@@ -32,8 +32,6 @@ class BrickViewModel extends ChangeNotifier {
   static const double availableSpace = 2;
 
   void createBricks() {
-    // _bricks.clear();
-
     if (bricksQuantity <= 0) return;
 
     // Определяем количество рядов и колонок
@@ -62,7 +60,8 @@ class BrickViewModel extends ChangeNotifier {
           y: y,
           width: brickWidth,
           height: brickHeight,
-          color: _randomColor(),
+          // color: _randomColor(),
+          type: col % 2 == 0 ? BrickType.normal : BrickType.hard,
         ));
 
         bricksCreated++;
@@ -79,11 +78,20 @@ class BrickViewModel extends ChangeNotifier {
       final ballRect = ball.ballRect;
 
       if (ballRect.overlaps(brickRect)) {
-        final removedBrick = _bricks.removeAt(i);
-        _explodeBrick(brickRect, removedBrick.color);
-        _invertBallY(ball);
-        notifyListeners();
-        break;
+        if (brick.type == BrickType.hard) {
+          _explodeBrick(brickRect, brick.color);
+          _bricks[i].type = BrickType.normal;
+          _bricks[i].color = Colors.white;
+          _invertBallY(ball);
+          notifyListeners();
+          break;
+        } else {
+          final removedBrick = _bricks.removeAt(i);
+          _explodeBrick(brickRect, removedBrick.color);
+          _invertBallY(ball);
+          notifyListeners();
+          break;
+        }
       }
     }
   }

@@ -1,4 +1,5 @@
 import 'package:bouncer/models/ballModel.dart';
+import 'package:bouncer/viewModels/gameScreenViewModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:flutter/material.dart';
 
@@ -43,19 +44,25 @@ class BallViewModel extends ChangeNotifier {
       bool isColliding = ballRect.overlaps(platform.rect);
       if (isColliding) {
         yDirection = BallDirection.up;
+        // if (platform.isMovingLeft) {
+        //   xDirection = BallDirection.left;
+        // }
       }
     }
     if (_model.position.dy + _model.radius >= screenSize.height) {
       _isBelowScreen = true;
-      // print(_isBelowScreen);
     }
   }
 
-  void moveBall() {
+  void updateBallTrail() {
     if (_model.trail.length > 30) {
       _model.trail.removeFirst();
     }
     _model.trail.add(_model.position);
+  }
+
+  void moveBall() {
+    updateBallTrail();
 
     double dx = xDirection == BallDirection.left ? -speed : speed;
     double dy = yDirection == BallDirection.up ? -speed : speed;

@@ -69,7 +69,7 @@ class GameViewModel extends ChangeNotifier {
       platformViewModel.moveRight();
     }
     ballViewModel.updateAndMove(platformViewModel);
-    checkCollisions();
+    checkBrickCollisions();
     gameOverCheck();
     if (_gameState == GameState.gameOver) {
       log('🎮 Game Over, stopping ticker');
@@ -133,13 +133,13 @@ class GameViewModel extends ChangeNotifier {
     this.particleSystem = particleSystem;
   }
 
-  void checkCollisions() {
-    final start = DateTime.now();
+  void checkBrickCollisions() {
+    // final start = DateTime.now();
     brickViewModel.checkCollision(ballViewModel);
-    final duration = DateTime.now().difference(start);
-    if (duration.inMilliseconds > 5) {
-      log('⚠️ checkCollisions took ${duration.inMilliseconds} ms');
-    }
+    // final duration = DateTime.now().difference(start);
+    // if (duration.inMilliseconds > 5) {
+    //   log('⚠️ checkCollisions took ${duration.inMilliseconds} ms');
+    // }
   }
 
   void gameOverCheck() {

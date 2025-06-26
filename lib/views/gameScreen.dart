@@ -33,10 +33,6 @@ class GameScreen extends StatelessWidget {
           children: [
             const BallWidget(),
             const PlatformWidget(),
-            // CustomPaint(
-            //   painter: ParticlePainter(gameViewModel.particleSystem),
-            //   size: Size.infinite,
-            // ),
             ...gameViewModel.brickViewModel.bricks
                 .map((brick) => BrickWidget(model: brick)),
 
@@ -50,25 +46,18 @@ class GameScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Показываем сообщение о состоянии игры
                     if (gameViewModel.gameState == GameState.gameOver)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Text(
-                          // myBricks.isEmpty ?
-                          // 'ПОБЕДА!' :
                           'ИГРА ОКОНЧЕНА',
                           style: TextStyle(
-                            color:
-                                //  myBricks.isEmpty ?
-                                //  Colors.green :
-                                Colors.red,
+                            color: Colors.red,
                             fontSize: 32,
-                            fontWeight: FontWeight.bold,
+                            // fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-
                     ElevatedButton.icon(
                       onPressed: gameViewModel.onActionButtonPressed,
                       icon: Icon(gameViewModel.getButtonIcon(), size: 30),
