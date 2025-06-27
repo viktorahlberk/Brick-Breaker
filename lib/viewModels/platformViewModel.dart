@@ -13,6 +13,8 @@ class PlatformViewModel extends ChangeNotifier {
   double get width => _model.width;
   double get height => _model.height;
   Rect get rect => _model.rect;
+  bool isMovingLeft = false;
+  bool isMovingRight = false;
 
   void moveLeft() {
     _model.moveLeft();

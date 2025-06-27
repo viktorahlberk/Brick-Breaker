@@ -43,6 +43,9 @@ class BallViewModel extends ChangeNotifier {
     if (yDirection == BallDirection.down) {
       bool isColliding = ballRect.overlaps(platform.rect);
       if (isColliding) {
+        // if (platform.isMovingLeft) {
+        //   xDirection = BallDirection.left;
+        // }
         yDirection = BallDirection.up;
         // if (platform.isMovingLeft) {
         //   xDirection = BallDirection.left;

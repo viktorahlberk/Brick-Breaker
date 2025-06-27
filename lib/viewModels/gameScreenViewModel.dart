@@ -24,8 +24,8 @@ class GameViewModel extends ChangeNotifier {
   late ParticleSystem particleSystem;
 
   late final Ticker _ticker;
-  bool _isMovingLeft = false;
-  bool _isMovingRight = false;
+  bool _isPlatformMovingLeft = false;
+  bool _isPlatformMovingRight = false;
   GameState _gameState = GameState.initial;
   GameState get gameState => _gameState;
   bool get shouldShowActionButton => _gameState != GameState.playing;
@@ -44,14 +44,14 @@ class GameViewModel extends ChangeNotifier {
       log('🎮 Game initialized for android');
       accelometerSubscription = accelerometerEventStream().listen((event) {
         if (event.y < -1) {
-          _isMovingLeft = true;
-          _isMovingRight = false;
+          _isPlatformMovingLeft = true;
+          _isPlatformMovingRight = false;
         } else if (event.y > 1) {
-          _isMovingRight = true;
-          _isMovingLeft = false;
+          _isPlatformMovingLeft = false;
+          _isPlatformMovingRight = true;
         } else {
-          _isMovingLeft = false;
-          _isMovingRight = false;
+          _isPlatformMovingLeft = false;
+          _isPlatformMovingRight = false;
         }
       });
     } else {
@@ -63,19 +63,35 @@ class GameViewModel extends ChangeNotifier {
     // print(particleSystem.particles.length);
     // particleSystem.update(0.016);
     particleSystem.update(0.008);
-    if (_isMovingLeft) {
+    if (_isPlatformMovingLeft) {
       platformViewModel.moveLeft();
-    } else if (_isMovingRight) {
+    } else if (_isPlatformMovingRight) {
       platformViewModel.moveRight();
     }
     ballViewModel.updateAndMove(platformViewModel);
-    checkBrickCollisions();
+    checkAllCollisions();
     gameOverCheck();
     if (_gameState == GameState.gameOver) {
       log('🎮 Game Over, stopping ticker');
       _ticker.stop();
     }
     notifyListeners();
+  }
+
+  checkAllCollisions() {
+    brickViewModel.checkCollision(ballViewModel);
+    bool isColliding = ballViewModel.ballRect.overlaps(platformViewModel.rect);
+
+    if (isColliding) {
+      if (_isPlatformMovingLeft &&
+          ballViewModel.xDirection == BallDirection.right) {
+        ballViewModel.xDirection = BallDirection.left;
+      } else if (_isPlatformMovingRight &&
+          ballViewModel.xDirection == BallDirection.left) {
+        ballViewModel.xDirection = BallDirection.right;
+      }
+      ballViewModel.yDirection = BallDirection.up;
+    }
   }
 
   void onActionButtonPressed() {
@@ -172,17 +188,17 @@ class GameViewModel extends ChangeNotifier {
 
   void onKeyDown(String key) {
     if (key == 'a' || key == 'arrowleft') {
-      _isMovingLeft = true;
+      _isPlatformMovingLeft = true;
     } else if (key == 'd' || key == 'arrowright') {
-      _isMovingRight = true;
+      _isPlatformMovingRight = true;
     }
   }
 
   void onKeyUp(String key) {
     if (key == 'a' || key == 'arrowleft') {
-      _isMovingLeft = false;
+      _isPlatformMovingLeft = false;
     } else if (key == 'd' || key == 'arrowright') {
-      _isMovingRight = false;
+      _isPlatformMovingRight = false;
     }
   }
 
