@@ -78,20 +78,26 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  checkAllCollisions() {
+  void checkAllCollisions() {
+    // Проверяем столкновение с кирпичами
     brickViewModel.checkCollision(ballViewModel);
-    bool isColliding = ballViewModel.ballRect.overlaps(platformViewModel.rect);
 
+    // Проверяем столкновение с платформой
+    bool isColliding = ballViewModel.ballRect.overlaps(platformViewModel.rect);
     if (isColliding) {
-      if (_isPlatformMovingLeft &&
-          ballViewModel.xDirection == BallDirection.right) {
-        ballViewModel.xDirection = BallDirection.left;
-      } else if (_isPlatformMovingRight &&
-          ballViewModel.xDirection == BallDirection.left) {
-        ballViewModel.xDirection = BallDirection.right;
-      }
-      ballViewModel.yDirection = BallDirection.up;
+      applyPlatformBounce();
     }
+  }
+
+  void applyPlatformBounce() {
+    if (_isPlatformMovingLeft &&
+        ballViewModel.xDirection == BallDirection.right) {
+      ballViewModel.xDirection = BallDirection.left;
+    } else if (_isPlatformMovingRight &&
+        ballViewModel.xDirection == BallDirection.left) {
+      ballViewModel.xDirection = BallDirection.right;
+    }
+    ballViewModel.yDirection = BallDirection.up;
   }
 
   void onActionButtonPressed() {
@@ -149,14 +155,14 @@ class GameViewModel extends ChangeNotifier {
     this.particleSystem = particleSystem;
   }
 
-  void checkBrickCollisions() {
-    // final start = DateTime.now();
-    brickViewModel.checkCollision(ballViewModel);
-    // final duration = DateTime.now().difference(start);
-    // if (duration.inMilliseconds > 5) {
-    //   log('⚠️ checkCollisions took ${duration.inMilliseconds} ms');
-    // }
-  }
+  // void checkBrickCollisions() {
+  // final start = DateTime.now();
+  // brickViewModel.checkCollision(ballViewModel);
+  // final duration = DateTime.now().difference(start);
+  // if (duration.inMilliseconds > 5) {
+  //   log('⚠️ checkCollisions took ${duration.inMilliseconds} ms');
+  // }
+  // }
 
   void gameOverCheck() {
     if (ballViewModel.isBelowScreen || brickViewModel.isEmpty) {
