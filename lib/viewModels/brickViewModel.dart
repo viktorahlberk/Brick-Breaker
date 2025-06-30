@@ -23,7 +23,7 @@ class BrickViewModel extends ChangeNotifier {
   }
 
   // Константы размещения
-  static const int bricksQuantity = 7;
+  static const int bricksQuantity = 23;
   static const int maxBricksPerRow = 7;
   static const double brickWidth = 0.23;
   static const double brickHeight = 0.09;

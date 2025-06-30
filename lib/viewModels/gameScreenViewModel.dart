@@ -61,8 +61,8 @@ class GameViewModel extends ChangeNotifier {
 
   void _onTick(Duration _) {
     // print(particleSystem.particles.length);
-    // particleSystem.update(0.016);
-    particleSystem.update(0.008);
+    particleSystem.update(0.016);
+    // particleSystem.update(0.008);
     if (_isPlatformMovingLeft) {
       platformViewModel.moveLeft();
     } else if (_isPlatformMovingRight) {

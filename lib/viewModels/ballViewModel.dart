@@ -40,18 +40,18 @@ class BallViewModel extends ChangeNotifier {
       xDirection = BallDirection.left;
     }
 
-    if (yDirection == BallDirection.down) {
-      bool isColliding = ballRect.overlaps(platform.rect);
-      if (isColliding) {
-        // if (platform.isMovingLeft) {
-        //   xDirection = BallDirection.left;
-        // }
-        yDirection = BallDirection.up;
-        // if (platform.isMovingLeft) {
-        //   xDirection = BallDirection.left;
-        // }
-      }
-    }
+    // if (yDirection == BallDirection.down) {
+    //   bool isColliding = ballRect.overlaps(platform.rect);
+    //   if (isColliding) {
+    //     // if (platform.isMovingLeft) {
+    //     //   xDirection = BallDirection.left;
+    //     // }
+    //     yDirection = BallDirection.up;
+    //     // if (platform.isMovingLeft) {
+    //     //   xDirection = BallDirection.left;
+    //     // }
+    //   }
+    // }
     if (_model.position.dy + _model.radius >= screenSize.height) {
       _isBelowScreen = true;
     }
