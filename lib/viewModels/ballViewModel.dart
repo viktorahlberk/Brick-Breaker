@@ -1,5 +1,4 @@
 import 'package:bouncer/models/ballModel.dart';
-import 'package:bouncer/viewModels/gameScreenViewModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +11,7 @@ class BallViewModel extends ChangeNotifier {
 
   BallDirection xDirection = BallDirection.left;
   BallDirection yDirection = BallDirection.up;
-  double speed = 2.0;
+  double speed = 4.0;
   bool _isBelowScreen = false;
   bool get isBelowScreen => _isBelowScreen;
 
