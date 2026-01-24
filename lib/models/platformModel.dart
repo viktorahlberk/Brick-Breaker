@@ -6,7 +6,7 @@ class PlatformModel {
   late double y;
   late double width;
   final double height = 5.0;
-  final double speed = 14;
+  final double speed = 4;
 
   PlatformModel({required this.screenSize}) {
     x = screenSize.width / 2;

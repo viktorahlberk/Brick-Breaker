@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'package:bouncer/gameSettings.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
 import 'package:bouncer/viewModels/brickViewModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
@@ -31,6 +32,7 @@ class GameViewModel extends ChangeNotifier {
   bool get shouldShowActionButton => _gameState != GameState.playing;
   final _platform = kIsWeb ? 'web' : Platform.operatingSystem;
   StreamSubscription<AccelerometerEvent>? accelometerSubscription;
+  Gamesettings _gameSettings = Gamesettings();
 
   GameViewModel({
     required this.ballViewModel,
@@ -42,18 +44,20 @@ class GameViewModel extends ChangeNotifier {
     if (_platform == 'android') {
       // Инициализация для веба, если нужно
       log('🎮 Game initialized for android');
-      accelometerSubscription = accelerometerEventStream().listen((event) {
-        if (event.y < -1) {
-          _isPlatformMovingLeft = true;
-          _isPlatformMovingRight = false;
-        } else if (event.y > 1) {
-          _isPlatformMovingLeft = false;
-          _isPlatformMovingRight = true;
-        } else {
-          _isPlatformMovingLeft = false;
-          _isPlatformMovingRight = false;
-        }
-      });
+      if (_gameSettings.control == Control.sensor) {
+        accelometerSubscription = accelerometerEventStream().listen((event) {
+          if (event.y < -1) {
+            _isPlatformMovingLeft = true;
+            _isPlatformMovingRight = false;
+          } else if (event.y > 1) {
+            _isPlatformMovingLeft = false;
+            _isPlatformMovingRight = true;
+          } else {
+            _isPlatformMovingLeft = false;
+            _isPlatformMovingRight = false;
+          }
+        });
+      }
     } else {
       log('🎮 Game initialized for web');
     }
@@ -76,6 +80,22 @@ class GameViewModel extends ChangeNotifier {
       _ticker.stop();
     }
     notifyListeners();
+  }
+
+  void handleTapMoving(DragUpdateDetails details) {
+    final tapX = details.localPosition.dx;
+    if (tapX < platformViewModel.x) {
+      _isPlatformMovingLeft = true;
+      _isPlatformMovingRight = false;
+    } else if (tapX > platformViewModel.x) {
+      _isPlatformMovingLeft = false;
+      _isPlatformMovingRight = true;
+    }
+  }
+
+  stopPlatformMovement() {
+    _isPlatformMovingLeft = false;
+    _isPlatformMovingRight = false;
   }
 
   void checkAllCollisions() {
