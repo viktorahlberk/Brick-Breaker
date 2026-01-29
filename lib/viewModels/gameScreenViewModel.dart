@@ -83,6 +83,8 @@ class GameViewModel extends ChangeNotifier {
   }
 
   void handleTapMoving(DragUpdateDetails details) {
+    if (_gameSettings.control != Control.touch) return;
+
     final tapX = details.localPosition.dx;
     if (tapX < platformViewModel.x) {
       _isPlatformMovingLeft = true;
