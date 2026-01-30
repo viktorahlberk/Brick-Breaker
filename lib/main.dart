@@ -1,3 +1,4 @@
+import 'package:bouncer/viewModels/gunViewModel.dart';
 import 'package:bouncer/views/gameScreen.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
 import 'package:bouncer/viewModels/brickViewModel.dart';
@@ -31,12 +32,14 @@ class MainApp extends StatelessWidget {
           BallViewModel ball = BallViewModel(screenSize: size);
           PlatformViewModel platform = PlatformViewModel(size);
           BrickViewModel bricks = BrickViewModel(particleSystem: ps);
+          GunViewModel gun = GunViewModel(platform);
 
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(create: (_) => ball),
               ChangeNotifierProvider(create: (_) => platform),
               ChangeNotifierProvider(create: (_) => bricks),
+              ChangeNotifierProvider(create: (_) => gun),
               ChangeNotifierProxyProvider3(
                 create: (_) {
                   return GameViewModel(
@@ -44,6 +47,7 @@ class MainApp extends StatelessWidget {
                     platformViewModel: platform,
                     brickViewModel: bricks,
                     particleSystem: ps,
+                    gunViewModel: gun,
                   );
                 },
                 update: (BuildContext context,
@@ -52,11 +56,11 @@ class MainApp extends StatelessWidget {
                     BrickViewModel bricks,
                     gameViewModel) {
                   gameViewModel!.updateDependencies(
-                    ballViewModel: ball,
-                    platformViewModel: platform,
-                    brickViewModel: bricks,
-                    particleSystem: ps,
-                  );
+                      ballViewModel: ball,
+                      platformViewModel: platform,
+                      brickViewModel: bricks,
+                      particleSystem: ps,
+                      gunViewModel: gun);
                   return gameViewModel;
                 },
               ),

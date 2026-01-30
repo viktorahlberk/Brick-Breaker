@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bouncer/gameSettings.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
 import 'package:bouncer/viewModels/brickViewModel.dart';
+import 'package:bouncer/viewModels/gunViewModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class GameViewModel extends ChangeNotifier {
   late PlatformViewModel platformViewModel;
   late BrickViewModel brickViewModel;
   late ParticleSystem particleSystem;
+  late GunViewModel gunViewModel;
 
   late final Ticker _ticker;
   bool _isPlatformMovingLeft = false;
@@ -34,12 +36,12 @@ class GameViewModel extends ChangeNotifier {
   StreamSubscription<AccelerometerEvent>? accelometerSubscription;
   Gamesettings _gameSettings = Gamesettings();
 
-  GameViewModel({
-    required this.ballViewModel,
-    required this.platformViewModel,
-    required this.brickViewModel,
-    required this.particleSystem,
-  }) {
+  GameViewModel(
+      {required this.ballViewModel,
+      required this.platformViewModel,
+      required this.brickViewModel,
+      required this.particleSystem,
+      required this.gunViewModel}) {
     _ticker = Ticker(_onTick);
     if (_platform == 'android') {
       // Инициализация для веба, если нужно
@@ -67,6 +69,7 @@ class GameViewModel extends ChangeNotifier {
     // print(particleSystem.particles.length);
     particleSystem.update(0.016);
     // particleSystem.update(0.008);
+    gunViewModel.update(0.016);
     if (_isPlatformMovingLeft) {
       platformViewModel.moveLeft();
     } else if (_isPlatformMovingRight) {
@@ -102,7 +105,7 @@ class GameViewModel extends ChangeNotifier {
 
   void checkAllCollisions() {
     // Проверяем столкновение с кирпичами
-    brickViewModel.checkCollision(ballViewModel);
+    brickViewModel.checkCollision(ballViewModel, gunViewModel);
 
     // Проверяем столкновение с платформой
     bool isColliding = ballViewModel.ballRect.overlaps(platformViewModel.rect);
@@ -170,11 +173,13 @@ class GameViewModel extends ChangeNotifier {
     required PlatformViewModel platformViewModel,
     required BrickViewModel brickViewModel,
     required ParticleSystem particleSystem,
+    required GunViewModel gunViewModel,
   }) {
     this.ballViewModel = ballViewModel;
     this.platformViewModel = platformViewModel;
     this.brickViewModel = brickViewModel;
     this.particleSystem = particleSystem;
+    this.gunViewModel = gunViewModel;
   }
 
   // void checkBrickCollisions() {
@@ -197,6 +202,7 @@ class GameViewModel extends ChangeNotifier {
     ballViewModel.reset();
     _gameState = GameState.playing;
     _ticker.start();
+    // gunViewModel.shoot();
     notifyListeners();
   }
 
@@ -236,4 +242,6 @@ class GameViewModel extends ChangeNotifier {
     accelometerSubscription?.cancel();
     super.dispose();
   }
+
+  shoot() {}
 }

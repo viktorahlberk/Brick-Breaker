@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:bouncer/viewModels/gameScreenViewModel.dart';
 import 'package:bouncer/views/ballWidget.dart';
 import 'package:bouncer/views/brickWidget.dart';
+import 'package:bouncer/views/bulletLayerView.dart';
+import 'package:bouncer/views/gunWidget.dart';
 import 'package:bouncer/views/platformWidget.dart';
 import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
@@ -40,8 +42,10 @@ class GameScreen extends StatelessWidget {
           },
           child: Stack(
             children: [
+              const Gunwidget(),
               const BallWidget(),
               const PlatformWidget(),
+              const BulletLayerView(),
               ...gameViewModel.brickViewModel.bricks
                   .map((brick) => BrickWidget(model: brick)),
 

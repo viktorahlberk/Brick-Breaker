@@ -2,8 +2,11 @@ import 'dart:math';
 import 'dart:math' as math;
 
 import 'package:bouncer/models/brickModel.dart';
+import 'package:bouncer/models/bulletModel.dart';
+import 'package:bouncer/models/gunModel.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
 import 'package:bouncer/particles.dart';
+import 'package:bouncer/viewModels/gunViewModel.dart';
 import 'package:flutter/material.dart';
 
 class BrickViewModel extends ChangeNotifier {
@@ -70,26 +73,46 @@ class BrickViewModel extends ChangeNotifier {
     print('Created $bricksCreated bricks in $rows rows');
   }
 
-  void checkCollision(BallViewModel ball) {
-    for (int i = 0; i < _bricks.length; i++) {
-      final brick = _bricks[i];
+  void checkCollision(BallViewModel ball, GunViewModel gunViewModel) {
+    for (int brickIndex = 0; brickIndex < _bricks.length; brickIndex++) {
+      final brick = _bricks[brickIndex];
       final brickRect = _brickToRect(brick, ball.screenSize);
       final ballRect = ball.ballRect;
 
       if (ballRect.overlaps(brickRect)) {
         if (brick.type == BrickType.hard) {
           _explodeBrick(brickRect, brick.color);
-          _bricks[i].type = BrickType.normal;
-          _bricks[i].color = Colors.white;
+          _bricks[brickIndex].type = BrickType.normal;
+          _bricks[brickIndex].color = Colors.white;
           _invertBallY(ball);
           notifyListeners();
           break;
         } else {
-          final removedBrick = _bricks.removeAt(i);
+          final removedBrick = _bricks.removeAt(brickIndex);
           _explodeBrick(brickRect, removedBrick.color);
           _invertBallY(ball);
           notifyListeners();
           break;
+        }
+      }
+
+      ///Checking for bullets collide with bricks.
+      for (int i = 0; i < gunViewModel.bulletsList.length; i++) {
+        if (gunViewModel.bulletsList[i].bulletRect.overlaps(brickRect)) {
+          if (brick.type == BrickType.hard) {
+            gunViewModel.bulletsList.removeAt(i);
+            _explodeBrick(brickRect, brick.color);
+            _bricks[brickIndex].type = BrickType.normal;
+            _bricks[brickIndex].color = Colors.white;
+            notifyListeners();
+            break;
+          } else {
+            final removedBrick = _bricks.removeAt(brickIndex);
+            gunViewModel.bulletsList.removeAt(i);
+            _explodeBrick(brickRect, removedBrick.color);
+            notifyListeners();
+            break;
+          }
         }
       }
     }
