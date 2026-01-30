@@ -12,8 +12,8 @@ class Gunwidget extends StatelessWidget {
         builder: (__, gvmodel, pvmodel, _) {
       // gvmodel.startShooting(pvmodel.x - gvmodel.width);
       return Positioned(
-        left: pvmodel.x - gvmodel.width,
-        top: pvmodel.y - gvmodel.height,
+        left: pvmodel.position.dx - gvmodel.width,
+        top: pvmodel.position.dy - gvmodel.height,
         child: Container(
           width: gvmodel.width,
           height: gvmodel.height,

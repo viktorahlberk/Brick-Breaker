@@ -8,10 +8,10 @@ class PlatformViewModel extends ChangeNotifier {
     _model = PlatformModel(screenSize: screenSize);
   }
 
-  double get x => _model.x;
-  double get y => _model.y;
+  Offset get position => _model.position;
   double get width => _model.width;
   double get height => _model.height;
+  double velocityX = 1;
   Rect get rect => _model.rect;
   bool isMovingLeft = false;
   bool isMovingRight = false;

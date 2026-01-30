@@ -75,7 +75,8 @@ class GameViewModel extends ChangeNotifier {
     } else if (_isPlatformMovingRight) {
       platformViewModel.moveRight();
     }
-    ballViewModel.updateAndMove(platformViewModel);
+    // ballViewModel.updateAndMove(platformViewModel);
+    ballViewModel.updateAndMove(0.016, platformViewModel);
     checkAllCollisions();
     gameOverCheck();
     if (_gameState == GameState.gameOver) {
@@ -89,10 +90,10 @@ class GameViewModel extends ChangeNotifier {
     if (_gameSettings.control != Control.touch) return;
 
     final tapX = details.localPosition.dx;
-    if (tapX < platformViewModel.x) {
+    if (tapX < platformViewModel.position.dx) {
       _isPlatformMovingLeft = true;
       _isPlatformMovingRight = false;
-    } else if (tapX > platformViewModel.x) {
+    } else if (tapX > platformViewModel.position.dx) {
       _isPlatformMovingLeft = false;
       _isPlatformMovingRight = true;
     }
@@ -108,22 +109,22 @@ class GameViewModel extends ChangeNotifier {
     brickViewModel.checkCollision(ballViewModel, gunViewModel);
 
     // Проверяем столкновение с платформой
-    bool isColliding = ballViewModel.ballRect.overlaps(platformViewModel.rect);
-    if (isColliding) {
-      applyPlatformBounce();
-    }
+    // bool isColliding = ballViewModel.ballRect.overlaps(platformViewModel.rect);
+    // if (isColliding) {
+    //   applyPlatformBounce();
+    // }
   }
 
-  void applyPlatformBounce() {
-    if (_isPlatformMovingLeft &&
-        ballViewModel.xDirection == BallDirection.right) {
-      ballViewModel.xDirection = BallDirection.left;
-    } else if (_isPlatformMovingRight &&
-        ballViewModel.xDirection == BallDirection.left) {
-      ballViewModel.xDirection = BallDirection.right;
-    }
-    ballViewModel.yDirection = BallDirection.up;
-  }
+  // void applyPlatformBounce() {
+  //   if (_isPlatformMovingLeft &&
+  //       ballViewModel.xDirection == BallDirection.right) {
+  //     ballViewModel.xDirection = BallDirection.left;
+  //   } else if (_isPlatformMovingRight &&
+  //       ballViewModel.xDirection == BallDirection.left) {
+  //     ballViewModel.xDirection = BallDirection.right;
+  //   }
+  //   ballViewModel.yDirection = BallDirection.up;
+  // }
 
   void onActionButtonPressed() {
     switch (_gameState) {

@@ -84,7 +84,7 @@ class BrickViewModel extends ChangeNotifier {
           _explodeBrick(brickRect, brick.color);
           _bricks[brickIndex].type = BrickType.normal;
           _bricks[brickIndex].color = Colors.white;
-          _invertBallY(ball);
+          // _invertBallY(ball);
           notifyListeners();
           break;
         } else {
@@ -119,9 +119,7 @@ class BrickViewModel extends ChangeNotifier {
   }
 
   void _invertBallY(BallViewModel ball) {
-    ball.yDirection = ball.yDirection == BallDirection.down
-        ? BallDirection.up
-        : BallDirection.down;
+    ball.velocityY = -ball.velocityY;
   }
 
   void _explodeBrick(Rect brickRect, Color color) {
