@@ -201,9 +201,9 @@ class GameViewModel extends ChangeNotifier {
   void startNewGame() {
     log('🎮 Starting new game');
     ballViewModel.reset();
+    ballViewModel.launch();
     _gameState = GameState.playing;
     _ticker.start();
-    // gunViewModel.shoot();
     notifyListeners();
   }
 

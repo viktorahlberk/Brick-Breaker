@@ -10,9 +10,9 @@ class BallViewModel extends ChangeNotifier {
   final BallModel _model;
   final Offset _startingPosition;
 
-  double velocityX = 0.1;
-  double velocityY = 0.1;
-  double speed = 100; // px/sec
+  double velocityX = 0.0;
+  double velocityY = 0.0;
+  double speed = 200; // px/sec
   bool _isBelowScreen = false;
   bool get isBelowScreen => _isBelowScreen;
 
@@ -106,10 +106,28 @@ class BallViewModel extends ChangeNotifier {
     _model.trail.add(_model.position);
   }
 
+  void launch() {
+    const minAngle = -150 * pi / 180;
+    const maxAngle = -30 * pi / 180;
+
+    final angle = minAngle + Random().nextDouble() * (maxAngle - minAngle);
+
+    velocityX = speed * cos(angle);
+    velocityY = speed * sin(angle);
+  }
+
+  // void reset() {
+  //   _isBelowScreen = false;
+  //   _model.trail.clear();
+  //   _model.position = _startingPosition;
+  //   notifyListeners();
+  // }
   void reset() {
     _isBelowScreen = false;
     _model.trail.clear();
     _model.position = _startingPosition;
-    notifyListeners();
+
+    velocityX = 0;
+    velocityY = 0;
   }
 }
