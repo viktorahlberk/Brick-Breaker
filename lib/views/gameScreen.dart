@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bouncer/inputController.dart';
 import 'package:bouncer/viewModels/gameViewModel.dart';
 import 'package:bouncer/views/ballWidget.dart';
+import 'package:bouncer/views/bonusWidget.dart';
 import 'package:bouncer/views/brickWidget.dart';
 import 'package:bouncer/views/bulletLayerView.dart';
 import 'package:bouncer/views/gunWidget.dart';
@@ -74,7 +75,7 @@ class GameScreen extends StatelessWidget {
               const BulletLayerView(),
               ...game.brickViewModel.bricks
                   .map((brick) => BrickWidget(model: brick)),
-
+              ...game.bonusManager.bonuses.map((b) => BonusWidget(bonus: b)),
               CustomPaint(
                 painter: ParticlePainter(game.particleSystem),
                 size: Size.infinite,

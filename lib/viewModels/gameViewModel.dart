@@ -1,10 +1,13 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as dev;
 import 'dart:io';
+import 'dart:math';
 import 'package:bouncer/gameSettings.dart';
 import 'package:bouncer/inputController.dart';
+import 'package:bouncer/models/bonusModel.dart';
 import 'package:bouncer/models/brickModel.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
+import 'package:bouncer/viewModels/bonusManager.dart';
 import 'package:bouncer/viewModels/brickViewModel.dart';
 import 'package:bouncer/viewModels/gunViewModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
@@ -28,6 +31,7 @@ class GameViewModel extends ChangeNotifier {
   late ParticleSystem particleSystem;
   late GunViewModel gunViewModel;
   final InputController input;
+  BonusManager bonusManager = BonusManager();
 
   late final Ticker _ticker;
   GameState _gameState = GameState.initial;
@@ -51,7 +55,7 @@ class GameViewModel extends ChangeNotifier {
     _ticker = Ticker(_onTick);
     if (_platform == 'android') {
       // Инициализация для веба, если нужно
-      log('🎮 Game initialized for android');
+      dev.log('🎮 Game initialized for android');
       if (_gameSettings.control == Control.sensor) {
         accelometerSubscription = accelerometerEventStream().listen((event) {
           // if (event.y < -1) {
@@ -67,7 +71,32 @@ class GameViewModel extends ChangeNotifier {
         });
       }
     } else {
-      log('🎮 Game initialized for web');
+      dev.log('🎮 Game initialized for web');
+    }
+  }
+
+  void activateBonus(BonusType type) {
+    switch (type) {
+      // case BonusType.gun:
+      //   gunViewModel.enable(duration: Duration(seconds: 10));
+      //   break;
+
+      // case BonusType.slowMotion:
+      //   input.setSlowMotion(0.4);
+      //   Future.delayed(
+      //     Duration(seconds: 5),
+      //     () => input.setSlowMotion(1.0),
+      //   );
+      //   break;
+
+//TODO Check ! why scale changes back to normal too fast? oO
+      case BonusType.bigPlatform:
+        platformViewModel.setScale(1.5);
+        Future.delayed(
+          Duration(seconds: 8),
+          () => platformViewModel.normalizeScale(),
+        );
+        break;
     }
   }
 
@@ -88,6 +117,12 @@ class GameViewModel extends ChangeNotifier {
     if (input.paused || _gameState != GameState.playing) return;
 
     final scaledDt = dt * input.timeScale;
+
+    bonusManager.update(scaledDt);
+    bonusManager.checkCollect(
+      platformViewModel,
+      activateBonus,
+    );
 
     // ===== INPUT → AXIS =====
     platformViewModel.setInput(input.axis);
@@ -140,6 +175,7 @@ class GameViewModel extends ChangeNotifier {
             Offset(brickRect.center.dx, brickRect.center.dy),
             brick.color,
           );
+          tryBonus(brickRect.center);
         } else if (result.destroyed) {
           // Normal brick — удаляем
           final removedBrick =
@@ -148,6 +184,7 @@ class GameViewModel extends ChangeNotifier {
             Offset(brickRect.center.dx, brickRect.center.dy),
             removedBrick.color,
           );
+          tryBonus(brickRect.center);
         }
 
         // Инвертируем Y мячика
@@ -170,6 +207,7 @@ class GameViewModel extends ChangeNotifier {
             Offset(brickRect.center.dx, brickRect.center.dy),
             brick.color,
           );
+          tryBonus(brickRect.center);
         } else if (result.destroyed) {
           // Normal brick — удаляем и пулю
           final removedBrick =
@@ -179,12 +217,22 @@ class GameViewModel extends ChangeNotifier {
             Offset(brickRect.center.dx, brickRect.center.dy),
             removedBrick.color,
           );
+          tryBonus(brickRect.center);
         }
       }
     }
 
     // После всех изменений уведомляем UI
     // if (collisions.isNotEmpty) notifyListeners();
+  }
+
+  tryBonus(Offset brickCenter) {
+    // if (Random().nextDouble() < 0.3) {
+    bonusManager.spawnBonus(
+      type: BonusType.bigPlatform,
+      position: brickCenter,
+    );
+    // }
   }
 
   Future<void> hitStop({
@@ -268,7 +316,7 @@ class GameViewModel extends ChangeNotifier {
   }
 
   void startNewGame() {
-    log('🎮 Starting new game');
+    dev.log('🎮 Starting new game');
     ballViewModel.reset();
     ballViewModel.launch();
     // brickViewModel.initLevel();
@@ -278,14 +326,14 @@ class GameViewModel extends ChangeNotifier {
   }
 
   void resumeGame() {
-    log('🎮 Resuming game');
+    dev.log('🎮 Resuming game');
     _gameState = GameState.playing;
     _ticker.start();
     notifyListeners();
   }
 
   void pauseGame() {
-    log('🎮 Pausing game');
+    dev.log('🎮 Pausing game');
     _ticker.stop();
     _gameState = GameState.paused;
     notifyListeners();

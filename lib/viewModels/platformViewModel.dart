@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class PlatformViewModel extends ChangeNotifier {
   final PlatformModel _model;
+  bool _scaleChanged = false;
 
   /// Максимальная скорость платформы (px/sec)
   final double speed = 600;
@@ -30,6 +31,17 @@ class PlatformViewModel extends ChangeNotifier {
     velocityX = axis.clamp(-1.0, 1.0) * speed;
   }
 
+  void setScale(double value) {
+    if (_scaleChanged) return;
+    _scaleChanged = true;
+    _model.width = width * value;
+  }
+
+  void normalizeScale() {
+    if (!_scaleChanged) return;
+    _scaleChanged = false;
+    _model.width = _model.initialWidth;
+  }
   // ====== update ======
 
   void update(double dt) {

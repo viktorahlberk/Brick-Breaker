@@ -169,13 +169,14 @@ class BrickViewModel extends ChangeNotifier {
   //   ball.velocityY = -ball.velocityY;
   // }
 
-  void _explodeBrick(Rect brickRect, Color color) {
-    final center = Offset(
-      brickRect.left + brickRect.width / 2,
-      brickRect.top + brickRect.height / 2,
-    );
-    particleSystem.addBrickExplosion(center, color);
-  }
+  // void _explodeBrick(Rect brickRect, Color color) {
+
+  //   final center = Offset(
+  //     brickRect.left + brickRect.width / 2,
+  //     brickRect.top + brickRect.height / 2,
+  //   );
+  //   particleSystem.addBrickExplosion(center, color);
+  // }
 
   Rect _brickToRect(BrickModel model, Size screenSize) {
     final pixelX = (model.x + 1) * 0.5 * screenSize.width;

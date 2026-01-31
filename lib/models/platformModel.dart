@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 class PlatformModel {
   final Size screenSize;
-  // late double x;
-  // late double y;
   late Offset position;
   late double width;
   final double height = 5.0;
@@ -17,15 +15,5 @@ class PlatformModel {
   Rect get rect =>
       Rect.fromCenter(center: position, width: width, height: height);
 
-  void moveLeft() {
-    if (position.dx > width / 2) {
-      position = Offset(position.dx - speed, position.dy);
-    }
-  }
-
-  void moveRight() {
-    if (position.dx < screenSize.width - width / 2) {
-      position = Offset(position.dx + speed, position.dy);
-    }
-  }
+  double get initialWidth => screenSize.width * 0.125;
 }
