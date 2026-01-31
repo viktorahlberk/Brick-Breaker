@@ -3,8 +3,8 @@ import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Gunwidget extends StatelessWidget {
-  const Gunwidget({super.key});
+class GunWidget extends StatelessWidget {
+  const GunWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class Gunwidget extends StatelessWidget {
         builder: (__, gvmodel, pvmodel, _) {
       // gvmodel.startShooting(pvmodel.x - gvmodel.width);
       return Positioned(
-        left: pvmodel.position.dx - gvmodel.width,
+        left: pvmodel.position.dx - gvmodel.width / 2,
         top: pvmodel.position.dy - gvmodel.height,
         child: Container(
           width: gvmodel.width,

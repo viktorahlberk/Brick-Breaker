@@ -1,8 +1,9 @@
+import 'package:bouncer/inputController.dart';
 import 'package:bouncer/viewModels/gunViewModel.dart';
 import 'package:bouncer/views/gameScreen.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
 import 'package:bouncer/viewModels/brickViewModel.dart';
-import 'package:bouncer/viewModels/gameScreenViewModel.dart';
+import 'package:bouncer/viewModels/gameViewModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class MainApp extends StatelessWidget {
           PlatformViewModel platform = PlatformViewModel(size);
           BrickViewModel bricks = BrickViewModel(particleSystem: ps);
           GunViewModel gun = GunViewModel(platform);
+          InputController input = InputController();
 
           return MultiProvider(
             providers: [
@@ -40,6 +42,7 @@ class MainApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) => platform),
               ChangeNotifierProvider(create: (_) => bricks),
               ChangeNotifierProvider(create: (_) => gun),
+              ChangeNotifierProvider(create: (_) => input),
               ChangeNotifierProxyProvider3(
                 create: (_) {
                   return GameViewModel(
@@ -48,6 +51,7 @@ class MainApp extends StatelessWidget {
                     brickViewModel: bricks,
                     particleSystem: ps,
                     gunViewModel: gun,
+                    input: input,
                   );
                 },
                 update: (BuildContext context,

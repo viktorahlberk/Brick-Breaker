@@ -35,8 +35,6 @@ class BallViewModel extends ChangeNotifier {
       _model.position.dx + velocityX * dt,
       _model.position.dy + velocityY * dt,
     );
-
-    debugPrint(model.position.toString());
   }
 
   void _handleWallCollision() {

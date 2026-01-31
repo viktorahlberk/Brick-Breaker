@@ -1,6 +1,7 @@
 import 'dart:developer';
 
-import 'package:bouncer/viewModels/gameScreenViewModel.dart';
+import 'package:bouncer/inputController.dart';
+import 'package:bouncer/viewModels/gameViewModel.dart';
 import 'package:bouncer/views/ballWidget.dart';
 import 'package:bouncer/views/brickWidget.dart';
 import 'package:bouncer/views/bulletLayerView.dart';
@@ -16,50 +17,75 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gameViewModel = context.watch<GameViewModel>();
+    final game = context.watch<GameViewModel>();
+    final input = context.watch<InputController>();
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: GestureDetector(
         onPanUpdate: (details) {
-          gameViewModel.handleTapMoving(details);
+          final x = details.localPosition.dx;
+          final platformX = game.platformViewModel.position.dx;
+
+          if (x < platformX) {
+            input.pressLeft();
+          } else {
+            input.pressRight();
+          }
         },
         onPanEnd: (_) {
-          gameViewModel.stopPlatformMovement();
+          input.releaseLeft();
+          input.releaseRight();
         },
         child: Focus(
           autofocus: true,
           onKeyEvent: (FocusNode node, KeyEvent event) {
-            final keyLabel = event.logicalKey.keyLabel.toLowerCase();
+            final key = event.logicalKey.keyLabel.toLowerCase();
+
             if (event is KeyDownEvent) {
-              gameViewModel.onKeyDown(keyLabel);
-              return KeyEventResult.handled;
-            } else if (event is KeyUpEvent) {
-              gameViewModel.onKeyUp(keyLabel);
-              return KeyEventResult.handled;
+              if (key == 'a' || key == 'arrowleft') {
+                input.pressLeft();
+                return KeyEventResult.handled;
+              }
+              if (key == 'd' || key == 'arrowright') {
+                input.pressRight();
+                return KeyEventResult.handled;
+              }
             }
-            return KeyEventResult.ignored;
+
+            if (event is KeyUpEvent) {
+              if (key == 'a' || key == 'arrowleft') {
+                input.releaseLeft();
+                return KeyEventResult.handled;
+              }
+              if (key == 'd' || key == 'arrowright') {
+                input.releaseRight();
+                return KeyEventResult.handled;
+              }
+            }
+
+            return KeyEventResult.handled;
           },
           child: Stack(
             children: [
-              const Gunwidget(),
+              const GunWidget(),
               const BallWidget(),
               const PlatformWidget(),
               const BulletLayerView(),
-              ...gameViewModel.brickViewModel.bricks
+              ...game.brickViewModel.bricks
                   .map((brick) => BrickWidget(model: brick)),
 
               CustomPaint(
-                painter: ParticlePainter(gameViewModel.particleSystem),
+                painter: ParticlePainter(game.particleSystem),
                 size: Size.infinite,
               ),
 
-              if (gameViewModel.shouldShowActionButton)
+              if (game.shouldShowActionButton)
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (gameViewModel.gameState == GameState.gameOver)
+                      if (game.gameState == GameState.gameOver)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20),
                           child: Text(
@@ -72,10 +98,10 @@ class GameScreen extends StatelessWidget {
                           ),
                         ),
                       ElevatedButton.icon(
-                        onPressed: gameViewModel.onActionButtonPressed,
-                        icon: Icon(gameViewModel.getButtonIcon(), size: 30),
+                        onPressed: game.onActionButtonPressed,
+                        icon: Icon(game.getButtonIcon(), size: 30),
                         label: Text(
-                          gameViewModel.getButtonText(),
+                          game.getButtonText(),
                           style: TextStyle(fontSize: 18),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -90,12 +116,12 @@ class GameScreen extends StatelessWidget {
                 ),
 
               // Кнопка паузы во время игры
-              if (gameViewModel.gameState == GameState.playing)
+              if (game.gameState == GameState.playing)
                 Positioned(
                   top: 50,
                   right: 20,
                   child: IconButton(
-                    onPressed: gameViewModel.pauseGame,
+                    onPressed: game.pauseGame,
                     icon: Icon(
                       Icons.pause,
                       color: Colors.white,

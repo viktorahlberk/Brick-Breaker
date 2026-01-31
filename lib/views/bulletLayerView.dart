@@ -27,9 +27,6 @@ class BulletPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    log('paint. bullets: isEmpty? ${bullets.isEmpty}');
-    // final paint = Paint()..color = Colors.yellow;
-
     for (final bullet in bullets) {
       canvas.drawCircle(
         bullet.position,

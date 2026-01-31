@@ -4,7 +4,7 @@ import 'package:bouncer/models/bulletModel.dart';
 import 'package:flutter/material.dart';
 
 class GunModel {
-  double width = 3.0;
+  double width = 10.0;
   double height = 30.0;
   Color color = Colors.red;
   double shootingSpeed = 1.0;

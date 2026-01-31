@@ -1,4 +1,4 @@
-import 'package:bouncer/viewModels/gameScreenViewModel.dart';
+import 'package:bouncer/viewModels/gameViewModel.dart';
 import 'package:flutter/material.dart';
 
 class GameStateWidget extends StatelessWidget {
