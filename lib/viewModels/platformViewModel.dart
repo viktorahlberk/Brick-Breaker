@@ -2,9 +2,13 @@ import 'package:bouncer/models/platformModel.dart';
 import 'package:flutter/material.dart';
 
 class PlatformViewModel extends ChangeNotifier {
-  final PlatformModel _model;
+  final PlatformModel _platformModel;
+  Size screenSize;
   Offset _position;
-  bool _scaleChanged = false;
+  double baseWidth;
+  double width;
+  double scale = 1;
+  bool scaled = false;
 
   /// Максимальная скорость платформы (px/sec)
   final double speed = 600;
@@ -12,24 +16,23 @@ class PlatformViewModel extends ChangeNotifier {
   /// Текущая горизонтальная скорость
   double velocityX = 0;
 
-  PlatformViewModel(Size screenSize)
-      : _model = PlatformModel(screenSize: screenSize),
-        _position = Offset(screenSize.width / 2, screenSize.height * 0.9);
+  PlatformViewModel(this.screenSize)
+      : _platformModel = PlatformModel(),
+        _position = Offset(screenSize.width / 2, screenSize.height * 0.9),
+        baseWidth = screenSize.width * 0.2,
+        width = screenSize.width * 0.2;
 
   // ====== getters ======
 
-  double get width => _model.width;
-  double get height => _model.height;
+  // double get baseWidth => _model.baseWidth;
+  double get height => _platformModel.height;
   Offset get position => _position;
-  Rect get rect =>
-      Rect.fromCenter(center: position, width: width, height: height);
+  Rect get rect => Rect.fromCenter(
+        center: position,
+        width: baseWidth * scale,
+        height: height,
+      );
 
-  // ====== input ======
-
-  /// axis ∈ [-1 .. 1]
-  /// -1 — влево
-  ///  0 — стоим
-  ///  1 — вправо
   void setInput(double axis) {
     velocityX = axis.clamp(-1.0, 1.0) * speed;
   }
@@ -47,20 +50,19 @@ class PlatformViewModel extends ChangeNotifier {
     final move = delta.clamp(-step, step);
 
     _position = Offset(_position.dx + move, _position.dy);
-    _clampToScreen(_model.screenSize.width);
+    _clampToScreen(screenSize.width);
     notifyListeners();
   }
 
   void setScale(double value) {
-    if (_scaleChanged) return;
-    _scaleChanged = true;
-    _model.width = width * value;
+    scale = value;
+    width = baseWidth * value;
   }
 
   void normalizeScale() {
-    if (!_scaleChanged) return;
-    _scaleChanged = false;
-    _model.width = _model.initialWidth;
+    width = baseWidth;
+    scale = 1;
+    scaled = false;
   }
   // ====== update ======
 
@@ -70,7 +72,7 @@ class PlatformViewModel extends ChangeNotifier {
       _position.dy,
     );
 
-    _clampToScreen(_model.screenSize.width);
+    _clampToScreen(screenSize.width);
     notifyListeners();
   }
 

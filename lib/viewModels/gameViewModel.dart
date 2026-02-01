@@ -1,5 +1,6 @@
 import 'dart:developer' as dev;
 import 'dart:io';
+import 'package:bouncer/bonuses/bonusType.dart';
 import 'package:bouncer/collisionManager.dart';
 import 'package:bouncer/inputController.dart';
 import 'package:bouncer/levelManager.dart';
@@ -88,6 +89,35 @@ class GameViewModel extends ChangeNotifier {
     gunViewModel.update(scaledDt);
     particleSystem.update(scaledDt);
     bonusManager.update(scaledDt);
+    bonusManager.checkCollect(platformViewModel, activateBonus);
+  }
+
+  void activateBonus(BonusType type) {
+    switch (type) {
+      case BonusType.bigPlatform:
+        if (platformViewModel.scaled) {
+          return;
+        }
+        platformViewModel.setScale(1.5);
+        platformViewModel.scaled = true;
+
+        // таймер, чтобы через duration вернуть платформу к норме
+        Future.delayed(Duration(seconds: 8), () {
+          platformViewModel.normalizeScale();
+        });
+        break;
+
+      // case BonusType.platformGun:
+      //   gunViewModel.enable(duration: Duration(seconds: 10));
+      //   break;
+
+      // case BonusType.slowMotion:
+      //   input.setSlowMotion(0.4);
+      //   Future.delayed(Duration(seconds: 5), () {
+      //     input.setSlowMotion(1.0);
+      //   });
+      //   break;
+    }
   }
 
   double _calculateDelta(Duration elapsed) {
