@@ -7,6 +7,7 @@ import 'package:bouncer/views/bonusWidget.dart';
 import 'package:bouncer/views/brickWidget.dart';
 import 'package:bouncer/views/bulletLayerView.dart';
 import 'package:bouncer/views/gunWidget.dart';
+import 'package:bouncer/views/levelCompleteScreen.dart.dart';
 import 'package:bouncer/views/platformWidget.dart';
 import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,16 @@ class GameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final game = context.watch<GameViewModel>();
     final input = context.watch<InputController>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (game.gameState == GameState.levelCompleted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => const LevelCompleteScreen(),
+          ),
+        );
+      }
+    });
 
     return Scaffold(
       backgroundColor: Colors.black,

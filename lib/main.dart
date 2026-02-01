@@ -6,6 +6,7 @@ import 'package:bouncer/viewModels/brickViewModel.dart';
 import 'package:bouncer/viewModels/gameViewModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:bouncer/particles.dart';
+import 'package:bouncer/views/levelCompleteScreen.dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,8 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // showPerformanceOverlay: true,
+      // routes: ['complete',()=>LevelCompleteScreen()],
+      // initialRoute: LevelCompleteScreen(),
       home: LayoutBuilder(
         builder: (context, constraints) {
           final size = Size(constraints.maxWidth, constraints.maxHeight);
@@ -38,41 +41,40 @@ class MainApp extends StatelessWidget {
           GunViewModel gun = GunViewModel(platform);
           InputController input = InputController();
 
-          return MultiProvider(
-            providers: [
-              ChangeNotifierProvider(create: (_) => ball),
-              ChangeNotifierProvider(create: (_) => platform),
-              ChangeNotifierProvider(create: (_) => bricks),
-              ChangeNotifierProvider(create: (_) => gun),
-              ChangeNotifierProvider(create: (_) => input),
-              ChangeNotifierProxyProvider3(
-                create: (_) {
-                  return GameViewModel(
+          return MultiProvider(providers: [
+            ChangeNotifierProvider(create: (_) => ball),
+            ChangeNotifierProvider(create: (_) => platform),
+            ChangeNotifierProvider(create: (_) => bricks),
+            ChangeNotifierProvider(create: (_) => gun),
+            ChangeNotifierProvider(create: (_) => input),
+            ChangeNotifierProxyProvider3(
+              create: (_) {
+                return GameViewModel(
+                  ballViewModel: ball,
+                  platformViewModel: platform,
+                  brickViewModel: bricks,
+                  particleSystem: ps,
+                  gunViewModel: gun,
+                  input: input,
+                );
+              },
+              update: (BuildContext context,
+                  BallViewModel ball,
+                  PlatformViewModel platform,
+                  BrickViewModel bricks,
+                  gameViewModel) {
+                gameViewModel!.updateDependencies(
                     ballViewModel: ball,
                     platformViewModel: platform,
                     brickViewModel: bricks,
                     particleSystem: ps,
-                    gunViewModel: gun,
-                    input: input,
-                  );
-                },
-                update: (BuildContext context,
-                    BallViewModel ball,
-                    PlatformViewModel platform,
-                    BrickViewModel bricks,
-                    gameViewModel) {
-                  gameViewModel!.updateDependencies(
-                      ballViewModel: ball,
-                      platformViewModel: platform,
-                      brickViewModel: bricks,
-                      particleSystem: ps,
-                      gunViewModel: gun);
-                  return gameViewModel;
-                },
-              ),
-            ],
-            child: GameScreen(),
-          );
+                    gunViewModel: gun);
+                return gameViewModel;
+              },
+            ),
+          ], child: GameScreen());
+
+          // child: LevelCompleteScreen());
         },
       ),
     );

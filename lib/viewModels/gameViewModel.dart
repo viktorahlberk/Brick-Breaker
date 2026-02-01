@@ -21,6 +21,7 @@ enum GameState {
   initial,
   playing,
   paused,
+  levelCompleted,
   gameOver,
 }
 
@@ -31,15 +32,15 @@ class GameViewModel extends ChangeNotifier {
   late ParticleSystem particleSystem;
   late GunViewModel gunViewModel;
   final InputController input;
-  BonusManager bonusManager = BonusManager();
+  final BonusManager bonusManager = BonusManager();
 
   late final Ticker _ticker;
   GameState _gameState = GameState.initial;
   GameState get gameState => _gameState;
   bool get shouldShowActionButton => _gameState != GameState.playing;
   final _platform = kIsWeb ? 'web' : Platform.operatingSystem;
-  StreamSubscription<AccelerometerEvent>? accelometerSubscription;
-  Gamesettings _gameSettings = Gamesettings();
+  // StreamSubscription<AccelerometerEvent>? accelometerSubscription;
+  // Gamesettings _gameSettings = Gamesettings();
   Duration? _lastTick;
   bool _hitStopActive = false;
 
@@ -54,24 +55,25 @@ class GameViewModel extends ChangeNotifier {
     // input.addListener(_onInputChanged);
     _ticker = Ticker(_onTick);
     if (_platform == 'android') {
-      // Инициализация для веба, если нужно
+      input.inputType = InputType.touch;
       dev.log('🎮 Game initialized for android');
-      if (_gameSettings.control == Control.sensor) {
-        accelometerSubscription = accelerometerEventStream().listen((event) {
-          // if (event.y < -1) {
-          //   _isPlatformMovingLeft = true;
-          //   _isPlatformMovingRight = false;
-          // } else if (event.y > 1) {
-          //   _isPlatformMovingLeft = false;
-          //   _isPlatformMovingRight = true;
-          // } else {
-          //   _isPlatformMovingLeft = false;
-          //   _isPlatformMovingRight = false;
-          // }
-        });
-      }
+      // if (_gameSettings.control == Control.sensor) {
+      // accelometerSubscription = accelerometerEventStream().listen((event) {
+      // if (event.y < -1) {
+      //   _isPlatformMovingLeft = true;
+      //   _isPlatformMovingRight = false;
+      // } else if (event.y > 1) {
+      //   _isPlatformMovingLeft = false;
+      //   _isPlatformMovingRight = true;
+      // } else {
+      //   _isPlatformMovingLeft = false;
+      //   _isPlatformMovingRight = false;
+      // }
+      // });
+      // }
     } else {
       dev.log('🎮 Game initialized for web');
+      input.inputType = InputType.key;
     }
   }
 
@@ -143,8 +145,8 @@ class GameViewModel extends ChangeNotifier {
     // ===== COLLISIONS =====
     checkAllCollisions();
 
-    // ===== GAME OVER =====
     gameOverCheck();
+    levelDoneCheck();
     if (_gameState == GameState.gameOver) {
       _ticker.stop();
       notifyListeners(); // UI должен узнать
@@ -156,10 +158,10 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void checkAllCollisions() async {
+  void checkAllCollisions() {
     // Получаем все столкновения
     final collisions =
-        brickViewModel.checkCollision(ballViewModel, gunViewModel);
+        brickViewModel.checkCollisions(ballViewModel, gunViewModel);
 
     for (final result in collisions) {
       if (result.brickIndex == null) continue;
@@ -286,6 +288,8 @@ class GameViewModel extends ChangeNotifier {
         return Icons.refresh;
       case GameState.playing:
         return Icons.play_arrow;
+      case GameState.levelCompleted:
+        return Icons.play_arrow;
     }
   }
 
@@ -298,6 +302,8 @@ class GameViewModel extends ChangeNotifier {
       case GameState.gameOver:
         return 'ИГРАТЬ СНОВА';
       case GameState.playing:
+        return ''; // Кнопка скрыта
+      case GameState.levelCompleted:
         return ''; // Кнопка скрыта
     }
   }
@@ -317,8 +323,18 @@ class GameViewModel extends ChangeNotifier {
   }
 
   void gameOverCheck() {
-    if (ballViewModel.isBelowScreen || brickViewModel.isEmpty) {
+    if (ballViewModel.isBelowScreen) {
       _gameState = GameState.gameOver;
+    }
+  }
+
+  void levelDoneCheck() {
+    if (brickViewModel.isEmpty) {
+      input.setSlowMotion(0.3);
+      Future.delayed(
+          Duration(seconds: 2),
+          () =>
+              {input.resetTimeScale(), _gameState = GameState.levelCompleted});
     }
   }
 
@@ -349,7 +365,7 @@ class GameViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _ticker.dispose();
-    accelometerSubscription?.cancel();
+    // accelometerSubscription?.cancel();
     super.dispose();
   }
 }

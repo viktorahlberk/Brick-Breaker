@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:bouncer/models/brickModel.dart';
@@ -13,24 +14,25 @@ class BrickViewModel extends ChangeNotifier {
   BrickViewModel({required this.particleSystem}) {
     initLevel();
   }
-  List<BrickModel> get bricks => _bricks;
 
-  // Константы размещения
-  static const int bricksQuantity = 23;
+  static const int bricksQuantity = 25;
   static const int maxBricksPerRow = 7;
-  static const double brickWidth = 0.23;
-  static const double brickHeight = 0.09;
-  static const double brickGap = 0.01;
+  static const double brickWidth = 0.2;
+  static const double brickHeight = 0.05;
+  static const double brickGap = 0.03; //Ширина между рядами
   static const double sideMargin = 0.1;
   static const double availableSpace = 2;
 
+  List<BrickModel> get bricks => _bricks;
+  bool get isEmpty => _bricks.isEmpty;
+
   void initLevel() {
     _bricks.clear();
-    createBricks();
+    _createBricks();
     notifyListeners();
   }
 
-  void createBricks() {
+  void _createBricks() {
     if (bricksQuantity <= 0) return;
 
     // Определяем количество рядов и колонок
@@ -67,54 +69,12 @@ class BrickViewModel extends ChangeNotifier {
       }
     }
 
-    print('Created $bricksCreated bricks in $rows rows');
+    log('Created $bricksCreated bricks in $rows rows');
   }
 
-  List<CollisionResult> checkCollision(
+  List<CollisionResult> checkCollisions(
       BallViewModel ball, GunViewModel gunViewModel) {
     List<CollisionResult> results = [];
-    // for (int brickIndex = 0; brickIndex < _bricks.length; brickIndex++) {
-    //   final brick = _bricks[brickIndex];
-    //   final brickRect = _brickToRect(brick, ball.screenSize);
-    //   final ballRect = ball.ballRect;
-
-    //   if (ballRect.overlaps(brickRect)) {
-    //     if (brick.type == BrickType.hard) {
-    //       _explodeBrick(brickRect, brick.color);
-    //       _bricks[brickIndex].type = BrickType.normal;
-    //       _bricks[brickIndex].color = Colors.white;
-    //       // _invertBallY(ball);
-    //       notifyListeners();
-    //       break;
-    //     } else {
-    //       final removedBrick = _bricks.removeAt(brickIndex);
-    //       _explodeBrick(brickRect, removedBrick.color);
-    //       _invertBallY(ball);
-    //       notifyListeners();
-    //       break;
-    //     }
-    //   }
-
-    //   ///Checking for bullets collide with bricks.
-    //   for (int i = 0; i < gunViewModel.bulletsList.length; i++) {
-    //     if (gunViewModel.bulletsList[i].bulletRect.overlaps(brickRect)) {
-    //       if (brick.type == BrickType.hard) {
-    //         gunViewModel.bulletsList.removeAt(i);
-    //         _explodeBrick(brickRect, brick.color);
-    //         _bricks[brickIndex].type = BrickType.normal;
-    //         _bricks[brickIndex].color = Colors.white;
-    //         notifyListeners();
-    //         break;
-    //       } else {
-    //         final removedBrick = _bricks.removeAt(brickIndex);
-    //         gunViewModel.bulletsList.removeAt(i);
-    //         _explodeBrick(brickRect, removedBrick.color);
-    //         notifyListeners();
-    //         break;
-    //       }
-    //     }
-    //   }
-    // }
     for (int brickIndex = 0; brickIndex < _bricks.length; brickIndex++) {
       final brick = _bricks[brickIndex];
       final brickRect = _brickToRect(brick, ball.screenSize);
@@ -135,7 +95,6 @@ class BrickViewModel extends ChangeNotifier {
             isHardBrick: false,
           ));
         }
-        // НЕ делаем break, проверяем другие кирпичи
       }
 
       // === Collision with bullets ===
@@ -165,19 +124,6 @@ class BrickViewModel extends ChangeNotifier {
     return results;
   }
 
-  // void _invertBallY(BallViewModel ball) {
-  //   ball.velocityY = -ball.velocityY;
-  // }
-
-  // void _explodeBrick(Rect brickRect, Color color) {
-
-  //   final center = Offset(
-  //     brickRect.left + brickRect.width / 2,
-  //     brickRect.top + brickRect.height / 2,
-  //   );
-  //   particleSystem.addBrickExplosion(center, color);
-  // }
-
   Rect _brickToRect(BrickModel model, Size screenSize) {
     final pixelX = (model.x + 1) * 0.5 * screenSize.width;
     final pixelY = (model.y + 1) * 0.5 * screenSize.height;
@@ -196,8 +142,6 @@ class BrickViewModel extends ChangeNotifier {
   //     random.nextInt(256),
   //   );
   // }
-
-  bool get isEmpty => _bricks.isEmpty;
 }
 
 class CollisionResult {
