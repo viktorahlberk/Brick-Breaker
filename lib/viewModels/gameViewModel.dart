@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer' as dev;
 import 'dart:io';
 import 'dart:math';
-import 'package:bouncer/gameSettings.dart';
+import 'package:bouncer/views/gameSettings.dart';
 import 'package:bouncer/inputController.dart';
 import 'package:bouncer/models/bonusModel.dart';
 import 'package:bouncer/models/brickModel.dart';
@@ -342,7 +342,6 @@ class GameViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _ticker.dispose();
-    // input.removeListener(_onInputChanged);
     accelometerSubscription?.cancel();
     super.dispose();
   }

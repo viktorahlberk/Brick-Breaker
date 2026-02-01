@@ -39,5 +39,6 @@ class BulletPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant BulletPainter oldDelegate) {
     return true;
+    // return oldDelegate.bullets != bullets;
   }
 }

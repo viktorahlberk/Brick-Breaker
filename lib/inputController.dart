@@ -9,7 +9,7 @@ class InputController extends ChangeNotifier {
   double get axis => _axis;
 
   // time
-  double _timeScale = 1.0;
+  double _timeScale = 2.0;
   double get timeScale => _timeScale;
 
   bool _paused = false;

@@ -3,7 +3,7 @@ import 'package:bouncer/models/ballModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:flutter/material.dart';
 
-enum BallDirection { up, down, left, right }
+// enum BallDirection { up, down, left, right }
 
 class BallViewModel extends ChangeNotifier {
   final Size screenSize;
@@ -18,7 +18,7 @@ class BallViewModel extends ChangeNotifier {
 
   BallViewModel({required this.screenSize})
       : _startingPosition =
-            Offset(screenSize.width / 2, screenSize.height * 0.95),
+            Offset(screenSize.width / 2, screenSize.height * 0.90),
         _model = BallModel(
             position: Offset(screenSize.width / 2, screenSize.height * 0.95));
 
