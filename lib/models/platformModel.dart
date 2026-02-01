@@ -9,7 +9,7 @@ class PlatformModel {
 
   PlatformModel({required this.screenSize}) {
     width = screenSize.width * 0.125;
-    position = Offset(screenSize.width / 2, screenSize.height * 0.97);
+    position = Offset(screenSize.width / 2, screenSize.height * 0.7);
   }
 
   Rect get rect =>
