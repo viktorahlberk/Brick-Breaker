@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:developer' as dev;
 import 'dart:io';
 import 'dart:math';
+import 'package:bouncer/collisionManager.dart';
 import 'package:bouncer/gameSettings.dart';
 import 'package:bouncer/inputController.dart';
-import 'package:bouncer/models/bonusModel.dart';
+import 'package:bouncer/levelManager.dart';
+// import 'package:bouncer/models/bonusModel.dart';
 import 'package:bouncer/models/brickModel.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
-import 'package:bouncer/viewModels/bonusManager.dart';
+import 'package:bouncer/bonuses/bonusManager.dart';
 import 'package:bouncer/viewModels/brickViewModel.dart';
 import 'package:bouncer/viewModels/gunViewModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
@@ -32,7 +34,10 @@ class GameViewModel extends ChangeNotifier {
   late ParticleSystem particleSystem;
   late GunViewModel gunViewModel;
   final InputController input;
-  final BonusManager bonusManager = BonusManager();
+
+  final CollisionManager collisionManager;
+  final LevelManager levelManager;
+  final BonusManager bonusManager;
 
   late final Ticker _ticker;
   GameState _gameState = GameState.initial;
@@ -42,7 +47,8 @@ class GameViewModel extends ChangeNotifier {
   // StreamSubscription<AccelerometerEvent>? accelometerSubscription;
   // Gamesettings _gameSettings = Gamesettings();
   Duration? _lastTick;
-  bool _hitStopActive = false;
+  // bool _hitStopActive = false;
+  // bool _levelCompletionScheduled = false;
 
   GameViewModel({
     required this.ballViewModel,
@@ -51,6 +57,9 @@ class GameViewModel extends ChangeNotifier {
     required this.particleSystem,
     required this.gunViewModel,
     required this.input,
+    required this.collisionManager,
+    required this.levelManager,
+    required this.bonusManager,
   }) {
     // input.addListener(_onInputChanged);
     _ticker = Ticker(_onTick);
@@ -77,30 +86,30 @@ class GameViewModel extends ChangeNotifier {
     }
   }
 
-  void activateBonus(BonusType type) {
-    switch (type) {
-      // case BonusType.gun:
-      //   gunViewModel.enable(duration: Duration(seconds: 10));
-      //   break;
+  // void activateBonus(BonusType type) {
+  //   switch (type) {
+  // case BonusType.gun:
+  //   gunViewModel.enable(duration: Duration(seconds: 10));
+  //   break;
 
-      // case BonusType.slowMotion:
-      //   input.setSlowMotion(0.4);
-      //   Future.delayed(
-      //     Duration(seconds: 5),
-      //     () => input.setSlowMotion(1.0),
-      //   );
-      //   break;
+  // case BonusType.slowMotion:
+  //   input.setSlowMotion(0.4);
+  //   Future.delayed(
+  //     Duration(seconds: 5),
+  //     () => input.setSlowMotion(1.0),
+  //   );
+  //   break;
 
 //TODO Check ! why scale changes back to normal too fast? oO
-      case BonusType.bigPlatform:
-        platformViewModel.setScale(1.5);
-        Future.delayed(
-          Duration(seconds: 8),
-          () => platformViewModel.normalizeScale(),
-        );
-        break;
-    }
-  }
+  //     case BonusType.bigPlatform:
+  //       platformViewModel.setScale(1.5);
+  //       Future.delayed(
+  //         Duration(seconds: 8),
+  //         () => platformViewModel.normalizeScale(),
+  //       );
+  //       break;
+  //   }
+  // }
 
   void _onTick(Duration elapsed) {
     // ===== deltaTime =====
@@ -120,14 +129,6 @@ class GameViewModel extends ChangeNotifier {
 
     final scaledDt = dt * input.timeScale;
 
-    bonusManager.update(scaledDt);
-    bonusManager.checkCollect(
-      platformViewModel,
-      activateBonus,
-    );
-
-    // ===== INPUT → AXIS =====
-
     // ===== UPDATE SYSTEMS =====
 
     //TODO Make normal behaviour depends input type!!
@@ -141,12 +142,13 @@ class GameViewModel extends ChangeNotifier {
     ballViewModel.updateAndMove(scaledDt, platformViewModel);
     gunViewModel.update(scaledDt);
     particleSystem.update(scaledDt);
-
-    // ===== COLLISIONS =====
-    checkAllCollisions();
+    bonusManager.update(scaledDt);
+    collisionManager.checkCollisions();
 
     gameOverCheck();
-    levelDoneCheck();
+    levelManager.checkLevelCompletion(() {
+      _gameState = GameState.levelCompleted;
+    });
     if (_gameState == GameState.gameOver) {
       _ticker.stop();
       notifyListeners(); // UI должен узнать
@@ -156,109 +158,6 @@ class GameViewModel extends ChangeNotifier {
     // ⚠️ ВАЖНО:
     // notifyListeners здесь вызывается ОДИН раз за тик
     notifyListeners();
-  }
-
-  void checkAllCollisions() {
-    // Получаем все столкновения
-    final collisions =
-        brickViewModel.checkCollisions(ballViewModel, gunViewModel);
-
-    for (final result in collisions) {
-      if (result.brickIndex == null) continue;
-
-      final brick = brickViewModel.bricks[result.brickIndex!];
-      final brickRect = Rect.fromLTWH(
-        (brick.x + 1) * 0.5 * ballViewModel.screenSize.width,
-        (brick.y + 1) * 0.5 * ballViewModel.screenSize.height,
-        brick.width * ballViewModel.screenSize.width * 0.5,
-        brick.height * ballViewModel.screenSize.height * 0.5,
-      );
-
-      // === Столкновение с мячом ===
-      if (result.bulletIndex == null) {
-        if (result.isHardBrick) {
-          // Hard brick — меняем цвет, делаем explosion, не удаляем
-          brick.type = BrickType.normal;
-          brick.color = Colors.white;
-          particleSystem.addBrickExplosion(
-            Offset(brickRect.center.dx, brickRect.center.dy),
-            brick.color,
-          );
-          tryBonus(brickRect.center);
-        } else if (result.destroyed) {
-          // Normal brick — удаляем
-          final removedBrick =
-              brickViewModel.bricks.removeAt(result.brickIndex!);
-          particleSystem.addBrickExplosion(
-            Offset(brickRect.center.dx, brickRect.center.dy),
-            removedBrick.color,
-          );
-          tryBonus(brickRect.center);
-        }
-
-        // Инвертируем Y мячика
-        ballViewModel.velocityY = -ballViewModel.velocityY;
-
-        // Добавляем hit-stop
-        // await hitStop(duration: 0.120);
-      }
-
-      // === Столкновение с пулей ===
-      else {
-        final bullet = gunViewModel.bulletsList[result.bulletIndex!];
-
-        if (result.isHardBrick) {
-          // Hard brick — только цвет меняем, удаляем пулю
-          brick.type = BrickType.normal;
-          brick.color = Colors.white;
-          gunViewModel.bulletsList.remove(bullet);
-          particleSystem.addBrickExplosion(
-            Offset(brickRect.center.dx, brickRect.center.dy),
-            brick.color,
-          );
-          tryBonus(brickRect.center);
-        } else if (result.destroyed) {
-          // Normal brick — удаляем и пулю
-          final removedBrick =
-              brickViewModel.bricks.removeAt(result.brickIndex!);
-          gunViewModel.bulletsList.remove(bullet);
-          particleSystem.addBrickExplosion(
-            Offset(brickRect.center.dx, brickRect.center.dy),
-            removedBrick.color,
-          );
-          tryBonus(brickRect.center);
-        }
-      }
-    }
-
-    // После всех изменений уведомляем UI
-    // if (collisions.isNotEmpty) notifyListeners();
-  }
-
-  tryBonus(Offset brickCenter) {
-    if (Random().nextDouble() < 0.05) {
-      bonusManager.spawnBonus(
-        type: BonusType.bigPlatform,
-        position: brickCenter,
-      );
-    }
-  }
-
-  Future<void> hitStop({
-    double duration = 0.06, // 60 ms
-  }) async {
-    if (_hitStopActive) return;
-    _hitStopActive = true;
-
-    final prevScale = input.timeScale;
-    input.setSlowMotion(0.0001);
-
-    await Future.delayed(
-      Duration(milliseconds: (duration * 1000).toInt()),
-    );
-
-    input.setSlowMotion(prevScale);
-    _hitStopActive = false;
   }
 
   void onActionButtonPressed() {
@@ -328,21 +227,25 @@ class GameViewModel extends ChangeNotifier {
     }
   }
 
-  void levelDoneCheck() {
-    if (brickViewModel.isEmpty) {
-      input.setSlowMotion(0.3);
-      Future.delayed(
-          Duration(seconds: 2),
-          () =>
-              {input.resetTimeScale(), _gameState = GameState.levelCompleted});
-    }
-  }
+  // void levelDoneCheck() {
+  //   if (_levelCompletionScheduled) return;
+
+  //   if (brickViewModel.isEmpty) {
+  //     _levelCompletionScheduled = true;
+  //     _gameState = GameState.levelCompleted;
+
+  //     input.setSlowMotion(0.3);
+
+  //     Future.delayed(const Duration(seconds: 2), () {
+  //       input.resetTimeScale();
+  //       // notifyListeners();
+  //     });
+  //   }
+  // }
 
   void startNewGame() {
     dev.log('🎮 Starting new game');
-    ballViewModel.reset();
-    ballViewModel.launch();
-    // brickViewModel.initLevel();
+    levelManager.startLevel();
     _gameState = GameState.playing;
     _ticker.start();
     notifyListeners();

@@ -1,4 +1,8 @@
+import 'package:bouncer/bonuses/bonusManager.dart';
+import 'package:bouncer/collisionManager.dart';
 import 'package:bouncer/inputController.dart';
+import 'package:bouncer/levelManager.dart';
+import 'package:bouncer/timeManager.dart';
 import 'package:bouncer/viewModels/gunViewModel.dart';
 import 'package:bouncer/views/gameScreen.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
@@ -40,6 +44,19 @@ class MainApp extends StatelessWidget {
           BrickViewModel bricks = BrickViewModel(particleSystem: ps);
           GunViewModel gun = GunViewModel(platform);
           InputController input = InputController();
+          BonusManager bonusManager = BonusManager();
+          TimeManager timeManager = TimeManager(input);
+          LevelManager levelManager = LevelManager(
+            brickViewModel: bricks,
+            ballViewModel: ball,
+            timeManager: timeManager,
+          );
+          CollisionManager collisionManager = CollisionManager(
+              brickViewModel: bricks,
+              particleSystem: ps,
+              gunViewModel: gun,
+              bonusManager: bonusManager,
+              ballViewModel: ball);
 
           return MultiProvider(providers: [
             ChangeNotifierProvider(create: (_) => ball),
@@ -56,6 +73,9 @@ class MainApp extends StatelessWidget {
                   particleSystem: ps,
                   gunViewModel: gun,
                   input: input,
+                  collisionManager: collisionManager,
+                  levelManager: levelManager,
+                  bonusManager: bonusManager,
                 );
               },
               update: (BuildContext context,

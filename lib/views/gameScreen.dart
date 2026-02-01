@@ -98,7 +98,7 @@ class GameScreen extends StatelessWidget {
               const BulletLayerView(),
               ...game.brickViewModel.bricks
                   .map((brick) => BrickWidget(model: brick)),
-              ...game.bonusManager.bonuses.map((b) => BonusWidget(bonus: b)),
+              ...game.bonusManager.pickups.map((vm) => BonusWidget(vm)),
               CustomPaint(
                 painter: ParticlePainter(game.particleSystem),
                 size: Size.infinite,

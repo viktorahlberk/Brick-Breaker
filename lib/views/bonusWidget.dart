@@ -1,19 +1,21 @@
+import 'package:bouncer/bonuses/bonusPickupVmModel.dart';
+import 'package:bouncer/bonuses/bonusType.dart';
 import 'package:bouncer/models/bonusModel.dart';
 import 'package:bouncer/viewModels/bonusViewModel.dart';
 import 'package:flutter/material.dart';
 
 class BonusWidget extends StatelessWidget {
-  final BonusViewModel bonus;
+  final BonusPickupViewModel bonusViewModel;
 
-  const BonusWidget({super.key, required this.bonus});
+  const BonusWidget(this.bonusViewModel, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: bonus.model.position.dx,
-      top: bonus.model.position.dy,
+      left: bonusViewModel.model.position.dx,
+      top: bonusViewModel.model.position.dy,
       child: Icon(
-        _iconByType(bonus.model.type),
+        _iconByType(bonusViewModel.model.type),
         color: Colors.yellow,
         size: 28,
       ),
@@ -22,7 +24,7 @@ class BonusWidget extends StatelessWidget {
 
   IconData _iconByType(BonusType type) {
     switch (type) {
-      case BonusType.gun:
+      case BonusType.platformGun:
         return Icons.gps_fixed;
       // case BonusType.slowMotion:
       //   return Icons.timer;
