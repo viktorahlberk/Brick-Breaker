@@ -18,9 +18,9 @@ class BallViewModel extends ChangeNotifier {
 
   BallViewModel({required this.screenSize})
       : _startingPosition =
-            Offset(screenSize.width / 2, screenSize.height * 0.90),
+            Offset(screenSize.width / 2, screenSize.height * 0.89),
         _model = BallModel(
-            position: Offset(screenSize.width / 2, screenSize.height * 0.95));
+            position: Offset(screenSize.width / 2, screenSize.height * 0.89));
 
   BallModel get model => _model;
   get ballRect => Rect.fromCircle(

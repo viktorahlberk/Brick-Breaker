@@ -18,8 +18,8 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final game = context.read<GameViewModel>();
-    final input = context.read<InputController>();
+    final game = context.watch<GameViewModel>();
+    final input = context.watch<InputController>();
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -73,9 +73,9 @@ class GameScreen extends StatelessWidget {
               const BallWidget(),
               const PlatformWidget(),
               const BulletLayerView(),
-              // ...game.brickViewModel.bricks
-              //     .map((brick) => BrickWidget(model: brick)),
-              // ...game.bonusManager.bonuses.map((b) => BonusWidget(bonus: b)),
+              ...game.brickViewModel.bricks
+                  .map((brick) => BrickWidget(model: brick)),
+              ...game.bonusManager.bonuses.map((b) => BonusWidget(bonus: b)),
               CustomPaint(
                 painter: ParticlePainter(game.particleSystem),
                 size: Size.infinite,
@@ -131,14 +131,16 @@ class GameScreen extends StatelessWidget {
                   ),
                 ),
               Positioned(
-                  top: 50,
-                  left: 20,
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.settings,
-                        size: 30,
-                      ))),
+                top: 50,
+                left: 20,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.settings,
+                    size: 30,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

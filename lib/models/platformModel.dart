@@ -8,8 +8,8 @@ class PlatformModel {
   final double speed = 4;
 
   PlatformModel({required this.screenSize}) {
-    width = screenSize.width * 0.125;
-    position = Offset(screenSize.width / 2, screenSize.height * 0.85);
+    width = screenSize.width * 0.2;
+    position = Offset(screenSize.width / 2, screenSize.height * 0.9);
   }
 
   Rect get rect =>
