@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer' as dev;
 import 'dart:io';
 import 'dart:math';
-import 'package:bouncer/views/gameSettings.dart';
+import 'package:bouncer/gameSettings.dart';
 import 'package:bouncer/inputController.dart';
 import 'package:bouncer/models/bonusModel.dart';
 import 'package:bouncer/models/brickModel.dart';
@@ -125,10 +125,17 @@ class GameViewModel extends ChangeNotifier {
     );
 
     // ===== INPUT → AXIS =====
-    platformViewModel.setInput(input.axis);
 
     // ===== UPDATE SYSTEMS =====
-    platformViewModel.update(scaledDt);
+
+    //TODO Make normal behaviour depends input type!!
+    if (input.inputType == InputType.touch) {
+      final targetX = input.tapTarget;
+      platformViewModel.moveCenterTo(targetX, dt);
+    } else {
+      platformViewModel.setInput(input.axis);
+      platformViewModel.update(scaledDt);
+    }
     ballViewModel.updateAndMove(scaledDt, platformViewModel);
     gunViewModel.update(scaledDt);
     particleSystem.update(scaledDt);
@@ -227,12 +234,12 @@ class GameViewModel extends ChangeNotifier {
   }
 
   tryBonus(Offset brickCenter) {
-    // if (Random().nextDouble() < 0.3) {
-    bonusManager.spawnBonus(
-      type: BonusType.bigPlatform,
-      position: brickCenter,
-    );
-    // }
+    if (Random().nextDouble() < 0.05) {
+      bonusManager.spawnBonus(
+        type: BonusType.bigPlatform,
+        position: brickCenter,
+      );
+    }
   }
 
   Future<void> hitStop({

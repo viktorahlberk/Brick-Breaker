@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
+enum InputType { touch, key, sensor }
+
 class InputController extends ChangeNotifier {
   // input
+  InputType inputType = InputType.touch;
   bool _leftPressed = false;
   bool _rightPressed = false;
 
   double _axis = 0;
   double get axis => _axis;
 
+  double? _tapTarget;
+  double? get tapTarget => _tapTarget;
+
   // time
-  double _timeScale = 0.5;
+  double _timeScale = 1;
   double get timeScale => _timeScale;
 
   bool _paused = false;
@@ -46,7 +52,20 @@ class InputController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setTarget(double value) {
+    // debugPrint(value.toString());
+    _tapTarget = value;
+    // notifyListeners();
+  }
+
+  void resetTarget() {
+    if (_tapTarget == null) return;
+    _tapTarget = null;
+    // notifyListeners();
+  }
+
   // ===== time =====
+  //TODO Make Time Service class.
   void setSlowMotion(double scale) {
     _timeScale = scale.clamp(0.05, 1.0);
     notifyListeners();

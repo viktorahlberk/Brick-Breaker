@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class PlatformViewModel extends ChangeNotifier {
   final PlatformModel _model;
+  Offset _position;
   bool _scaleChanged = false;
 
   /// Максимальная скорость платформы (px/sec)
@@ -12,14 +13,16 @@ class PlatformViewModel extends ChangeNotifier {
   double velocityX = 0;
 
   PlatformViewModel(Size screenSize)
-      : _model = PlatformModel(screenSize: screenSize);
+      : _model = PlatformModel(screenSize: screenSize),
+        _position = Offset(screenSize.width / 2, screenSize.height * 0.9);
 
   // ====== getters ======
 
-  Offset get position => _model.position;
   double get width => _model.width;
   double get height => _model.height;
-  Rect get rect => _model.rect;
+  Offset get position => _position;
+  Rect get rect =>
+      Rect.fromCenter(center: position, width: width, height: height);
 
   // ====== input ======
 
@@ -29,6 +32,23 @@ class PlatformViewModel extends ChangeNotifier {
   ///  1 — вправо
   void setInput(double axis) {
     velocityX = axis.clamp(-1.0, 1.0) * speed;
+  }
+
+  void moveCenterTo(targetX, dt) {
+    if (targetX == null) {
+      return;
+    }
+    final centerX = _position.dx;
+    final delta = targetX - centerX;
+
+    if (delta.abs() < 1) return;
+
+    final step = speed * dt;
+    final move = delta.clamp(-step, step);
+
+    _position = Offset(_position.dx + move, _position.dy);
+    _clampToScreen(_model.screenSize.width);
+    notifyListeners();
   }
 
   void setScale(double value) {
@@ -45,9 +65,9 @@ class PlatformViewModel extends ChangeNotifier {
   // ====== update ======
 
   void update(double dt) {
-    _model.position = Offset(
-      _model.position.dx + velocityX * dt,
-      _model.position.dy,
+    _position = Offset(
+      _position.dx + velocityX * dt,
+      _position.dy,
     );
 
     _clampToScreen(_model.screenSize.width);
@@ -59,12 +79,12 @@ class PlatformViewModel extends ChangeNotifier {
   void _clampToScreen(double screenWidth) {
     final halfWidth = width / 2;
 
-    _model.position = Offset(
-      _model.position.dx.clamp(
+    _position = Offset(
+      _position.dx.clamp(
         halfWidth,
         screenWidth - halfWidth,
       ),
-      _model.position.dy,
+      _position.dy,
     );
   }
 }

@@ -25,18 +25,30 @@ class GameScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       body: GestureDetector(
         onPanUpdate: (details) {
-          final x = details.localPosition.dx;
-          final platformX = game.platformViewModel.position.dx;
+          // debugPrint(details.localPosition.toString());
+          // final x = details.localPosition.dx;
+          // final platformX = game.platformViewModel.position.dx;
 
-          if (x < platformX) {
-            input.pressLeft();
-          } else {
-            input.pressRight();
-          }
+          // if (x < platformX) {
+          //   input.pressLeft();
+          // } else {
+          //   input.pressRight();
+          // }
+          // final screenWidth = MediaQuery.of(context).size.width;
+          // final center = screenWidth / 2;
+          // double platformCenter = game.platformViewModel.position.dx;
+          // final delta = (details.localPosition.dx - center) / center;
+          // double tapPosition = details.localPosition.dx;
+          // if (tapPosition > platformCenter) {
+          input.setTarget(details.localPosition.dx);
+          // } else if (tapPosition < platformCenter) {
+          // input.setAxis(-1);
+          // }
         },
         onPanEnd: (_) {
-          input.releaseLeft();
-          input.releaseRight();
+          // input.releaseLeft();
+          // input.releaseRight();
+          input.resetTarget();
         },
         child: Focus(
           autofocus: true,
