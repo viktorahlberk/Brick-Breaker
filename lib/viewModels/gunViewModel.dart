@@ -6,29 +6,29 @@ import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:flutter/material.dart';
 
 class GunViewModel extends ChangeNotifier {
-  late GunModel _model;
-  late PlatformViewModel _pvm;
+  late GunModel _gunModel;
+  late final PlatformViewModel _pvm;
 
-  GunViewModel(PlatformViewModel pvm) {
-    _model = GunModel();
-    _pvm = pvm;
+  GunViewModel(this._pvm) {
+    _gunModel = GunModel();
   }
 
-  double get width => _model.width;
-  double get height => _model.height;
-  Color get color => _model.color;
-  Offset get shootingPoint =>
-      Offset(_pvm.position.dx - width, _pvm.position.dy);
-  List<BulletModel> get bulletsList => _model.activeBullets;
+  double get width => _gunModel.width;
+  double get height => _gunModel.height;
+  // Color get color => _gunModel.color;
+  Offset get shootingPoint => Offset(_pvm.position.dx, _pvm.position.dy);
+  List<BulletModel> get bulletsList => _gunModel.activeBullets;
 
-  shoot() {
-    _model.activeBullets.add(BulletModel(shootingPoint));
-  }
+  // shoot() {
+  //   _gunModel.activeBullets.add(BulletModel(shootingPoint));
+  // }
 
   update(dt) {
-    _model.update(dt, shootingPoint);
-    notifyListeners();
+    if (_pvm.isGunActive) {
+      _gunModel.update(dt, shootingPoint);
+      notifyListeners();
+    }
   }
 
-  removeBullet() {}
+  // removeBullet() {}
 }

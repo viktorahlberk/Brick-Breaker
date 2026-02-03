@@ -1,4 +1,5 @@
 import 'package:bouncer/viewModels/platformViewModel.dart';
+import 'package:bouncer/views/gunWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class PlatformWidget extends StatelessWidget {
               width: platform.width,
               height: platform.height,
               color: Colors.white,
+              // child: platform.isGunActive ? GunWidget() : Container(),
             ),
           ),
         );

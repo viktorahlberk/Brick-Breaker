@@ -1,7 +1,5 @@
 import 'package:bouncer/bonuses/bonusPickupVmModel.dart';
 import 'package:bouncer/bonuses/bonusType.dart';
-import 'package:bouncer/models/bonusModel.dart';
-import 'package:bouncer/viewModels/bonusViewModel.dart';
 import 'package:flutter/material.dart';
 
 class BonusWidget extends StatelessWidget {
@@ -14,22 +12,26 @@ class BonusWidget extends StatelessWidget {
     return Positioned(
       left: bonusViewModel.model.position.dx,
       top: bonusViewModel.model.position.dy,
-      child: Icon(
-        _iconByType(bonusViewModel.model.type),
-        color: Colors.yellow,
-        size: 28,
+      child: _iconByType(
+        bonusViewModel.model.type,
       ),
     );
   }
 
-  IconData _iconByType(BonusType type) {
+  Icon _iconByType(BonusType type) {
     switch (type) {
       case BonusType.platformGun:
-        return Icons.gps_fixed;
-      // case BonusType.slowMotion:
-      //   return Icons.timer;
+        return Icon(
+          Icons.gps_fixed,
+          color: Colors.red,
+          size: 28,
+        );
       case BonusType.bigPlatform:
-        return Icons.swap_horiz;
+        return Icon(
+          Icons.swap_horiz,
+          color: Colors.yellow,
+          size: 28,
+        );
     }
   }
 }

@@ -9,6 +9,7 @@ class PlatformViewModel extends ChangeNotifier {
   double width;
   double scale = 1;
   bool scaled = false;
+  bool isGunActive = false;
 
   /// Максимальная скорость платформы (px/sec)
   final double speed = 600;

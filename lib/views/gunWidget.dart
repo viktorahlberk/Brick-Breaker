@@ -11,15 +11,17 @@ class GunWidget extends StatelessWidget {
     return Consumer2<GunViewModel, PlatformViewModel>(
         builder: (__, gvmodel, pvmodel, _) {
       // gvmodel.startShooting(pvmodel.x - gvmodel.width);
-      return Positioned(
-        left: pvmodel.position.dx - gvmodel.width / 2,
-        top: pvmodel.position.dy - gvmodel.height,
-        child: Container(
-          width: gvmodel.width,
-          height: gvmodel.height,
-          color: gvmodel.color,
-        ),
-      );
+      return pvmodel.isGunActive
+          ? Positioned(
+              left: pvmodel.position.dx - gvmodel.width / 2,
+              top: pvmodel.position.dy - gvmodel.height,
+              child: Container(
+                width: gvmodel.width,
+                height: gvmodel.height,
+                color: Colors.blueGrey,
+              ),
+            )
+          : Container();
     });
   }
 }

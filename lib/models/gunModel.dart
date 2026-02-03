@@ -4,30 +4,30 @@ import 'package:bouncer/models/bulletModel.dart';
 import 'package:flutter/material.dart';
 
 class GunModel {
-  double width = 10.0;
+  double width = 6.0;
   double height = 30.0;
-  Color color = Colors.red;
+  // Color color = Colors.red;
   double shootingSpeed = 1.0;
   double firerateDelay = 1;
-  double elapsed = 0;
-  List<BulletModel> activeBullets = [];
+  double _elapsed = 0;
+  final List<BulletModel> activeBullets = [];
 
-  update(dt, shootingPoint) {
+  void update(double dt, Offset shootingPoint) {
     tryShoot(dt, shootingPoint);
-    for (var b in activeBullets) {
+    for (BulletModel b in activeBullets) {
       b.move();
     }
   }
 
-  tryShoot(dt, shootingPoint) {
-    elapsed += dt;
-    if (elapsed > firerateDelay) {
-      shoot(shootingPoint);
+  void tryShoot(double dt, Offset shootingPoint) {
+    _elapsed += dt;
+    if (_elapsed > firerateDelay) {
+      _shoot(shootingPoint);
     }
   }
 
-  shoot(shootingPoint) {
-    elapsed = 0;
+  void _shoot(Offset shootingPoint) {
+    _elapsed = 0;
     activeBullets.add(BulletModel(shootingPoint));
   }
 }

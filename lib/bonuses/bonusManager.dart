@@ -2,8 +2,7 @@ import 'dart:developer';
 import 'dart:math' hide log;
 import 'dart:ui';
 
-// import 'package:bouncer/bonus_pickup_vm.dart';
-import 'package:bouncer/bonuses/activeBonus.dart';
+import 'package:bouncer/bonuses/bonusEffect.dart';
 import 'package:bouncer/bonuses/bonusModel.dart';
 import 'package:bouncer/bonuses/bonusPickupVmModel.dart';
 import 'package:bouncer/bonuses/bonusType.dart';
@@ -12,31 +11,50 @@ import 'package:flutter/cupertino.dart';
 
 class BonusManager {
   final pickups = <BonusPickupViewModel>[];
-  final _activeBonuses = <ActiveBonus>[];
+  final _activeEffects = <BonusEffect>[];
+  // bool isGunActive =
+
+  // bool get isGunActive => _activeEffects.contains(PlatformGunEffect());
 
   void trySpawnBonus({
     required Offset position,
   }) {
     // debugPrint('trySpawnBonus');
-    if (Random().nextDouble() < 0.8) {
-      pickups.add(
-        BonusPickupViewModel(
-          model: BonusModel(
-              type: BonusType.bigPlatform,
-              duration: Duration(seconds: 10),
-              position: position),
-        ),
-      );
+    if (Random().nextDouble() < 0.02) {
+      if (Random().nextDouble() < 0.5) {
+        pickups.add(
+          BonusPickupViewModel(
+            model: BonusModel(
+                type: BonusType.bigPlatform,
+                duration: Duration(seconds: 10),
+                position: position),
+          ),
+        );
+      } else {
+        pickups.add(
+          BonusPickupViewModel(
+            model: BonusModel(
+                type: BonusType.platformGun,
+                duration: Duration(seconds: 10),
+                position: position),
+          ),
+        );
+      }
     }
     // debugPrint(pickups.toString());
   }
 
   void update(double dt) {
     if (pickups.isNotEmpty) {
-      for (var b in pickups) {
-        b.update(dt);
+      for (var pickupBonus in pickups) {
+        pickupBonus.update(dt);
       }
     }
+    // if (_activeEffects.isNotEmpty) {
+    //   for (var activeBonus in _activeEffects) {
+    //     activeBonus.update(dt);
+    //   }
+    // }
   }
 
   void checkCollect(
@@ -45,9 +63,15 @@ class BonusManager {
       if (platform.rect.overlaps(bonus.rect)) {
         // log('collected');
         bonus.collected = true;
+        // _activeBonuses
+        //     .add(ActiveBonus(effect: BigPlatformEffect(), duration: 10));
         onCollected(bonus.model.type);
       }
     }
     pickups.removeWhere((b) => b.collected);
+  }
+
+  void registerActiveEffect(BonusEffect effect) {
+    _activeEffects.add(effect);
   }
 }

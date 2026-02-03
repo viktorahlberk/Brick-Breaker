@@ -1,6 +1,8 @@
 import 'dart:developer' as dev;
 import 'dart:io';
 import 'package:bouncer/bonuses/bonusType.dart';
+import 'package:bouncer/bonuses/effects/bigPlatformEffect.dart';
+import 'package:bouncer/bonuses/effects/platformGunEffect.dart';
 import 'package:bouncer/collisionManager.dart';
 import 'package:bouncer/inputController.dart';
 import 'package:bouncer/levelManager.dart';
@@ -95,21 +97,16 @@ class GameViewModel extends ChangeNotifier {
   void activateBonus(BonusType type) {
     switch (type) {
       case BonusType.bigPlatform:
-        if (platformViewModel.scaled) {
-          return;
-        }
-        platformViewModel.setScale(1.5);
-        platformViewModel.scaled = true;
-
-        // таймер, чтобы через duration вернуть платформу к норме
-        Future.delayed(Duration(seconds: 8), () {
-          platformViewModel.normalizeScale();
-        });
+        final effect = BigPlatformEffect(platformViewModel: platformViewModel);
+        effect.onApply();
+        bonusManager.registerActiveEffect(effect);
         break;
 
-      // case BonusType.platformGun:
-      //   gunViewModel.enable(duration: Duration(seconds: 10));
-      //   break;
+      case BonusType.platformGun:
+        final effect = PlatformGunEffect(platformViewModel: platformViewModel);
+        effect.onApply();
+        bonusManager.registerActiveEffect(effect);
+        break;
 
       // case BonusType.slowMotion:
       //   input.setSlowMotion(0.4);

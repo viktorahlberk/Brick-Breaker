@@ -16,5 +16,6 @@ class ActiveBonus {
   void update(double dt) {
     if (isExpired) return;
     _remaining -= dt;
+    // effect.onApply();
   }
 }
