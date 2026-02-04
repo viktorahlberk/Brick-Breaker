@@ -24,9 +24,12 @@ class GameScreen extends StatelessWidget {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (game.gameState == GameState.levelCompleted) {
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => const LevelCompleteScreen(),
+            builder: (_) => ChangeNotifierProvider.value(
+              value: context.read<GameViewModel>(),
+              child: const LevelCompleteScreen(),
+            ),
           ),
         );
       }

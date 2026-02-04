@@ -72,6 +72,7 @@ class GameViewModel extends ChangeNotifier {
     gameOverCheck();
     levelManager.checkLevelCompletion(() {
       _gameState = GameState.levelCompleted;
+      // _gameState = GameState.gameOver;
     });
 
     if (_gameState == GameState.gameOver) _ticker.stop();
@@ -194,8 +195,19 @@ class GameViewModel extends ChangeNotifier {
 
   void startNewGame() {
     dev.log('🎮 Starting new game');
-    levelManager.startLevel();
+    levelManager.resetLevel();
     _gameState = GameState.playing;
+    _ticker.stop();
+    _ticker.start();
+    notifyListeners();
+  }
+
+  void startNextLevel() {
+    dev.log('🎮 Starting next level');
+    _gameState = GameState.initial;
+    particleSystem.clear();
+    levelManager.resetLevel();
+    _ticker.stop();
     _ticker.start();
     notifyListeners();
   }

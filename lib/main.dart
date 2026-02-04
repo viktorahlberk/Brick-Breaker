@@ -10,7 +10,7 @@ import 'package:bouncer/viewModels/brickViewModel.dart';
 import 'package:bouncer/viewModels/gameViewModel.dart';
 import 'package:bouncer/viewModels/platformViewModel.dart';
 import 'package:bouncer/particles.dart';
-import 'package:bouncer/views/levelCompleteScreen.dart.dart';
+// import 'package:bouncer/views/levelCompleteScreen.dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -31,34 +31,33 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // showPerformanceOverlay: true,
-      // routes: ['complete',()=>LevelCompleteScreen()],
-      // initialRoute: LevelCompleteScreen(),
-      home: LayoutBuilder(
-        builder: (context, constraints) {
-          final size = Size(constraints.maxWidth, constraints.maxHeight);
-          ParticleSystem ps = ParticleSystem();
-          BallViewModel ball = BallViewModel(screenSize: size);
-          PlatformViewModel platform = PlatformViewModel(size);
-          BrickViewModel bricks = BrickViewModel(particleSystem: ps);
-          GunViewModel gun = GunViewModel(platform);
-          InputController input = InputController();
-          BonusManager bonusManager = BonusManager();
-          TimeManager timeManager = TimeManager(input);
-          LevelManager levelManager = LevelManager(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = Size(constraints.maxWidth, constraints.maxHeight);
+        ParticleSystem ps = ParticleSystem();
+        BallViewModel ball = BallViewModel(screenSize: size);
+        PlatformViewModel platform = PlatformViewModel(size);
+        BrickViewModel bricks =
+            BrickViewModel(particleSystem: ps, screenSize: size);
+        GunViewModel gun = GunViewModel(platform);
+        InputController input = InputController();
+        BonusManager bonusManager = BonusManager();
+        TimeManager timeManager = TimeManager(input);
+        LevelManager levelManager = LevelManager(
+          brickViewModel: bricks,
+          ballViewModel: ball,
+          timeManager: timeManager,
+          platformViewModel: platform,
+        );
+        CollisionManager collisionManager = CollisionManager(
             brickViewModel: bricks,
-            ballViewModel: ball,
-            timeManager: timeManager,
-          );
-          CollisionManager collisionManager = CollisionManager(
-              brickViewModel: bricks,
-              particleSystem: ps,
-              gunViewModel: gun,
-              bonusManager: bonusManager,
-              ballViewModel: ball);
+            particleSystem: ps,
+            gunViewModel: gun,
+            bonusManager: bonusManager,
+            ballViewModel: ball);
 
-          return MultiProvider(providers: [
+        return MultiProvider(
+          providers: [
             ChangeNotifierProvider(create: (_) => ball),
             ChangeNotifierProvider(create: (_) => platform),
             ChangeNotifierProvider(create: (_) => bricks),
@@ -92,11 +91,15 @@ class MainApp extends StatelessWidget {
                 return gameViewModel;
               },
             ),
-          ], child: GameScreen());
-
-          // child: LevelCompleteScreen());
-        },
-      ),
+          ],
+          child: MaterialApp(
+            // showPerformanceOverlay: true,
+            // routes: ['complete',()=>LevelCompleteScreen()],
+            // initialRoute: LevelCompleteScreen(),
+            home: GameScreen(),
+          ),
+        );
+      },
     );
   }
 }

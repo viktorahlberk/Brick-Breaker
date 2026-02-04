@@ -90,4 +90,9 @@ class PlatformViewModel extends ChangeNotifier {
       _position.dy,
     );
   }
+
+  void reset() {
+    _position = Offset(screenSize.width / 2, screenSize.height * 0.9);
+    notifyListeners();
+  }
 }

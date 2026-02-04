@@ -1,4 +1,6 @@
+import 'package:bouncer/viewModels/gameViewModel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LevelCompleteScreen extends StatelessWidget {
   const LevelCompleteScreen({super.key});
@@ -16,7 +18,10 @@ class LevelCompleteScreen extends StatelessWidget {
               style: TextStyle(color: Colors.white),
             ),
             IconButton(
-              onPressed: () => {},
+              onPressed: () {
+                context.read<GameViewModel>().startNextLevel();
+                Navigator.of(context).pop();
+              },
               icon: Icon(Icons.fast_forward_rounded),
             ),
           ],

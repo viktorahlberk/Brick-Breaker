@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 enum BrickType {
   normal,
-  special,
-  hard,
+  strong,
+  // bonus,
 }
 
 class BrickModel {
@@ -20,11 +20,7 @@ class BrickModel {
     required this.width,
     required this.height,
     required this.type,
-  }) : color = type == BrickType.normal
-            ? Colors.white
-            : type == BrickType.special
-                ? const Color(0xFFFF0000) // Red for special bricks
-                : Colors.grey; // Blue for hard bricks
+  }) : color = type == BrickType.normal ? Colors.white : Colors.grey;
 
   Rect toPixelRect(Size screenSize) {
     final pixelX = (x + 1) * 0.5 * screenSize.width;
@@ -38,9 +34,9 @@ class BrickModel {
     switch (t) {
       case BrickType.normal:
         return Colors.white;
-      case BrickType.special:
-        return const Color(0xFFFF0000);
-      case BrickType.hard:
+      // case BrickType.:
+      //   return const Color(0xFFFF0000);
+      case BrickType.strong:
         return Colors.grey;
     }
   }

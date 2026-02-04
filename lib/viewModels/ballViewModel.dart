@@ -127,5 +127,6 @@ class BallViewModel extends ChangeNotifier {
 
     velocityX = 0;
     velocityY = 0;
+    notifyListeners();
   }
 }

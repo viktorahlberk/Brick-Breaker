@@ -3,24 +3,28 @@ import 'dart:ui';
 import 'package:bouncer/timeManager.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
 import 'package:bouncer/viewModels/brickViewModel.dart';
+import 'package:bouncer/viewModels/platformViewModel.dart';
 
 class LevelManager {
   final BrickViewModel brickViewModel;
   final BallViewModel ballViewModel;
   final TimeManager timeManager;
+  final PlatformViewModel platformViewModel;
 
   bool _levelCompletionScheduled = false;
 
-  LevelManager({
-    required this.brickViewModel,
-    required this.ballViewModel,
-    required this.timeManager,
-  });
+  LevelManager(
+      {required this.brickViewModel,
+      required this.ballViewModel,
+      required this.timeManager,
+      required this.platformViewModel});
 
-  void startLevel() {
+  void resetLevel() {
     ballViewModel.reset();
     ballViewModel.launch();
-    // brickViewModel.initLevel(); // если нужно
+    platformViewModel.reset();
+
+    brickViewModel.initLevel(); // если нужно
     _levelCompletionScheduled = false;
   }
 

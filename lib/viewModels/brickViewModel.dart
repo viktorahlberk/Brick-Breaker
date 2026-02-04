@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:bouncer/levelGenerator.dart';
 import 'package:bouncer/models/brickModel.dart';
 import 'package:bouncer/viewModels/ballViewModel.dart';
 import 'package:bouncer/particles.dart';
@@ -8,10 +9,11 @@ import 'package:bouncer/viewModels/gunViewModel.dart';
 import 'package:flutter/material.dart';
 
 class BrickViewModel extends ChangeNotifier {
-  final List<BrickModel> _bricks = [];
+  List<BrickModel> _bricks = [];
   final ParticleSystem particleSystem;
+  Size screenSize;
 
-  BrickViewModel({required this.particleSystem}) {
+  BrickViewModel({required this.screenSize, required this.particleSystem}) {
     initLevel();
   }
 
@@ -28,8 +30,20 @@ class BrickViewModel extends ChangeNotifier {
 
   void initLevel() {
     _bricks.clear();
-    _createBricks();
-    notifyListeners();
+    // _createBricks();
+
+    _bricks = ProceduralLevelGenerator().generate(
+        difficulty: LevelDifficulty(
+            bonusChance: 0.10,
+            cols: 1,
+            emptyChance: 0,
+            rows: 1,
+            strongBrickChance: 0),
+        screenSize: screenSize);
+
+    // debugPrint(_bricks.toString());
+    // notifyListeners();
+    log('${_bricks.length} bricks are created.');
   }
 
   void _createBricks() {
@@ -62,7 +76,7 @@ class BrickViewModel extends ChangeNotifier {
           width: brickWidth,
           height: brickHeight,
           // color: _randomColor(),
-          type: col % 2 == 0 ? BrickType.normal : BrickType.hard,
+          type: col % 2 == 0 ? BrickType.normal : BrickType.strong,
         ));
 
         bricksCreated++;
@@ -82,7 +96,7 @@ class BrickViewModel extends ChangeNotifier {
 
       // === Collision with ball ===
       if (ballRect.overlaps(brickRect)) {
-        if (brick.type == BrickType.hard) {
+        if (brick.type == BrickType.strong) {
           results.add(CollisionResult(
             brickIndex: brickIndex,
             destroyed: false,
@@ -103,7 +117,7 @@ class BrickViewModel extends ChangeNotifier {
           bulletIndex++) {
         final bullet = gunViewModel.bulletsList[bulletIndex];
         if (bullet.bulletRect.overlaps(brickRect)) {
-          if (brick.type == BrickType.hard) {
+          if (brick.type == BrickType.strong) {
             results.add(CollisionResult(
               brickIndex: brickIndex,
               destroyed: false,
