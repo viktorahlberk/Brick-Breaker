@@ -7,7 +7,7 @@ import 'package:bouncer/views/bonusWidget.dart';
 import 'package:bouncer/views/brickWidget.dart';
 import 'package:bouncer/views/bulletLayerView.dart';
 import 'package:bouncer/views/gunWidget.dart';
-import 'package:bouncer/views/levelCompleteScreen.dart.dart';
+import 'package:bouncer/views/levelCompleteScreen.dart';
 import 'package:bouncer/views/platformWidget.dart';
 import 'package:bouncer/particles.dart';
 import 'package:flutter/material.dart';
