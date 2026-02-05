@@ -37,7 +37,9 @@ class GameViewModel extends ChangeNotifier {
   late final Ticker _ticker;
   GameState _gameState = GameState.initial;
   GameState get gameState => _gameState;
-  bool get shouldShowActionButton => _gameState != GameState.playing;
+  bool get shouldShowActionButton =>
+      _gameState != GameState.playing &&
+      _gameState != GameState.levelCompleted;
   final _platform = kIsWeb ? 'web' : Platform.operatingSystem;
   Duration? _lastTick;
 

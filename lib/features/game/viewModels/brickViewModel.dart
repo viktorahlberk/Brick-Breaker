@@ -34,7 +34,7 @@ class BrickViewModel extends ChangeNotifier {
             bonusChance: 0.5,
             cols: 2,
             emptyChance: 0,
-            rows: 7,
+            rows: 1,
             strongBrickChance: 0),
         screenSize: screenSize);
 
@@ -180,4 +180,3 @@ class CollisionResult {
     this.bulletIndex,
   });
 }
-
