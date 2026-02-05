@@ -16,7 +16,7 @@ class GunViewModel extends ChangeNotifier {
   double get width => _gunModel.width;
   double get height => _gunModel.height;
   // Color get color => _gunModel.color;
-  Offset get shootingPoint => Offset(_pvm.position.dx, _pvm.position.dy);
+  Offset get shootingPoint => Offset(_pvm.position.x, _pvm.position.y);
   List<BulletModel> get bulletsList => _gunModel.activeBullets;
 
   // shoot() {

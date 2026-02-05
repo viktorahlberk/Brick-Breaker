@@ -11,8 +11,8 @@ class PlatformWidget extends StatelessWidget {
     return Consumer<PlatformViewModel>(
       builder: (__, platform, _) {
         return Positioned(
-          left: platform.position.dx - (platform.width / 2),
-          top: platform.position.dy - (platform.height / 2),
+          left: platform.position.x - (platform.width / 2),
+          top: platform.position.y - (platform.height / 2),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(3),
             child: Container(

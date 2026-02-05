@@ -1,57 +1,63 @@
 import 'package:bouncer/models/platformModel.dart';
+import 'package:bouncer/vector2.dart';
 import 'package:flutter/material.dart';
 
 class PlatformViewModel extends ChangeNotifier {
   final PlatformModel _platformModel;
-  Size screenSize;
-  Offset _position;
+  final PlatformPhysics _physics;
+
+  Vector2 _position;
   double baseWidth;
   double width;
   double scale = 1;
   bool scaled = false;
   bool isGunActive = false;
+  final Size _screensize;
 
-  /// Максимальная скорость платформы (px/sec)
-  final double speed = 600;
-
-  /// Текущая горизонтальная скорость
   double velocityX = 0;
 
-  PlatformViewModel(this.screenSize)
-      : _platformModel = PlatformModel(),
-        _position = Offset(screenSize.width / 2, screenSize.height * 0.9),
+  PlatformViewModel(Size screenSize)
+      : _screensize = screenSize,
+        _platformModel = PlatformModel(),
         baseWidth = screenSize.width * 0.2,
-        width = screenSize.width * 0.2;
+        width = screenSize.width * 0.2,
+        _position = Vector2(screenSize.width / 2, screenSize.height * 0.9),
+        _physics = PlatformPhysics(
+          speed: 600,
+          screenWidth: screenSize.width,
+          baseWidth: screenSize.width * 0.2,
+        );
 
-  // ====== getters ======
-
-  // double get baseWidth => _model.baseWidth;
   double get height => _platformModel.height;
-  Offset get position => _position;
+  Vector2 get position => _position;
+
+  Offset get positionOffset => Offset(_position.x, _position.y);
+
   Rect get rect => Rect.fromCenter(
-        center: position,
-        width: baseWidth * scale,
+        center: positionOffset,
+        width: width,
         height: height,
       );
 
   void setInput(double axis) {
-    velocityX = axis.clamp(-1.0, 1.0) * speed;
+    velocityX = axis.clamp(-1.0, 1.0) * _physics.speed;
   }
 
-  void moveCenterTo(targetX, dt) {
-    if (targetX == null) {
-      return;
-    }
-    final centerX = _position.dx;
-    final delta = targetX - centerX;
+  void update(double dt) {
+    _position = _physics.move(_position, velocityX, dt);
+    notifyListeners();
+  }
 
+  void moveCenterTo(double? targetX, double dt) {
+    if (targetX == null) return;
+
+    final delta = targetX - _position.x;
     if (delta.abs() < 1) return;
 
-    final step = speed * dt;
+    final step = _physics.speed * dt;
     final move = delta.clamp(-step, step);
 
-    _position = Offset(_position.dx + move, _position.dy);
-    _clampToScreen(screenSize.width);
+    _position = Vector2(_position.x + move, _position.y);
     notifyListeners();
   }
 
@@ -61,38 +67,31 @@ class PlatformViewModel extends ChangeNotifier {
   }
 
   void normalizeScale() {
-    width = baseWidth;
     scale = 1;
+    width = baseWidth;
     scaled = false;
-  }
-  // ====== update ======
-
-  void update(double dt) {
-    _position = Offset(
-      _position.dx + velocityX * dt,
-      _position.dy,
-    );
-
-    _clampToScreen(screenSize.width);
-    notifyListeners();
-  }
-
-  // ====== helpers ======
-
-  void _clampToScreen(double screenWidth) {
-    final halfWidth = width / 2;
-
-    _position = Offset(
-      _position.dx.clamp(
-        halfWidth,
-        screenWidth - halfWidth,
-      ),
-      _position.dy,
-    );
   }
 
   void reset() {
-    _position = Offset(screenSize.width / 2, screenSize.height * 0.9);
+    _position = Vector2(_screensize.width / 2, _screensize.height * 0.9);
+    velocityX = 0;
     notifyListeners();
+  }
+}
+
+class PlatformPhysics {
+  final double speed;
+  final double screenWidth;
+  final double baseWidth;
+
+  PlatformPhysics(
+      {required this.speed,
+      required this.screenWidth,
+      required this.baseWidth});
+
+  Vector2 move(Vector2 position, double velocityX, double dt) {
+    double x = (position.x + velocityX * dt)
+        .clamp(baseWidth / 2, screenWidth - baseWidth / 2);
+    return Vector2(x, position.y);
   }
 }

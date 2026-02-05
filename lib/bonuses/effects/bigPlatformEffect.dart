@@ -7,7 +7,6 @@ class BigPlatformEffect extends BonusEffect {
   final PlatformViewModel platformViewModel;
   final double scale;
   final Duration duration;
-  bool isGunActive = false;
 
   Timer? _timer;
 

@@ -47,7 +47,8 @@ class BrickViewModel extends ChangeNotifier {
             strongBrickChance: 25),
         screenSize: screenSize);
 
-    _bricks = testBricks;
+    // _bricks = testBricks;
+    _bricks = normalBricks;
 
     // debugPrint(_bricks.toString());
     // notifyListeners();
