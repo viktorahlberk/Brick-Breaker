@@ -31,16 +31,16 @@ class BrickViewModel extends ChangeNotifier {
   void initLevel() {
     var testBricks = ProceduralLevelGenerator().generate(
         difficulty: LevelDifficulty(
-            bonusChance: 0.30,
+            bonusChance: 0.5,
             cols: 2,
-            emptyChance: 50,
-            rows: 1,
+            emptyChance: 0,
+            rows: 7,
             strongBrickChance: 0),
         screenSize: screenSize);
 
     var normalBricks = ProceduralLevelGenerator().generate(
         difficulty: LevelDifficulty(
-            bonusChance: 0.10,
+            bonusChance: 80,
             cols: 3,
             emptyChance: 10,
             rows: 5,
@@ -48,7 +48,7 @@ class BrickViewModel extends ChangeNotifier {
         screenSize: screenSize);
 
     // _bricks = testBricks;
-    _bricks = normalBricks;
+    _bricks = testBricks;
 
     // debugPrint(_bricks.toString());
     // notifyListeners();

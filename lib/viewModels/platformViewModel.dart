@@ -1,3 +1,4 @@
+import 'package:bouncer/bonuses/physics/platformPhysics.dart';
 import 'package:bouncer/models/platformModel.dart';
 import 'package:bouncer/vector2.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,9 @@ class PlatformViewModel extends ChangeNotifier {
   final PlatformModel _platformModel;
   final PlatformPhysics _physics;
 
+  bool isBlinking = false;
+  // bool blinkVisible = true;
+
   Vector2 _position;
   double baseWidth;
   double width;
@@ -13,6 +17,7 @@ class PlatformViewModel extends ChangeNotifier {
   bool scaled = false;
   bool isGunActive = false;
   final Size _screensize;
+  double platformCenter;
 
   double velocityX = 0;
 
@@ -22,13 +27,18 @@ class PlatformViewModel extends ChangeNotifier {
         baseWidth = screenSize.width * 0.2,
         width = screenSize.width * 0.2,
         _position = Vector2(screenSize.width / 2, screenSize.height * 0.9),
+        platformCenter = screenSize.width / 2,
         _physics = PlatformPhysics(
           speed: 600,
           screenWidth: screenSize.width,
           baseWidth: screenSize.width * 0.2,
-        );
+        ) {
+    // setScale(1.5);
+  }
 
   double get height => _platformModel.height;
+
+  ///platform center coordinate
   Vector2 get position => _position;
 
   Offset get positionOffset => Offset(_position.x, _position.y);
@@ -75,23 +85,7 @@ class PlatformViewModel extends ChangeNotifier {
   void reset() {
     _position = Vector2(_screensize.width / 2, _screensize.height * 0.9);
     velocityX = 0;
+    normalizeScale();
     notifyListeners();
-  }
-}
-
-class PlatformPhysics {
-  final double speed;
-  final double screenWidth;
-  final double baseWidth;
-
-  PlatformPhysics(
-      {required this.speed,
-      required this.screenWidth,
-      required this.baseWidth});
-
-  Vector2 move(Vector2 position, double velocityX, double dt) {
-    double x = (position.x + velocityX * dt)
-        .clamp(baseWidth / 2, screenWidth - baseWidth / 2);
-    return Vector2(x, position.y);
   }
 }

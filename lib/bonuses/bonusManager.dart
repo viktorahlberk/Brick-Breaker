@@ -20,8 +20,9 @@ class BonusManager {
     required Offset position,
   }) {
     // debugPrint('trySpawnBonus');
-    if (Random().nextDouble() < 0.02) {
-      if (Random().nextDouble() < 0.5) {
+    // return;
+    if (Random().nextDouble() < 0.9) {
+      if (Random().nextDouble() < 0.9) {
         pickups.add(
           BonusPickupViewModel(
             model: BonusModel(
@@ -30,18 +31,20 @@ class BonusManager {
                 position: position),
           ),
         );
-      } else {
-        pickups.add(
-          BonusPickupViewModel(
-            model: BonusModel(
-                type: BonusType.platformGun,
-                duration: Duration(seconds: 10),
-                position: position),
-          ),
-        );
       }
+      // else {
+      //     pickups.add(
+      //       BonusPickupViewModel(
+      //         model: BonusModel(
+      //             type: BonusType.platformGun,
+      //             duration: Duration(seconds: 10),
+      //             position: position),
+      //       ),
+      //     );
+      //   }
     }
-    // debugPrint(pickups.toString());
+    // debugPrint(pickups.toString())
+    //   // ;
   }
 
   void update(double dt) {

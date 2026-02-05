@@ -40,7 +40,7 @@ class CollisionManager {
   }
 
   /// Обработка столкновения с мячом
-  void _handleBallCollision(collision) {
+  void _handleBallCollision(CollisionResult collision) {
     if (collision.brickIndex == null) return;
 
     final brick = brickViewModel.bricks[collision.brickIndex!];
@@ -50,9 +50,9 @@ class CollisionManager {
       brick.type = BrickType.normal;
       brick.color = Colors.white;
       // particleSystem.addBrickExplosion(brickRect.center, brick.color);
-      bonusManager.trySpawnBonus(position: brickRect.center);
+      // bonusManager.trySpawnBonus(position: brickRect.center);
     } else {
-      particleSystem.addBrickExplosion(brickRect.center, brick.color);
+      // particleSystem.addBrickExplosion(brickRect.center, brick.color);
       _destroyBrick(brick, brickRect.center);
     }
 
@@ -60,33 +60,33 @@ class CollisionManager {
   }
 
   /// Обработка столкновения с пулей
-  void _handleBulletCollision(collision) {
+  void _handleBulletCollision(CollisionResult collision) {
     if (collision.brickIndex == null || collision.bulletIndex == null) return;
 
     final brick = brickViewModel.bricks[collision.brickIndex!];
     final bullet = gunViewModel.bulletsList[collision.bulletIndex!];
     final brickRect = _getBrickRect(brick);
 
+    gunViewModel.bulletsList.remove(bullet);
+
     if (collision.isHardBrick) {
       brick.type = BrickType.normal;
       brick.color = Colors.white;
-      gunViewModel.bulletsList.remove(bullet);
-      particleSystem.addBrickExplosion(brickRect.center, brick.color);
-      bonusManager.trySpawnBonus(position: brickRect.center);
+      // gunViewModel.bulletsList.remove(bullet);
+      // particleSystem.addBrickExplosion(brickRect.center, brick.color);
+      // bonusManager.trySpawnBonus(position: brickRect.center);
     } else if (collision.destroyed) {
       _destroyBrick(brick, brickRect.center);
-      gunViewModel.bulletsList.remove(bullet);
+      // gunViewModel.bulletsList.remove(bullet);
     }
   }
 
-  /// Приватный метод для удаления кирпича и спавна бонуса
   void _destroyBrick(BrickModel brick, Offset center) {
+    bonusManager.trySpawnBonus(position: center);
     brickViewModel.bricks.remove(brick);
     particleSystem.addBrickExplosion(center, brick.color);
-    bonusManager.trySpawnBonus(position: center);
   }
 
-  /// Получение прямоугольника кирпича на экране
   Rect _getBrickRect(BrickModel brick) {
     return Rect.fromLTWH(
       (brick.x + 1) * 0.5 * ballViewModel.screenSize.width,
