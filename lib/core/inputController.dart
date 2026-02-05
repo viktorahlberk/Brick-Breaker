@@ -80,5 +80,15 @@ class InputController extends ChangeNotifier {
     _paused = !_paused;
     notifyListeners();
   }
+
+  void reset() {
+    _leftPressed = false;
+    _rightPressed = false;
+    _axis = 0;
+    _tapTarget = null;
+    _timeScale = 1.0;
+    _paused = false;
+    notifyListeners();
+  }
 }
 

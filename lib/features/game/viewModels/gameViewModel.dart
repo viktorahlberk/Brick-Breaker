@@ -196,6 +196,11 @@ class GameViewModel extends ChangeNotifier {
 
   void startNewGame() {
     dev.log('🎮 Starting new game');
+    levelManager.resetLevel();
+    particleSystem.clear();
+    bonusManager.reset();
+    gunViewModel.reset();
+    input.reset();
     _gameState = GameState.playing;
     _ticker.stop();
     _ticker.start();
@@ -206,6 +211,9 @@ class GameViewModel extends ChangeNotifier {
     dev.log('🎮 Starting next level');
     _gameState = GameState.initial;
     particleSystem.clear();
+    bonusManager.reset();
+    gunViewModel.reset();
+    input.reset();
     levelManager.resetLevel();
     _ticker.stop();
     _ticker.start();
@@ -232,4 +240,3 @@ class GameViewModel extends ChangeNotifier {
     super.dispose();
   }
 }
-

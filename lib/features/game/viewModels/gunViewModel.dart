@@ -30,6 +30,11 @@ class GunViewModel extends ChangeNotifier {
     }
   }
 
+  void reset() {
+    _gunModel.activeBullets.clear();
+    notifyListeners();
+  }
+
   // removeBullet() {}
 }
 

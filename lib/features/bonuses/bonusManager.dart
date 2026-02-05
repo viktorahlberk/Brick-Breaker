@@ -77,5 +77,13 @@ class BonusManager {
   void registerActiveEffect(BonusEffect effect) {
     _activeEffects.add(effect);
   }
+
+  void reset() {
+    for (final effect in _activeEffects) {
+      effect.onRemove();
+    }
+    _activeEffects.clear();
+    pickups.clear();
+  }
 }
 
