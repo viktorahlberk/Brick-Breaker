@@ -39,29 +39,9 @@ class GameScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       body: GestureDetector(
         onPanUpdate: (details) {
-          // debugPrint(details.localPosition.toString());
-          // final x = details.localPosition.dx;
-          // final platformX = game.platformViewModel.position.dx;
-
-          // if (x < platformX) {
-          //   input.pressLeft();
-          // } else {
-          //   input.pressRight();
-          // }
-          // final screenWidth = MediaQuery.of(context).size.width;
-          // final center = screenWidth / 2;
-          // double platformCenter = game.platformViewModel.position.dx;
-          // final delta = (details.localPosition.dx - center) / center;
-          // double tapPosition = details.localPosition.dx;
-          // if (tapPosition > platformCenter) {
           input.setTarget(details.localPosition.dx);
-          // } else if (tapPosition < platformCenter) {
-          // input.setAxis(-1);
-          // }
         },
         onPanEnd: (_) {
-          // input.releaseLeft();
-          // input.releaseRight();
           input.resetTarget();
         },
         child: Focus(
@@ -145,7 +125,7 @@ class GameScreen extends StatelessWidget {
               // Кнопка паузы во время игры
               if (game.gameState == GameState.playing)
                 Positioned(
-                  top: 50,
+                  top: 20,
                   right: 20,
                   child: IconButton(
                     onPressed: game.pauseGame,
@@ -157,7 +137,7 @@ class GameScreen extends StatelessWidget {
                   ),
                 ),
               Positioned(
-                top: 50,
+                top: 20,
                 left: 20,
                 child: IconButton(
                   onPressed: () {},

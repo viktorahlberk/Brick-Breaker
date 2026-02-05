@@ -54,6 +54,7 @@ class GameViewModel extends ChangeNotifier {
   }) {
     // input.addListener(_onInputChanged);
     _ticker = Ticker(_onTick);
+    levelManager.resetLevel();
     if (_platform == 'android') {
       input.inputType = InputType.touch;
       dev.log('🎮 Game initialized for android');
@@ -195,7 +196,6 @@ class GameViewModel extends ChangeNotifier {
 
   void startNewGame() {
     dev.log('🎮 Starting new game');
-    levelManager.resetLevel();
     _gameState = GameState.playing;
     _ticker.stop();
     _ticker.start();

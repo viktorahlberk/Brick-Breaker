@@ -14,7 +14,7 @@ class BrickViewModel extends ChangeNotifier {
   Size screenSize;
 
   BrickViewModel({required this.screenSize, required this.particleSystem}) {
-    initLevel();
+    // initLevel();
   }
 
   static const int bricksQuantity = 25;
@@ -29,17 +29,25 @@ class BrickViewModel extends ChangeNotifier {
   bool get isEmpty => _bricks.isEmpty;
 
   void initLevel() {
-    _bricks.clear();
-    // _createBricks();
-
-    _bricks = ProceduralLevelGenerator().generate(
+    var testBricks = ProceduralLevelGenerator().generate(
         difficulty: LevelDifficulty(
-            bonusChance: 0.10,
-            cols: 1,
-            emptyChance: 0,
+            bonusChance: 0.30,
+            cols: 2,
+            emptyChance: 50,
             rows: 1,
             strongBrickChance: 0),
         screenSize: screenSize);
+
+    var normalBricks = ProceduralLevelGenerator().generate(
+        difficulty: LevelDifficulty(
+            bonusChance: 0.10,
+            cols: 3,
+            emptyChance: 10,
+            rows: 5,
+            strongBrickChance: 25),
+        screenSize: screenSize);
+
+    _bricks = testBricks;
 
     // debugPrint(_bricks.toString());
     // notifyListeners();

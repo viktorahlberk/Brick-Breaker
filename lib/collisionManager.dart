@@ -49,9 +49,10 @@ class CollisionManager {
     if (collision.isHardBrick) {
       brick.type = BrickType.normal;
       brick.color = Colors.white;
-      particleSystem.addBrickExplosion(brickRect.center, brick.color);
+      // particleSystem.addBrickExplosion(brickRect.center, brick.color);
       bonusManager.trySpawnBonus(position: brickRect.center);
-    } else if (collision.destroyed) {
+    } else {
+      particleSystem.addBrickExplosion(brickRect.center, brick.color);
       _destroyBrick(brick, brickRect.center);
     }
 

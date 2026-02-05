@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:bouncer/timeManager.dart';
@@ -20,10 +21,10 @@ class LevelManager {
       required this.platformViewModel});
 
   void resetLevel() {
+    log('Level resetted.');
     ballViewModel.reset();
     ballViewModel.launch();
     platformViewModel.reset();
-
     brickViewModel.initLevel(); // если нужно
     _levelCompletionScheduled = false;
   }
