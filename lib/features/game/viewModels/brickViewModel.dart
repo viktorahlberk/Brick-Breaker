@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
-import 'package:bouncer/features/game/level/levelGenerator.dart';
 import 'package:bouncer/models/brickModel.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/core/particles.dart';
@@ -13,9 +12,7 @@ class BrickViewModel extends ChangeNotifier {
   final ParticleSystem particleSystem;
   Size screenSize;
 
-  BrickViewModel({required this.screenSize, required this.particleSystem}) {
-    // initLevel();
-  }
+  BrickViewModel({required this.screenSize, required this.particleSystem});
 
   static const int bricksQuantity = 25;
   static const int maxBricksPerRow = 7;
@@ -28,72 +25,51 @@ class BrickViewModel extends ChangeNotifier {
   List<BrickModel> get bricks => _bricks;
   bool get isEmpty => _bricks.isEmpty;
 
-  void initLevel() {
-    var testBricks = ProceduralLevelGenerator().generate(
-        difficulty: LevelDifficulty(
-            bonusChance: 0.5,
-            cols: 2,
-            emptyChance: 0,
-            rows: 1,
-            strongBrickChance: 0),
-        screenSize: screenSize);
-
-    var normalBricks = ProceduralLevelGenerator().generate(
-        difficulty: LevelDifficulty(
-            bonusChance: 80,
-            cols: 3,
-            emptyChance: 10,
-            rows: 5,
-            strongBrickChance: 25),
-        screenSize: screenSize);
-
-    // _bricks = testBricks;
-    _bricks = testBricks;
-
-    // debugPrint(_bricks.toString());
+  void setBricks(List<BrickModel> bricks) {
+    _bricks = bricks;
     // notifyListeners();
     log('${_bricks.length} bricks are created.');
   }
 
-  void _createBricks() {
-    if (bricksQuantity <= 0) return;
+  // void _createBricks() {
+  //   if (bricksQuantity <= 0) return;
 
-    // Определяем количество рядов и колонок
-    final int rows = (bricksQuantity / maxBricksPerRow).ceil();
+  //   // Определяем количество рядов и колонок
+  //   final int rows = (bricksQuantity / maxBricksPerRow).ceil();
 
-    int bricksCreated = 0;
+  //   int bricksCreated = 0;
 
-    for (int row = 0; row < rows && bricksCreated < bricksQuantity; row++) {
-      // Сколько кирпичей в этом ряду
-      final int bricksInThisRow =
-          math.min(maxBricksPerRow, bricksQuantity - bricksCreated);
+  //   for (int row = 0; row < rows && bricksCreated < bricksQuantity; row++) {
+  //     // Сколько кирпичей в этом ряду
+  //     final int bricksInThisRow =
+  //         math.min(maxBricksPerRow, bricksQuantity - bricksCreated);
 
-      // Y позиция ряда
-      double y = -0.9 + row * (brickHeight + brickGap * 3);
+  //     // Y позиция ряда
+  //     double y = -0.9 + row * (brickHeight + brickGap * 3);
 
-      // Центрируем ряд
-      final double totalRowWidth =
-          bricksInThisRow * brickWidth + (bricksInThisRow - 1) * brickGap;
-      final double startX = -totalRowWidth / 2;
+  //     // Центрируем ряд
+  //     final double totalRowWidth =
+  //         bricksInThisRow * brickWidth + (bricksInThisRow - 1) * brickGap;
+  //     final double startX = -totalRowWidth / 2;
 
-      for (int col = 0; col < bricksInThisRow; col++) {
-        double x = startX + col * (brickWidth + brickGap);
+  //     for (int col = 0; col < bricksInThisRow; col++) {
+  //       double x = startX + col * (brickWidth + brickGap);
 
-        _bricks.add(BrickModel(
-          x: x,
-          y: y,
-          width: brickWidth,
-          height: brickHeight,
-          // color: _randomColor(),
-          type: col % 2 == 0 ? BrickType.normal : BrickType.strong,
-        ));
+  //       _bricks.add(BrickModel(
+  //         x: x,
+  //         y: y,
+  //         width: brickWidth,
+  //         height: brickHeight,
+  //         // color: _randomColor(),
+  //         type: col % 2 == 0 ? BrickType.normal : BrickType.strong,
+  //       ));
 
-        bricksCreated++;
-      }
-    }
+  //       bricksCreated++;
+  //     }
+  //   }
 
-    log('Created $bricksCreated bricks in $rows rows');
-  }
+  //   log('Created $bricksCreated bricks in $rows rows');
+  // }
 
   List<CollisionResult> checkCollisions(
       BallViewModel ball, GunViewModel gunViewModel) {

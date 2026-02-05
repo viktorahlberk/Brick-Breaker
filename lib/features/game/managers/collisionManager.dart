@@ -21,7 +21,6 @@ class CollisionManager {
     required this.ballViewModel,
   });
 
-  /// Главный метод для проверки всех столкновений
   void checkCollisions() {
     final collisions =
         brickViewModel.checkCollisions(ballViewModel, gunViewModel);
@@ -39,7 +38,6 @@ class CollisionManager {
     }
   }
 
-  /// Обработка столкновения с мячом
   void _handleBallCollision(CollisionResult collision) {
     if (collision.brickIndex == null) return;
 
@@ -49,17 +47,13 @@ class CollisionManager {
     if (collision.isHardBrick) {
       brick.type = BrickType.normal;
       brick.color = Colors.white;
-      // particleSystem.addBrickExplosion(brickRect.center, brick.color);
-      // bonusManager.trySpawnBonus(position: brickRect.center);
     } else {
-      // particleSystem.addBrickExplosion(brickRect.center, brick.color);
       _destroyBrick(brick, brickRect.center);
     }
 
     ballViewModel.velocityY = -ballViewModel.velocityY;
   }
 
-  /// Обработка столкновения с пулей
   void _handleBulletCollision(CollisionResult collision) {
     if (collision.brickIndex == null || collision.bulletIndex == null) return;
 
@@ -72,12 +66,8 @@ class CollisionManager {
     if (collision.isHardBrick) {
       brick.type = BrickType.normal;
       brick.color = Colors.white;
-      // gunViewModel.bulletsList.remove(bullet);
-      // particleSystem.addBrickExplosion(brickRect.center, brick.color);
-      // bonusManager.trySpawnBonus(position: brickRect.center);
     } else if (collision.destroyed) {
       _destroyBrick(brick, brickRect.center);
-      // gunViewModel.bulletsList.remove(bullet);
     }
   }
 
@@ -96,4 +86,3 @@ class CollisionManager {
     );
   }
 }
-

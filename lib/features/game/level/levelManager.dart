@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:bouncer/core/timeManager.dart';
+import 'package:bouncer/features/game/level/levelGenerator.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
@@ -25,7 +26,7 @@ class LevelManager {
     ballViewModel.reset();
     ballViewModel.launch();
     platformViewModel.reset();
-    brickViewModel.initLevel(); // если нужно
+    _generateLevel();
     _levelCompletionScheduled = false;
   }
 
@@ -38,5 +39,31 @@ class LevelManager {
       Future.delayed(Duration(seconds: 2), onLevelCompleted);
     }
   }
-}
 
+  void _generateLevel() {
+    final testBricks = ProceduralLevelGenerator().generate(
+      difficulty: const LevelDifficulty(
+        bonusChance: 0.5,
+        cols: 2,
+        emptyChance: 0,
+        rows: 1,
+        strongBrickChance: 0,
+      ),
+      screenSize: brickViewModel.screenSize,
+    );
+
+    final normalBricks = ProceduralLevelGenerator().generate(
+      difficulty: const LevelDifficulty(
+        bonusChance: 80,
+        cols: 3,
+        emptyChance: 10,
+        rows: 5,
+        strongBrickChance: 25,
+      ),
+      screenSize: brickViewModel.screenSize,
+    );
+
+    // brickViewModel.setBricks(normalBricks);
+    brickViewModel.setBricks(testBricks);
+  }
+}
