@@ -16,3 +16,4 @@ class BulletModel {
     position = Offset(position.dx, position.dy - speed);
   }
 }
+

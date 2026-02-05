@@ -1,16 +1,16 @@
-import 'package:bouncer/bonuses/bonusManager.dart';
-import 'package:bouncer/collisionManager.dart';
-import 'package:bouncer/inputController.dart';
-import 'package:bouncer/levelManager.dart';
-import 'package:bouncer/timeManager.dart';
-import 'package:bouncer/viewModels/gunViewModel.dart';
-import 'package:bouncer/views/gameScreen.dart';
-import 'package:bouncer/viewModels/ballViewModel.dart';
-import 'package:bouncer/viewModels/brickViewModel.dart';
-import 'package:bouncer/viewModels/gameViewModel.dart';
-import 'package:bouncer/viewModels/platformViewModel.dart';
-import 'package:bouncer/particles.dart';
-// import 'package:bouncer/views/levelCompleteScreen.dart.dart';
+import 'package:bouncer/features/bonuses/bonusManager.dart';
+import 'package:bouncer/features/game/managers/collisionManager.dart';
+import 'package:bouncer/core/inputController.dart';
+import 'package:bouncer/features/game/level/levelManager.dart';
+import 'package:bouncer/core/timeManager.dart';
+import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
+import 'package:bouncer/features/game/views/gameScreen.dart';
+import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
+import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
+import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
+import 'package:bouncer/core/particles.dart';
+// import 'package:bouncer/features/game/views/levelCompleteScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -103,3 +103,4 @@ class MainApp extends StatelessWidget {
     );
   }
 }
+

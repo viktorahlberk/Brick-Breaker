@@ -12,3 +12,4 @@ class BallModel {
     Queue<Offset>? trail,
   }) : trail = trail ?? Queue<Offset>();
 }
+

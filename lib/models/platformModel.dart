@@ -11,3 +11,4 @@ class PlatformModel {
 
   // double get initialWidth => screenSize.width * 0.125;
 }
+

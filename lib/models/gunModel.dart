@@ -31,3 +31,4 @@ class GunModel {
     activeBullets.add(BulletModel(shootingPoint));
   }
 }
+

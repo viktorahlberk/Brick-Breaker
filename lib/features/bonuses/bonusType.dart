@@ -1,0 +1,5 @@
+enum BonusType {
+  platformGun,
+  bigPlatform,
+}
+
