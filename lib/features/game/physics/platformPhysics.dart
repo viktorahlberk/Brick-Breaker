@@ -1,4 +1,4 @@
-import 'package:bouncer/core/vector2.dart';
+import 'package:bouncer/s/vector2.dart';
 
 class PlatformPhysics {
   final double speed;
@@ -16,4 +16,3 @@ class PlatformPhysics {
     return Vector2(x, position.y);
   }
 }
-

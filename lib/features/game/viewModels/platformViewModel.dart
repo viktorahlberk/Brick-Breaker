@@ -1,6 +1,6 @@
 import 'package:bouncer/features/game/physics/platformPhysics.dart';
 import 'package:bouncer/models/platformModel.dart';
-import 'package:bouncer/core/vector2.dart';
+import 'package:bouncer/s/vector2.dart';
 import 'package:flutter/material.dart';
 
 class PlatformViewModel extends ChangeNotifier {
@@ -89,4 +89,3 @@ class PlatformViewModel extends ChangeNotifier {
     notifyListeners();
   }
 }
-

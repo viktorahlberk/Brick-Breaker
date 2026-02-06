@@ -1,8 +1,8 @@
 import 'dart:developer' as dev;
-import 'dart:io';
-import 'package:bouncer/features/bonuses/bonusType.dart';
-import 'package:bouncer/features/bonuses/effects/bigPlatformEffect.dart';
-import 'package:bouncer/features/bonuses/effects/platformGunEffect.dart';
+import 'package:bouncer/s/bonus_activator.dart';
+import 'package:bouncer/core/enums/game_state.dart';
+import 'package:bouncer/s/game_loop_manager.dart';
+import 'package:bouncer/s/game_ui_state.dart';
 import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/features/game/level/levelManager.dart';
@@ -13,35 +13,42 @@ import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 import 'package:bouncer/core/particles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/foundation.dart';
-
-enum GameState {
-  initial,
-  playing,
-  paused,
-  levelCompleted,
-  gameOver,
-}
 
 class GameViewModel extends ChangeNotifier {
-  late BallViewModel ballViewModel;
-  late PlatformViewModel platformViewModel;
-  late BrickViewModel brickViewModel;
-  late ParticleSystem particleSystem;
-  late GunViewModel gunViewModel;
+  // ========================================
+  // ЗАВИСИМОСТИ
+  // ========================================
+
+  final BallViewModel ballViewModel;
+  final PlatformViewModel platformViewModel;
+  final BrickViewModel brickViewModel;
+  final ParticleSystem particleSystem;
+  final GunViewModel gunViewModel;
   final InputController input;
   final CollisionManager collisionManager;
   final LevelManager levelManager;
   final BonusManager bonusManager;
-  late final Ticker _ticker;
+  final BonusActivator bonusActivator; // ← Новая зависимость
+
+  // ========================================
+  // ИГРОВОЙ ЦИКЛ
+  // ========================================
+
+  late final GameLoopManager _gameLoop; // ← Вместо Ticker
+
+  // ========================================
+  // СОСТОЯНИЕ
+  // ========================================
+
   GameState _gameState = GameState.initial;
   GameState get gameState => _gameState;
-  bool get shouldShowActionButton =>
-      _gameState != GameState.playing &&
-      _gameState != GameState.levelCompleted;
-  final _platform = kIsWeb ? 'web' : Platform.operatingSystem;
-  Duration? _lastTick;
+
+  /// UI состояние (вычисляемое свойство)
+  GameUIState get uiState => GameUIState(_gameState);
+
+  // ========================================
+  // КОНСТРУКТОР
+  // ========================================
 
   GameViewModel({
     required this.ballViewModel,
@@ -53,36 +60,44 @@ class GameViewModel extends ChangeNotifier {
     required this.collisionManager,
     required this.levelManager,
     required this.bonusManager,
+    required this.bonusActivator, // ← Новая зависимость
   }) {
-    // input.addListener(_onInputChanged);
-    _ticker = Ticker(_onTick);
+    // Создаём игровой цикл с callback'ом
+    _gameLoop = GameLoopManager(onUpdate: _onUpdate);
+
+    // Инициализируем уровень
     levelManager.resetLevel();
-    if (_platform == 'android') {
-      input.inputType = InputType.touch;
-      dev.log('🎮 Game initialized for android');
-    } else {
-      input.inputType = InputType.key;
-      dev.log('🎮 Game initialized for web');
-    }
+
+    dev.log('🎮 GameViewModel initialized');
   }
 
-  void _onTick(Duration elapsed) {
-    final dt = _calculateDelta(elapsed);
+  // ========================================
+  // ИГРОВОЙ ЦИКЛ
+  // ========================================
+
+  /// Обновление каждый кадр
+  ///
+  /// Вызывается из GameLoopManager с deltaTime
+  void _onUpdate(double dt) {
+    // Пропускаем обновление если на паузе или не играем
     if (input.paused || _gameState != GameState.playing) return;
 
     _updateSystems(dt);
     collisionManager.checkCollisions();
-    gameOverCheck();
-    levelManager.checkLevelCompletion(() {
-      _gameState = GameState.levelCompleted;
-      // _gameState = GameState.gameOver;
-    });
+    _checkGameOver();
+    _checkLevelCompletion();
 
-    if (_gameState == GameState.gameOver) _ticker.stop();
+    // Останавливаем цикл при game over
+    if (_gameState == GameState.gameOver) {
+      _gameLoop.stop();
+    }
+
     notifyListeners();
   }
 
+  /// Обновление всех систем
   void _updateSystems(double dt) {
+    // Обновление ввода
     if (input.inputType == InputType.touch) {
       platformViewModel.moveCenterTo(input.tapTarget, dt);
     } else {
@@ -90,155 +105,129 @@ class GameViewModel extends ChangeNotifier {
       platformViewModel.update(dt * input.timeScale);
     }
 
+    // Обновление игровых объектов
     final scaledDt = dt * input.timeScale;
     ballViewModel.updateAndMove(scaledDt, platformViewModel);
     gunViewModel.update(scaledDt);
     particleSystem.update(scaledDt);
+
+    // Обновление и проверка бонусов
     bonusManager.update(scaledDt);
-    bonusManager.checkCollect(platformViewModel, activateBonus);
+    bonusManager.checkCollect(
+      platformViewModel,
+      bonusActivator.activate, // ← Используем BonusActivator
+    );
   }
 
-  void activateBonus(BonusType type) {
-    switch (type) {
-      case BonusType.bigPlatform:
-        final effect = BigPlatformEffect(platformViewModel: platformViewModel);
-        effect.onApply();
-        bonusManager.registerActiveEffect(effect);
-        break;
+  // ========================================
+  // ПРОВЕРКИ СОСТОЯНИЯ
+  // ========================================
 
-      case BonusType.platformGun:
-        final effect = PlatformGunEffect(platformViewModel: platformViewModel);
-        effect.onApply();
-        bonusManager.registerActiveEffect(effect);
-        break;
-
-      // case BonusType.slowMotion:
-      //   input.setSlowMotion(0.4);
-      //   Future.delayed(Duration(seconds: 5), () {
-      //     input.setSlowMotion(1.0);
-      //   });
-      //   break;
+  /// Проверка game over
+  void _checkGameOver() {
+    if (ballViewModel.isBelowScreen) {
+      _gameState = GameState.gameOver;
+      dev.log('💀 Game Over');
     }
   }
 
-  double _calculateDelta(Duration elapsed) {
-    final dt = _lastTick == null
-        ? 1 / 60
-        : (elapsed - _lastTick!).inMicroseconds / 1e6;
-    _lastTick = elapsed;
-    return dt.clamp(0.0, 0.033);
+  /// Проверка завершения уровня
+  void _checkLevelCompletion() {
+    levelManager.checkLevelCompletion(() {
+      _gameState = GameState.levelCompleted;
+      dev.log('🎉 Level Completed');
+    });
   }
 
+  // ========================================
+  // УПРАВЛЕНИЕ ИГРОЙ
+  // ========================================
+
+  /// Обработка нажатия кнопки действия
+  ///
+  /// Кнопка меняет поведение в зависимости от состояния
   void onActionButtonPressed() {
     switch (_gameState) {
       case GameState.initial:
+      case GameState.gameOver:
         startNewGame();
         break;
+
       case GameState.paused:
         resumeGame();
         break;
-      case GameState.gameOver:
-        startNewGame();
-        break;
-      case GameState.playing:
-        // Кнопка скрыта, ничего не делаем
-        break;
-    }
-  }
 
-  IconData getButtonIcon() {
-    switch (_gameState) {
-      case GameState.initial:
-        return Icons.play_arrow;
-      case GameState.paused:
-        return Icons.play_arrow;
-      case GameState.gameOver:
-        return Icons.refresh;
-      case GameState.playing:
-        return Icons.play_arrow;
       case GameState.levelCompleted:
-        return Icons.play_arrow;
-    }
-  }
+        startNextLevel();
+        break;
 
-  String getButtonText() {
-    switch (_gameState) {
-      case GameState.initial:
-        return 'ИГРАТЬ';
-      case GameState.paused:
-        return 'ПРОДОЛЖИТЬ';
-      case GameState.gameOver:
-        return 'ИГРАТЬ СНОВА';
       case GameState.playing:
-        return ''; // Кнопка скрыта
-      case GameState.levelCompleted:
-        return ''; // Кнопка скрыта
+        // Кнопка скрыта в этом состоянии
+        break;
     }
   }
 
-  void updateDependencies({
-    required BallViewModel ballViewModel,
-    required PlatformViewModel platformViewModel,
-    required BrickViewModel brickViewModel,
-    required ParticleSystem particleSystem,
-    required GunViewModel gunViewModel,
-  }) {
-    this.ballViewModel = ballViewModel;
-    this.platformViewModel = platformViewModel;
-    this.brickViewModel = brickViewModel;
-    this.particleSystem = particleSystem;
-    this.gunViewModel = gunViewModel;
-  }
-
-  void gameOverCheck() {
-    if (ballViewModel.isBelowScreen) {
-      _gameState = GameState.gameOver;
-    }
-  }
-
+  /// Начать новую игру
   void startNewGame() {
     dev.log('🎮 Starting new game');
-    levelManager.resetLevel();
-    particleSystem.clear();
-    bonusManager.reset();
-    gunViewModel.reset();
-    input.reset();
+
+    _resetGame();
     _gameState = GameState.playing;
-    _ticker.stop();
-    _ticker.start();
+    _gameLoop.start();
+
     notifyListeners();
   }
 
+  /// Начать следующий уровень
   void startNextLevel() {
     dev.log('🎮 Starting next level');
+
+    _resetGame();
     _gameState = GameState.initial;
+
+    notifyListeners();
+  }
+
+  /// Продолжить игру
+  void resumeGame() {
+    dev.log('🎮 Resuming game');
+
+    _gameState = GameState.playing;
+    _gameLoop.start();
+
+    notifyListeners();
+  }
+
+  /// Пауза
+  void pauseGame() {
+    dev.log('🎮 Pausing game');
+
+    _gameLoop.stop();
+    _gameState = GameState.paused;
+
+    notifyListeners();
+  }
+
+  // ========================================
+  // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
+  // ========================================
+
+  /// Сброс игры
+  void _resetGame() {
+    levelManager.resetLevel();
     particleSystem.clear();
     bonusManager.reset();
     gunViewModel.reset();
     input.reset();
-    levelManager.resetLevel();
-    _ticker.stop();
-    _ticker.start();
-    notifyListeners();
   }
 
-  void resumeGame() {
-    dev.log('🎮 Resuming game');
-    _gameState = GameState.playing;
-    _ticker.start();
-    notifyListeners();
-  }
-
-  void pauseGame() {
-    dev.log('🎮 Pausing game');
-    _ticker.stop();
-    _gameState = GameState.paused;
-    notifyListeners();
-  }
+  // ========================================
+  // LIFECYCLE
+  // ========================================
 
   @override
   void dispose() {
-    _ticker.dispose();
+    _gameLoop.dispose(); // ← Вместо _ticker.dispose()
     super.dispose();
   }
 }

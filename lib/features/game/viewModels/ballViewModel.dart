@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:bouncer/models/ballModel.dart';
-import 'package:bouncer/core/vector2.dart';
+import 'package:bouncer/s/vector2.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 import 'package:flutter/material.dart';
 
@@ -146,4 +146,3 @@ class BallPhysics {
     return Vector2(vx, vy);
   }
 }
-

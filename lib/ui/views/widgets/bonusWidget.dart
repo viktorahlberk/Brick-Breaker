@@ -35,4 +35,3 @@ class BonusWidget extends StatelessWidget {
     }
   }
 }
-

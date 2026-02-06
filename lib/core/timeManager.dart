@@ -25,4 +25,3 @@ class TimeManager {
         Duration(milliseconds: milliseconds), () => input.resetTimeScale());
   }
 }
-

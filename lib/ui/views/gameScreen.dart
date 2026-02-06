@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:bouncer/core/enums/game_state.dart';
+import 'package:bouncer/s/game_engine.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/ui/view_models/gameViewModel.dart';
 import 'package:bouncer/features/game/views/ballWidget.dart';
-import 'package:bouncer/features/bonuses/views/bonusWidget.dart';
+import 'package:bouncer/ui/views/widgets/bonusWidget.dart';
 import 'package:bouncer/features/game/views/brickWidget.dart';
 import 'package:bouncer/features/game/views/bulletLayerView.dart';
 import 'package:bouncer/features/game/views/gunWidget.dart';
@@ -14,8 +16,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class GameScreen extends StatelessWidget {
+class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
+
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  // GameEngine? _engine;
+  bool _initialized = false;
+  // void _initialize() {
+  //   final size = MediaQuery.of(context).size;
+  //   // final coordinator = GameCompositionRoot.create(size);
+
+  //   // ✅ Просто создаём и запускаем движок
+  //   // _engine = GameEngine(coordinator: coordinator);
+  //   _engine!.start();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +105,7 @@ class GameScreen extends StatelessWidget {
                 size: Size.infinite,
               ),
 
-              if (game.shouldShowActionButton)
+              if (game.uiState.shouldShowActionButton)
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -106,9 +124,9 @@ class GameScreen extends StatelessWidget {
                         ),
                       ElevatedButton.icon(
                         onPressed: game.onActionButtonPressed,
-                        icon: Icon(game.getButtonIcon(), size: 30),
+                        icon: Icon(game.uiState.buttonIcon, size: 30),
                         label: Text(
-                          game.getButtonText(),
+                          game.uiState.buttonText,
                           style: TextStyle(fontSize: 18),
                         ),
                         style: ElevatedButton.styleFrom(

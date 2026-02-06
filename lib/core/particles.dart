@@ -268,4 +268,3 @@ class ParticlePainter extends CustomPainter {
   @override
   bool hitTest(Offset position) => false;
 }
-

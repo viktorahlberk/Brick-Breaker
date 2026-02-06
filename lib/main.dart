@@ -1,105 +1,107 @@
-import 'package:bouncer/features/bonuses/bonusManager.dart';
-import 'package:bouncer/features/game/managers/collisionManager.dart';
-import 'package:bouncer/core/inputController.dart';
-import 'package:bouncer/features/game/level/levelManager.dart';
-import 'package:bouncer/core/timeManager.dart';
-import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
+import 'package:bouncer/composition_root.dart';
 import 'package:bouncer/ui/views/gameScreen.dart';
-import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
-import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
-import 'package:bouncer/ui/view_models/gameViewModel.dart';
-import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
-import 'package:bouncer/core/particles.dart';
-// import 'package:bouncer/features/game/views/levelCompleteScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-    // DeviceOrientation.portraitDown,
   ]);
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  // debugPrintRebuildDirtyWidgets = true;
+
   runApp(const MainApp());
 }
 
+/// Корневой Widget приложения
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(
+      home: AppInitializer(),
+    );
+  }
+}
+
+/// Widget для инициализации Composition Root
+///
+/// ТЕОРИЯ: Почему отдельный Widget?
+///
+/// 1. LayoutBuilder даёт нам размер экрана (constraints)
+/// 2. Размер экрана нужен для создания ViewModels (например, BallViewModel)
+/// 3. Инициализация должна произойти ОДИН раз, не при каждом rebuild
+/// 4. StatefulWidget позволяет контролировать lifecycle (_isInitialized флаг)
+class AppInitializer extends StatefulWidget {
+  const AppInitializer({super.key});
+
+  @override
+  State<AppInitializer> createState() => _AppInitializerState();
+}
+
+class _AppInitializerState extends State<AppInitializer> {
+  /// Ссылка на Composition Root
+  AppCompositionRoot? _compositionRoot;
+
+  /// Флаг инициализации - гарантирует что initialize() вызовется один раз
+  bool _isInitialized = false;
+
+  @override
+  void dispose() {
+    // ВАЖНО: Очищаем ресурсы при закрытии приложения
+    _compositionRoot?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // LayoutBuilder даёт нам размер экрана через constraints
     return LayoutBuilder(
       builder: (context, constraints) {
-        final size = Size(constraints.maxWidth, constraints.maxHeight);
-        ParticleSystem ps = ParticleSystem();
-        BallViewModel ball = BallViewModel(screenSize: size);
-        PlatformViewModel platform = PlatformViewModel(size);
-        BrickViewModel bricks =
-            BrickViewModel(particleSystem: ps, screenSize: size);
-        GunViewModel gun = GunViewModel(platform);
-        InputController input = InputController();
-        BonusManager bonusManager = BonusManager();
-        TimeManager timeManager = TimeManager(input);
-        LevelManager levelManager = LevelManager(
-          brickViewModel: bricks,
-          ballViewModel: ball,
-          timeManager: timeManager,
-          platformViewModel: platform,
-        );
-        CollisionManager collisionManager = CollisionManager(
-            brickViewModel: bricks,
-            particleSystem: ps,
-            gunViewModel: gun,
-            bonusManager: bonusManager,
-            ballViewModel: ball);
+        // Получаем размер экрана
+        final screenSize = Size(constraints.maxWidth, constraints.maxHeight);
 
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => ball),
-            ChangeNotifierProvider(create: (_) => platform),
-            ChangeNotifierProvider(create: (_) => bricks),
-            ChangeNotifierProvider(create: (_) => gun),
-            ChangeNotifierProvider(create: (_) => input),
-            ChangeNotifierProxyProvider3(
-              create: (_) {
-                return GameViewModel(
-                  ballViewModel: ball,
-                  platformViewModel: platform,
-                  brickViewModel: bricks,
-                  particleSystem: ps,
-                  gunViewModel: gun,
-                  input: input,
-                  collisionManager: collisionManager,
-                  levelManager: levelManager,
-                  bonusManager: bonusManager,
-                );
-              },
-              update: (BuildContext context,
-                  BallViewModel ball,
-                  PlatformViewModel platform,
-                  BrickViewModel bricks,
-                  gameViewModel) {
-                gameViewModel!.updateDependencies(
-                    ballViewModel: ball,
-                    platformViewModel: platform,
-                    brickViewModel: bricks,
-                    particleSystem: ps,
-                    gunViewModel: gun);
-                return gameViewModel;
-              },
-            ),
-          ],
-          child: MaterialApp(
-            // showPerformanceOverlay: true,
-            // routes: ['complete',()=>LevelCompleteScreen()],
-            // initialRoute: LevelCompleteScreen(),
-            home: GameScreen(),
-          ),
-        );
+        // Инициализируем зависимости ТОЛЬКО ОДИН РАЗ
+        if (!_isInitialized) {
+          print('🚀 Инициализация Composition Root...');
+          _compositionRoot = AppCompositionRoot();
+          _compositionRoot!.initialize(screenSize);
+          _isInitialized = true;
+          print('✅ Composition Root инициализирован');
+        }
+
+        // Строим дерево Provider'ов с готовыми зависимостями
+        return _buildProvidersTree(_compositionRoot!);
       },
+    );
+  }
+
+  /// Создаём дерево Provider'ов
+  ///
+  /// ВАЖНО: Используем Provider.value, а НЕ Provider()
+  ///
+  /// Provider.value - передаёт готовый объект
+  /// Provider() - создаёт новый объект (это плохо для нас)
+  Widget _buildProvidersTree(AppCompositionRoot root) {
+    return MultiProvider(
+      providers: [
+        // Core services
+        ChangeNotifierProvider.value(value: root.inputController),
+        // ChangeNotifierProvider.value(value: root.bonusManager),
+
+        // ViewModels - порядок не важен, т.к. объекты уже созданы
+        ChangeNotifierProvider.value(value: root.ballViewModel),
+        ChangeNotifierProvider.value(value: root.platformViewModel),
+        ChangeNotifierProvider.value(value: root.brickViewModel),
+        ChangeNotifierProvider.value(value: root.gunViewModel),
+
+        // Root ViewModel - главный ViewModel игры
+        ChangeNotifierProvider.value(value: root.gameViewModel),
+      ],
+      child: const GameScreen(),
     );
   }
 }
