@@ -1,4 +1,4 @@
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/ui/view_models/gameViewModel.dart';
 import 'package:flutter/material.dart';
 
 class GameStateWidget extends StatelessWidget {
@@ -31,4 +31,3 @@ class GameStateWidget extends StatelessWidget {
     );
   }
 }
-

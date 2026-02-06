@@ -23,21 +23,21 @@ class PlatformWidget extends StatelessWidget {
               ),
             ),
           ),
-          if (platform.scaled) BonusWidth()
+          if (platform.scaled) BonusWidthWidget()
         ]);
       },
     );
   }
 }
 
-class BonusWidth extends StatefulWidget {
-  const BonusWidth({super.key});
+class BonusWidthWidget extends StatefulWidget {
+  const BonusWidthWidget({super.key});
 
   @override
-  State<BonusWidth> createState() => _BonusWidthState();
+  State<BonusWidthWidget> createState() => _BonusWidthState();
 }
 
-class _BonusWidthState extends State<BonusWidth>
+class _BonusWidthState extends State<BonusWidthWidget>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _opacity;
@@ -141,4 +141,3 @@ class _BonusWidthState extends State<BonusWidth>
     );
   }
 }
-

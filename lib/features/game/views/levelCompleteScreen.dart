@@ -1,4 +1,4 @@
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/ui/view_models/gameViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,4 +28,3 @@ class LevelCompleteScreen extends StatelessWidget {
         )));
   }
 }
-

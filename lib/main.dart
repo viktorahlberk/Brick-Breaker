@@ -4,10 +4,10 @@ import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/features/game/level/levelManager.dart';
 import 'package:bouncer/core/timeManager.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
-import 'package:bouncer/features/game/views/gameScreen.dart';
+import 'package:bouncer/ui/views/gameScreen.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/ui/view_models/gameViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 import 'package:bouncer/core/particles.dart';
 // import 'package:bouncer/features/game/views/levelCompleteScreen.dart';
@@ -103,4 +103,3 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-

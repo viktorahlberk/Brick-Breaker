@@ -1,14 +1,14 @@
 import 'dart:developer';
 
 import 'package:bouncer/core/inputController.dart';
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/ui/view_models/gameViewModel.dart';
 import 'package:bouncer/features/game/views/ballWidget.dart';
 import 'package:bouncer/features/bonuses/views/bonusWidget.dart';
 import 'package:bouncer/features/game/views/brickWidget.dart';
 import 'package:bouncer/features/game/views/bulletLayerView.dart';
 import 'package:bouncer/features/game/views/gunWidget.dart';
 import 'package:bouncer/features/game/views/levelCompleteScreen.dart';
-import 'package:bouncer/features/game/views/platformWidget.dart';
+import 'package:bouncer/ui/views/widgets/platformWidget.dart';
 import 'package:bouncer/core/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -154,4 +154,3 @@ class GameScreen extends StatelessWidget {
     );
   }
 }
-
