@@ -1,5 +1,5 @@
 import 'package:bouncer/composition_root.dart';
-import 'package:bouncer/ui/views/gameScreen.dart';
+import 'package:bouncer/features/game/presentacion/screens/gameScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';

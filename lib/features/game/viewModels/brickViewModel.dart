@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
-import 'package:bouncer/models/brickModel.dart';
+import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';

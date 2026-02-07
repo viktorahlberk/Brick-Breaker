@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:bouncer/models/brickModel.dart';
+import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:flutter/material.dart';
 
 // import '../../domain/entities/brick.dart';
@@ -151,4 +151,3 @@ class LevelDifficulty {
     // this.mirrorHorizontal = true,
   });
 }
-

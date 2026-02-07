@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:bouncer/models/bulletModel.dart';
+import 'package:bouncer/features/game/domain/bulletModel.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,4 +42,3 @@ class BulletPainter extends CustomPainter {
     // return oldDelegate.bullets != bullets;
   }
 }
-

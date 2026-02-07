@@ -1,11 +1,11 @@
 import 'dart:developer' as dev;
-import 'package:bouncer/s/bonus_activator.dart';
+import 'package:bouncer/features/bonuses/bonus_activator.dart';
 import 'package:bouncer/core/enums/game_state.dart';
-import 'package:bouncer/s/game_loop_manager.dart';
-import 'package:bouncer/s/game_ui_state.dart';
+import 'package:bouncer/features/game/managers/game_loop_manager.dart';
+import 'package:bouncer/features/game/game_ui_state.dart';
 import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/core/inputController.dart';
-import 'package:bouncer/features/game/level/levelManager.dart';
+import 'package:bouncer/features/game/managers/levelManager.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/bonuses/bonusManager.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';

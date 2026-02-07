@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bouncer/models/brickModel.dart';
+import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';

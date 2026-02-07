@@ -1,4 +1,4 @@
-import 'package:bouncer/models/brickModel.dart';
+import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:flutter/material.dart';
 
 class BrickWidget extends StatelessWidget {
@@ -31,4 +31,3 @@ class BrickWidget extends StatelessWidget {
     );
   }
 }
-

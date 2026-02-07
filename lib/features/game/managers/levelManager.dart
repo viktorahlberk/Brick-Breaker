@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:bouncer/core/timeManager.dart';
-import 'package:bouncer/features/game/level/levelGenerator.dart';
+import 'package:bouncer/features/game/managers/levelGenerator.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';

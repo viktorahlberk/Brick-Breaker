@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:bouncer/models/bulletModel.dart';
+import 'package:bouncer/features/game/domain/bulletModel.dart';
 import 'package:flutter/material.dart';
 
 class GunModel {
@@ -31,4 +31,3 @@ class GunModel {
     activeBullets.add(BulletModel(shootingPoint));
   }
 }
-
