@@ -1,4 +1,4 @@
-import 'package:bouncer/features/bonuses/bonusEffect.dart';
+import 'package:bouncer/features/bonuses/domain/bonusEffect.dart';
 
 class AiControlEffect extends BonusEffect {
   @override
@@ -16,4 +16,3 @@ class AiControlEffect extends BonusEffect {
     // TODO: implement onUpdate
   }
 }
-

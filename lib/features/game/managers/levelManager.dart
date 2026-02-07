@@ -43,18 +43,18 @@ class LevelManager {
   void _generateLevel() {
     final testBricks = ProceduralLevelGenerator().generate(
       difficulty: const LevelDifficulty(
-        bonusChance: 0.5,
-        cols: 2,
-        emptyChance: 0,
-        rows: 1,
-        strongBrickChance: 0,
+        // bonusChance: 2,
+        cols: 9,
+        emptyChance: 10,
+        rows: 4,
+        strongBrickChance: 30,
       ),
       screenSize: brickViewModel.screenSize,
     );
 
     final normalBricks = ProceduralLevelGenerator().generate(
       difficulty: const LevelDifficulty(
-        bonusChance: 80,
+        // bonusChance: 80,
         cols: 3,
         emptyChance: 10,
         rows: 5,
@@ -65,5 +65,6 @@ class LevelManager {
 
     // brickViewModel.setBricks(normalBricks);
     brickViewModel.setBricks(testBricks);
+    log('Level generated');
   }
 }

@@ -1,5 +1,5 @@
-import 'package:bouncer/features/bonuses/bonusPickupVmModel.dart';
-import 'package:bouncer/features/bonuses/bonusType.dart';
+import 'package:bouncer/features/bonuses/domain/bonusType.dart';
+import 'package:bouncer/features/bonuses/presentacion/bonusPickupVmModel.dart';
 import 'package:flutter/material.dart';
 
 class BonusWidget extends StatelessWidget {

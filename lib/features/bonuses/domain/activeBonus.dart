@@ -1,4 +1,4 @@
-import 'package:bouncer/features/bonuses/bonusEffect.dart';
+import 'package:bouncer/features/bonuses/domain/bonusEffect.dart';
 
 class ActiveBonus {
   ActiveBonus({
@@ -19,4 +19,3 @@ class ActiveBonus {
     // effect.onApply();
   }
 }
-

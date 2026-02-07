@@ -1,8 +1,8 @@
-import 'package:bouncer/features/bonuses/bonusEffect.dart';
-import 'package:bouncer/features/bonuses/bonusType.dart';
 import 'package:bouncer/features/bonuses/bonusManager.dart';
-import 'package:bouncer/features/bonuses/effects/bigPlatformEffect.dart';
-import 'package:bouncer/features/bonuses/effects/platformGunEffect.dart';
+import 'package:bouncer/features/bonuses/domain/bonusEffect.dart';
+import 'package:bouncer/features/bonuses/domain/bonusType.dart';
+import 'package:bouncer/features/bonuses/domain/effects/bigPlatformEffect.dart';
+import 'package:bouncer/features/bonuses/domain/effects/platformGunEffect.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 
 /// Активатор бонусов

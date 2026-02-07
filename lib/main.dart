@@ -43,28 +43,22 @@ class AppInitializer extends StatefulWidget {
 }
 
 class _AppInitializerState extends State<AppInitializer> {
-  /// Ссылка на Composition Root
   AppCompositionRoot? _compositionRoot;
 
-  /// Флаг инициализации - гарантирует что initialize() вызовется один раз
   bool _isInitialized = false;
 
   @override
   void dispose() {
-    // ВАЖНО: Очищаем ресурсы при закрытии приложения
     _compositionRoot?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // LayoutBuilder даёт нам размер экрана через constraints
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Получаем размер экрана
         final screenSize = Size(constraints.maxWidth, constraints.maxHeight);
 
-        // Инициализируем зависимости ТОЛЬКО ОДИН РАЗ
         if (!_isInitialized) {
           print('🚀 Инициализация Composition Root...');
           _compositionRoot = AppCompositionRoot();
@@ -73,18 +67,11 @@ class _AppInitializerState extends State<AppInitializer> {
           print('✅ Composition Root инициализирован');
         }
 
-        // Строим дерево Provider'ов с готовыми зависимостями
         return _buildProvidersTree(_compositionRoot!);
       },
     );
   }
 
-  /// Создаём дерево Provider'ов
-  ///
-  /// ВАЖНО: Используем Provider.value, а НЕ Provider()
-  ///
-  /// Provider.value - передаёт готовый объект
-  /// Provider() - создаёт новый объект (это плохо для нас)
   Widget _buildProvidersTree(AppCompositionRoot root) {
     return MultiProvider(
       providers: [

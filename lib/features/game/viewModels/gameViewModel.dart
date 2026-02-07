@@ -1,5 +1,6 @@
 import 'dart:developer' as dev;
-import 'package:bouncer/features/bonuses/bonus_activator.dart';
+import 'package:bouncer/core/platform_detector.dart';
+import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/features/game/managers/game_loop_manager.dart';
 import 'package:bouncer/features/game/game_ui_state.dart';
@@ -98,9 +99,9 @@ class GameViewModel extends ChangeNotifier {
   /// Обновление всех систем
   void _updateSystems(double dt) {
     // Обновление ввода
-    if (input.inputType == InputType.touch) {
+    if (PlatformDetector.isMobile) {
       platformViewModel.moveCenterTo(input.tapTarget, dt);
-    } else {
+    } else if (PlatformDetector.isWeb) {
       platformViewModel.setInput(input.axis);
       platformViewModel.update(dt * input.timeScale);
     }

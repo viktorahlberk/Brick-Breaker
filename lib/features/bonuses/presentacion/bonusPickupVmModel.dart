@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:bouncer/features/bonuses/bonusModel.dart';
+import 'package:bouncer/features/bonuses/domain/bonusModel.dart';
 
 class BonusPickupViewModel {
   BonusPickupViewModel({required this.model});
@@ -19,4 +19,3 @@ class BonusPickupViewModel {
         Offset(model.position.dx, model.position.dy + fallingSpeed + dt);
   }
 }
-

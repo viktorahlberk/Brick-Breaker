@@ -1,4 +1,4 @@
-import 'package:bouncer/features/bonuses/bonus_activator.dart';
+import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/features/bonuses/bonusManager.dart';
 import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/core/inputController.dart';

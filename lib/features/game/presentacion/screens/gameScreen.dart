@@ -4,7 +4,7 @@ import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
 import 'package:bouncer/features/game/presentacion/widgets/ballWidget.dart';
-import 'package:bouncer/features/game/presentacion/widgets/bonusWidget.dart';
+import 'package:bouncer/features/bonuses/presentacion/bonusWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/brickWidget.dart';
 import 'package:bouncer/features/game/presentacion/screens/bulletLayerView.dart';
 import 'package:bouncer/features/game/presentacion/widgets/gunWidget.dart';

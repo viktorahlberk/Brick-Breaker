@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bouncer/features/bonuses/bonusEffect.dart';
+import 'package:bouncer/features/bonuses/domain/bonusEffect.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 
 class PlatformGunEffect extends BonusEffect {
@@ -39,4 +39,3 @@ class PlatformGunEffect extends BonusEffect {
     _timer = null;
   }
 }
-

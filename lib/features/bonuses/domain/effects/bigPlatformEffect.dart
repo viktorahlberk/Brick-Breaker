@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bouncer/features/bonuses/bonusEffect.dart';
+import 'package:bouncer/features/bonuses/domain/bonusEffect.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 
 class BigPlatformEffect extends BonusEffect {
@@ -68,4 +68,3 @@ class BigPlatformEffect extends BonusEffect {
     // _blinkTimer?.cancel();
   }
 }
-

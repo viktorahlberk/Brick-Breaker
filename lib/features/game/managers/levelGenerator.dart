@@ -6,9 +6,6 @@ import 'dart:ui';
 import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:flutter/material.dart';
 
-// import '../../domain/entities/brick.dart';
-// import '../../domain/level/level_difficulty.dart';
-
 class ProceduralLevelGenerator {
   final Random _rng;
 
@@ -18,7 +15,7 @@ class ProceduralLevelGenerator {
     required LevelDifficulty difficulty,
     required Size screenSize,
     double topOffset = 80,
-    double padding = 6,
+    double padding = 10,
   }) {
     final bricks = <BrickModel>[];
 
@@ -139,7 +136,7 @@ class LevelDifficulty {
   final int cols;
   final double emptyChance;
   final double strongBrickChance;
-  final double bonusChance;
+  // final double bonusChance;
   // final bool mirrorHorizontal;
 
   const LevelDifficulty({
@@ -147,7 +144,7 @@ class LevelDifficulty {
     required this.cols,
     required this.emptyChance,
     required this.strongBrickChance,
-    required this.bonusChance,
+    // required this.bonusChance,
     // this.mirrorHorizontal = true,
   });
 }
