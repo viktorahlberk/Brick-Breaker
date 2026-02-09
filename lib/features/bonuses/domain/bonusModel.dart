@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:bouncer/features/bonuses/bonusType.dart';
+import 'package:bouncer/features/bonuses/domain/bonusType.dart';
 
 class BonusModel {
   BonusModel({
@@ -12,4 +12,3 @@ class BonusModel {
   final Duration duration;
   Offset position;
 }
-

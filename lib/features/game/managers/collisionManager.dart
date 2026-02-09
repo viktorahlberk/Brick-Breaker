@@ -1,3 +1,4 @@
+import 'package:bouncer/core/audio_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:bouncer/core/particles.dart';
@@ -24,6 +25,10 @@ class CollisionManager {
   void checkCollisions() {
     final collisions =
         brickViewModel.checkCollisions(ballViewModel, gunViewModel);
+
+    if (collisions.isEmpty) return;
+
+    AudioManager().playSound();
     final sortedCollisions = collisions
         .where((c) => c.brickIndex != null)
         .toList()
