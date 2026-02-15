@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:bouncer/core/audio_manager.dart';
 import 'package:bouncer/features/game/domain/ballModel.dart';
 import 'package:bouncer/core/vector2.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
@@ -9,6 +10,7 @@ class BallViewModel extends ChangeNotifier {
   final BallPhysics physics;
   final BallModel _model;
   final Offset _startingPosition;
+  final audioManager = AudioManager();
 
   bool _isBelowScreen = false;
   bool get isBelowScreen => _isBelowScreen;
@@ -46,6 +48,7 @@ class BallViewModel extends ChangeNotifier {
       _isBelowScreen = true;
 
     if (ballRect.overlaps(platform.rect) && velocityY > 0) {
+      audioManager.playSound();
       final bounce = physics.bounceFromPlatform(
         ballX: _model.position.dx,
         platformCenterX: platform.position.x,
@@ -139,9 +142,18 @@ class BallPhysics {
     double vy = velocity.y;
     final pos = position ?? Vector2(0, 0);
 
-    if (pos.x - radius <= 0 && vx < 0) vx = -vx;
-    if (pos.x + radius >= screenWidth && vx > 0) vx = -vx;
-    if (pos.y - radius <= 0 && vy < 0) vy = -vy;
+    if (pos.x - radius <= 0 && vx < 0) {
+      vx = -vx;
+      AudioManager().playSound();
+    }
+    if (pos.x + radius >= screenWidth && vx > 0) {
+      vx = -vx;
+      AudioManager().playSound();
+    }
+    if (pos.y - radius <= 0 && vy < 0) {
+      vy = -vy;
+      AudioManager().playSound();
+    }
 
     return Vector2(vx, vy);
   }

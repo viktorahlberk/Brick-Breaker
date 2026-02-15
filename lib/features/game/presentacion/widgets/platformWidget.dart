@@ -1,5 +1,4 @@
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
-import 'package:bouncer/features/game/presentacion/widgets/gunWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

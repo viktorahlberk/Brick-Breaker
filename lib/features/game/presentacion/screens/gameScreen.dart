@@ -1,16 +1,14 @@
-import 'dart:developer';
-
 import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/core/inputController.dart';
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
-import 'package:bouncer/features/game/presentacion/widgets/ballWidget.dart';
-import 'package:bouncer/features/bonuses/presentacion/bonusWidget.dart';
-import 'package:bouncer/features/game/presentacion/widgets/brickWidget.dart';
-import 'package:bouncer/features/game/presentacion/screens/bulletLayerView.dart';
-import 'package:bouncer/features/game/presentacion/widgets/gunWidget.dart';
-import 'package:bouncer/features/game/presentacion/screens/levelCompleteScreen.dart';
-import 'package:bouncer/features/game/presentacion/widgets/platformWidget.dart';
 import 'package:bouncer/core/particles.dart';
+import 'package:bouncer/features/bonuses/presentacion/bonusWidget.dart';
+import 'package:bouncer/features/game/presentacion/screens/bulletLayerView.dart';
+import 'package:bouncer/features/game/presentacion/screens/levelCompleteScreen.dart';
+import 'package:bouncer/features/game/presentacion/widgets/ballWidget.dart';
+import 'package:bouncer/features/game/presentacion/widgets/brickWidget.dart';
+import 'package:bouncer/features/game/presentacion/widgets/gunWidget.dart';
+import 'package:bouncer/features/game/presentacion/widgets/platformWidget.dart';
+import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -23,44 +21,47 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  // GameEngine? _engine;
-  bool _initialized = false;
-  // void _initialize() {
-  //   final size = MediaQuery.of(context).size;
-  //   // final coordinator = GameCompositionRoot.create(size);
+  bool _levelCompleteRouteOpen = false;
 
-  //   // ✅ Просто создаём и запускаем движок
-  //   // _engine = GameEngine(coordinator: coordinator);
-  //   _engine!.start();
-  // }
+  void _maybeOpenLevelComplete(GameState state) {
+    if (state != GameState.levelCompleted) {
+      _levelCompleteRouteOpen = false;
+      return;
+    }
+
+    if (_levelCompleteRouteOpen || !mounted) return;
+    _levelCompleteRouteOpen = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.of(context)
+          .push(
+        MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider.value(
+            value: context.read<GameViewModel>(),
+            child: const LevelCompleteScreen(),
+          ),
+        ),
+      )
+          .then((_) {
+        if (mounted) {
+          _levelCompleteRouteOpen = false;
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final game = context.watch<GameViewModel>();
-    final input = context.watch<InputController>();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (game.gameState == GameState.levelCompleted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider.value(
-              value: context.read<GameViewModel>(),
-              child: const LevelCompleteScreen(),
-            ),
-          ),
-        );
-      }
-    });
+    final input = context.read<InputController>();
+    final gameState = context.select((GameViewModel vm) => vm.gameState);
+    _maybeOpenLevelComplete(gameState);
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: GestureDetector(
-        onPanUpdate: (details) {
-          input.setTarget(details.localPosition.dx);
-        },
-        onPanEnd: (_) {
-          input.resetTarget();
-        },
+        onPanUpdate: (details) => input.setTarget(details.localPosition.dx),
+        onPanEnd: (_) => input.resetTarget(),
         child: Focus(
           autofocus: true,
           onKeyEvent: (FocusNode node, KeyEvent event) {
@@ -69,103 +70,180 @@ class _GameScreenState extends State<GameScreen> {
             if (event is KeyDownEvent) {
               if (key == 'a' || key == 'arrowleft') {
                 input.pressLeft();
-                return KeyEventResult.handled;
-              }
-              if (key == 'd' || key == 'arrowright') {
+              } else if (key == 'd' || key == 'arrowright') {
                 input.pressRight();
-                return KeyEventResult.handled;
               }
+              return KeyEventResult.handled;
             }
 
             if (event is KeyUpEvent) {
               if (key == 'a' || key == 'arrowleft') {
                 input.releaseLeft();
-                return KeyEventResult.handled;
-              }
-              if (key == 'd' || key == 'arrowright') {
+              } else if (key == 'd' || key == 'arrowright') {
                 input.releaseRight();
-                return KeyEventResult.handled;
               }
+              return KeyEventResult.handled;
             }
 
             return KeyEventResult.handled;
           },
-          child: Stack(
+          child: const Stack(
             children: [
-              const GunWidget(),
-              const BallWidget(),
-              const PlatformWidget(),
-              const BulletLayerView(),
-              ...game.brickViewModel.bricks
-                  .map((brick) => BrickWidget(model: brick)),
-              ...game.bonusManager.pickups.map((vm) => BonusWidget(vm)),
-              CustomPaint(
-                painter: ParticlePainter(game.particleSystem),
-                size: Size.infinite,
-              ),
+              GunWidget(),
+              BallWidget(),
+              PlatformWidget(),
+              BulletLayerView(),
+              _BricksLayer(),
+              _BonusesLayer(),
+              _ParticlesLayer(),
+              _OverlayLayer(),
+              _PauseButton(),
+              _SettingsButton(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-              if (game.uiState.shouldShowActionButton)
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (game.gameState == GameState.gameOver)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Text(
-                            'ИГРА ОКОНЧЕНА',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 32,
-                              // fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ElevatedButton.icon(
-                        onPressed: game.onActionButtonPressed,
-                        icon: Icon(game.uiState.buttonIcon, size: 30),
-                        label: Text(
-                          game.uiState.buttonText,
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 15,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+class _BricksLayer extends StatelessWidget {
+  const _BricksLayer();
 
-              // Кнопка паузы во время игры
-              if (game.gameState == GameState.playing)
-                Positioned(
-                  top: 20,
-                  right: 20,
-                  child: IconButton(
-                    onPressed: game.pauseGame,
-                    icon: Icon(
-                      Icons.pause,
-                      color: Colors.white,
-                      size: 30,
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<GameViewModel>(
+      builder: (_, game, __) => Stack(
+        children: game.brickViewModel.bricks
+            .map((brick) => BrickWidget(model: brick))
+            .toList(),
+      ),
+    );
+  }
+}
+
+class _BonusesLayer extends StatelessWidget {
+  const _BonusesLayer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<GameViewModel>(
+      builder: (_, game, __) => Stack(
+        children:
+            game.bonusManager.pickups.map((vm) => BonusWidget(vm)).toList(),
+      ),
+    );
+  }
+}
+
+class _ParticlesLayer extends StatelessWidget {
+  const _ParticlesLayer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<GameViewModel>(
+      builder: (_, game, __) => CustomPaint(
+        painter: ParticlePainter(game.particleSystem),
+        size: Size.infinite,
+      ),
+    );
+  }
+}
+
+class _OverlayLayer extends StatelessWidget {
+  const _OverlayLayer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<GameViewModel, GameState>(
+      selector: (_, game) => game.gameState,
+      builder: (_, state, __) {
+        final game = context.read<GameViewModel>();
+        final uiState = game.uiState;
+
+        if (!uiState.shouldShowActionButton) {
+          return const SizedBox.shrink();
+        }
+
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (state == GameState.gameOver)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    'РР“Р Рђ РћРљРћРќР§Р•РќРђ',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 32,
                     ),
                   ),
                 ),
-              Positioned(
-                top: 20,
-                left: 20,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.settings,
-                    size: 30,
+              ElevatedButton.icon(
+                onPressed: game.onActionButtonPressed,
+                icon: Icon(uiState.buttonIcon, size: 30),
+                label: Text(
+                  uiState.buttonText,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 15,
                   ),
                 ),
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+}
+
+class _PauseButton extends StatelessWidget {
+  const _PauseButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<GameViewModel, GameState>(
+      selector: (_, game) => game.gameState,
+      builder: (_, state, __) {
+        if (state != GameState.playing) {
+          return const SizedBox.shrink();
+        }
+
+        return Positioned(
+          top: 20,
+          right: 20,
+          child: IconButton(
+            onPressed: context.read<GameViewModel>().pauseGame,
+            icon: const Icon(
+              Icons.pause,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SettingsButton extends StatelessWidget {
+  const _SettingsButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 20,
+      left: 20,
+      child: IconButton(
+        onPressed: () {},
+        icon: const Icon(
+          Icons.settings,
+          size: 30,
         ),
       ),
     );
