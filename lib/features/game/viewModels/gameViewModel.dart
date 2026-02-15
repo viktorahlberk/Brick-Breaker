@@ -7,6 +7,7 @@ import 'package:bouncer/features/game/game_ui_state.dart';
 import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/features/game/managers/levelManager.dart';
+import 'package:bouncer/features/game/managers/scoreManager.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/bonuses/bonusManager.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
@@ -29,7 +30,8 @@ class GameViewModel extends ChangeNotifier {
   final CollisionManager collisionManager;
   final LevelManager levelManager;
   final BonusManager bonusManager;
-  final BonusActivator bonusActivator; // ← Новая зависимость
+  final BonusActivator bonusActivator;
+  final ScoreManager scoreManager;
 
   // ========================================
   // ИГРОВОЙ ЦИКЛ
@@ -61,7 +63,8 @@ class GameViewModel extends ChangeNotifier {
     required this.collisionManager,
     required this.levelManager,
     required this.bonusManager,
-    required this.bonusActivator, // ← Новая зависимость
+    required this.bonusActivator,
+    required this.scoreManager,
   }) {
     // Создаём игровой цикл с callback'ом
     _gameLoop = GameLoopManager(onUpdate: _onUpdate);
@@ -220,6 +223,7 @@ class GameViewModel extends ChangeNotifier {
     bonusManager.reset();
     gunViewModel.reset();
     input.reset();
+    scoreManager.resetScore();
   }
 
   // ========================================

@@ -1,4 +1,5 @@
 import 'package:bouncer/core/audio_manager.dart';
+import 'package:bouncer/features/game/managers/scoreManager.dart';
 import 'package:flutter/material.dart';
 import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:bouncer/core/particles.dart';
@@ -13,14 +14,15 @@ class CollisionManager {
   final GunViewModel gunViewModel;
   final BonusManager bonusManager;
   final BallViewModel ballViewModel;
+  final ScoreManager scoreManager;
 
-  CollisionManager({
-    required this.brickViewModel,
-    required this.particleSystem,
-    required this.gunViewModel,
-    required this.bonusManager,
-    required this.ballViewModel,
-  });
+  CollisionManager(
+      {required this.brickViewModel,
+      required this.particleSystem,
+      required this.gunViewModel,
+      required this.bonusManager,
+      required this.ballViewModel,
+      required this.scoreManager});
 
   void checkCollisions() {
     final collisions =
@@ -55,7 +57,7 @@ class CollisionManager {
     } else {
       _destroyBrick(brick, brickRect.center);
     }
-
+    _addScore();
     ballViewModel.velocityY = -ballViewModel.velocityY;
   }
 
@@ -74,6 +76,11 @@ class CollisionManager {
     } else if (collision.destroyed) {
       _destroyBrick(brick, brickRect.center);
     }
+    _addScore();
+  }
+
+  _addScore() {
+    scoreManager.add(BrickType.normal);
   }
 
   void _destroyBrick(BrickModel brick, Offset center) {

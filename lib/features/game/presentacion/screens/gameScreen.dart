@@ -8,6 +8,7 @@ import 'package:bouncer/features/game/presentacion/widgets/ballWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/brickWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/gunWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/platformWidget.dart';
+import 'package:bouncer/features/game/presentacion/widgets/scoreWidget.dart';
 import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,6 +90,7 @@ class _GameScreenState extends State<GameScreen> {
           },
           child: const Stack(
             children: [
+              ScoreWidget(),
               GunWidget(),
               BallWidget(),
               PlatformWidget(),
@@ -173,7 +175,7 @@ class _OverlayLayer extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: Text(
-                    'РР“Р Рђ РћРљРћРќР§Р•РќРђ',
+                    'Game over.',
                     style: TextStyle(
                       color: Colors.red,
                       fontSize: 32,

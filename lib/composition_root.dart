@@ -4,6 +4,7 @@ import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/features/game/managers/levelManager.dart';
 import 'package:bouncer/core/timeManager.dart';
+import 'package:bouncer/features/game/managers/scoreManager.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
@@ -31,6 +32,7 @@ class AppCompositionRoot {
   late final InputController inputController;
   late final TimeManager timeManager;
   late final BonusManager bonusManager;
+  late final ScoreManager scoreManager;
 
   // ViewModels
   late final BallViewModel ballViewModel;
@@ -75,6 +77,7 @@ class AppCompositionRoot {
     particleSystem = ParticleSystem();
     inputController = InputController();
     bonusManager = BonusManager();
+    scoreManager = ScoreManager();
 
     // ========================================
     // 2. VIEWMODELS (зависят от сервисов)
@@ -111,6 +114,7 @@ class AppCompositionRoot {
       gunViewModel: gunViewModel,
       bonusManager: bonusManager,
       ballViewModel: ballViewModel,
+      scoreManager: scoreManager,
     );
 
     // ========================================
@@ -127,6 +131,7 @@ class AppCompositionRoot {
       levelManager: levelManager,
       bonusManager: bonusManager,
       bonusActivator: bonusActivator,
+      scoreManager: scoreManager,
     );
   }
 
