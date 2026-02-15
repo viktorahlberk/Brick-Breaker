@@ -94,8 +94,7 @@ class AppCompositionRoot {
     // 3. MANAGERS (зависят от ViewModels)
     // ========================================
 
-    // TimeManager зависит от InputController
-    timeManager = TimeManager(inputController);
+    timeManager = TimeManager();
     BonusActivator bonusActivator = BonusActivator(
         platformViewModel: platformViewModel, bonusManager: bonusManager);
 
@@ -132,6 +131,7 @@ class AppCompositionRoot {
       bonusManager: bonusManager,
       bonusActivator: bonusActivator,
       scoreManager: scoreManager,
+      timeManager: timeManager,
     );
   }
 

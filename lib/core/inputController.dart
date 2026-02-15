@@ -14,10 +14,6 @@ class InputController extends ChangeNotifier {
   double? _tapTarget;
   double? get tapTarget => _tapTarget;
 
-  // time
-  double _timeScale = 1;
-  double get timeScale => _timeScale;
-
   bool _paused = false;
   bool get paused => _paused;
 
@@ -64,17 +60,17 @@ class InputController extends ChangeNotifier {
     // notifyListeners();
   }
 
-  // ===== time =====
-  //TODO Make Time Service class.
-  void setSlowMotion(double scale) {
-    _timeScale = scale.clamp(0.05, 1.0);
-    notifyListeners();
-  }
+  // // ===== time =====
+  // //TODO Make Time Service class.
+  // void setSlowMotion(double scale) {
+  //   _timeScale = scale.clamp(0.05, 1.0);
+  //   notifyListeners();
+  // }
 
-  void resetTimeScale() {
-    _timeScale = 1.0;
-    notifyListeners();
-  }
+  // void resetTimeScale() {
+  //   _timeScale = 1.0;
+  //   notifyListeners();
+  // }
 
   void togglePause() {
     _paused = !_paused;
@@ -86,7 +82,7 @@ class InputController extends ChangeNotifier {
     _rightPressed = false;
     _axis = 0;
     _tapTarget = null;
-    _timeScale = 1.0;
+    // _timeScale = 1.0;
     _paused = false;
     notifyListeners();
   }

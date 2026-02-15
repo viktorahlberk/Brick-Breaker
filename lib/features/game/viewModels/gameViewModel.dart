@@ -1,5 +1,6 @@
 import 'dart:developer' as dev;
 import 'package:bouncer/core/platform_detector.dart';
+import 'package:bouncer/core/timeManager.dart';
 import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/features/game/managers/game_loop_manager.dart';
@@ -32,6 +33,7 @@ class GameViewModel extends ChangeNotifier {
   final BonusManager bonusManager;
   final BonusActivator bonusActivator;
   final ScoreManager scoreManager;
+  final TimeManager timeManager;
 
   // ========================================
   // ИГРОВОЙ ЦИКЛ
@@ -65,6 +67,7 @@ class GameViewModel extends ChangeNotifier {
     required this.bonusManager,
     required this.bonusActivator,
     required this.scoreManager,
+    required this.timeManager,
   }) {
     // Создаём игровой цикл с callback'ом
     _gameLoop = GameLoopManager(onUpdate: _onUpdate);
@@ -106,11 +109,11 @@ class GameViewModel extends ChangeNotifier {
       platformViewModel.moveCenterTo(input.tapTarget, dt);
     } else if (PlatformDetector.isWeb) {
       platformViewModel.setInput(input.axis);
-      platformViewModel.update(dt * input.timeScale);
+      platformViewModel.update(dt * timeManager.timeScale);
     }
 
     // Обновление игровых объектов
-    final scaledDt = dt * input.timeScale;
+    final scaledDt = dt * timeManager.timeScale;
     ballViewModel.updateAndMove(scaledDt, platformViewModel);
     gunViewModel.update(scaledDt);
     particleSystem.update(scaledDt);
