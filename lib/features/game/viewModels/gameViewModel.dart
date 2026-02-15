@@ -70,7 +70,7 @@ class GameViewModel extends ChangeNotifier {
     required this.timeManager,
   }) {
     // Создаём игровой цикл с callback'ом
-    _gameLoop = GameLoopManager(onUpdate: _onUpdate);
+    _gameLoop = GameLoopManager(onUpdate: _onUpdate)..start();
 
     // Инициализируем уровень
     levelManager.resetLevel();
@@ -87,7 +87,14 @@ class GameViewModel extends ChangeNotifier {
   /// Вызывается из GameLoopManager с deltaTime
   void _onUpdate(double dt) {
     // Пропускаем обновление если на паузе или не играем
-    if (input.paused || _gameState != GameState.playing) return;
+    if (_gameState == GameState.initial) {
+      _updatePlatform(dt);
+      ballViewModel.moveToPlatformCenter(platformViewModel);
+      // return;
+    }
+    if (input.paused || _gameState != GameState.playing) {
+      return;
+    }
 
     _updateSystems(dt);
     collisionManager.checkCollisions();
@@ -102,15 +109,19 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Обновление всех систем
-  void _updateSystems(double dt) {
-    // Обновление ввода
+  _updatePlatform(double dt) {
     if (PlatformDetector.isMobile) {
       platformViewModel.moveCenterTo(input.tapTarget, dt);
     } else if (PlatformDetector.isWeb) {
       platformViewModel.setInput(input.axis);
       platformViewModel.update(dt * timeManager.timeScale);
     }
+    // notifyListeners();
+  }
+
+  /// Обновление всех систем
+  void _updateSystems(double dt) {
+    _updatePlatform(dt);
 
     // Обновление игровых объектов
     final scaledDt = dt * timeManager.timeScale;
@@ -156,8 +167,13 @@ class GameViewModel extends ChangeNotifier {
   void onActionButtonPressed() {
     switch (_gameState) {
       case GameState.initial:
-      case GameState.gameOver:
         startNewGame();
+        break;
+
+      case GameState.gameOver:
+        _initializeGame();
+        // startNewGame();
+        // _gameState = GameState.initial;
         break;
 
       case GameState.paused:
@@ -174,25 +190,33 @@ class GameViewModel extends ChangeNotifier {
     }
   }
 
+  _initializeGame() {
+    _gameState = GameState.initial;
+    _gameLoop.start();
+    _resetGame();
+    notifyListeners();
+  }
+
   /// Начать новую игру
   void startNewGame() {
     dev.log('🎮 Starting new game');
 
-    _resetGame();
+    // _resetGame();
     _gameState = GameState.playing;
     _gameLoop.start();
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   /// Начать следующий уровень
   void startNextLevel() {
     dev.log('🎮 Starting next level');
 
-    _resetGame();
+    // _resetGame();
+    _initializeGame();
     _gameState = GameState.initial;
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   /// Продолжить игру

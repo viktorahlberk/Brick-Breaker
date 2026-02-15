@@ -23,7 +23,7 @@ class BallViewModel extends ChangeNotifier {
             Offset(screenSize.width / 2, screenSize.height * 0.89),
         _model = BallModel(
             position: Offset(screenSize.width / 2, screenSize.height * 0.89)),
-        physics = BallPhysics(speed: 200);
+        physics = BallPhysics();
 
   BallModel get model => _model;
 
@@ -31,6 +31,11 @@ class BallViewModel extends ChangeNotifier {
 
   Rect get ballRect =>
       Rect.fromCircle(center: _model.position, radius: _model.radius);
+
+  void moveToPlatformCenter(PlatformViewModel platform) {
+    _model.position = Offset(platform.platformCenterX, _model.position.dy);
+    notifyListeners();
+  }
 
   void updateAndMove(double dt, PlatformViewModel platform) {
     final wallVelocity = physics.bounceFromWall(
@@ -83,8 +88,8 @@ class BallViewModel extends ChangeNotifier {
     const minAngle = -150 * pi / 180;
     const maxAngle = -30 * pi / 180;
     final angle = minAngle + Random().nextDouble() * (maxAngle - minAngle);
-    velocityX = physics.speed * cos(angle);
-    velocityY = physics.speed * sin(angle);
+    velocityX = physics._speed * cos(angle);
+    velocityY = physics._speed * sin(angle);
   }
 
   void reset() {
@@ -101,9 +106,9 @@ class BallPhysics {
   static const double maxBounceAngle = pi / 3;
   static const double platformInfluenceFactor = 0.3;
 
-  final double speed;
+  final double _speed = 300;
 
-  BallPhysics({required this.speed});
+  BallPhysics();
 
   Vector2 bounceFromPlatform({
     required double ballX,
@@ -119,16 +124,16 @@ class BallPhysics {
 
     final angle = hitOffset * maxBounceAngle;
 
-    var vx = directionX * speed * sin(angle).abs();
-    var vy = -speed * cos(angle);
+    var vx = directionX * _speed * sin(angle).abs();
+    var vy = -_speed * cos(angle);
 
     final influence = platformVelocityX * platformInfluenceFactor;
     if (influence.sign == directionX) vx += influence;
 
     // нормализация скорости
     final length = sqrt(vx * vx + vy * vy);
-    vx = vx / length * speed;
-    vy = vy / length * speed;
+    vx = vx / length * _speed;
+    vy = vy / length * _speed;
 
     return Vector2(vx, vy);
   }

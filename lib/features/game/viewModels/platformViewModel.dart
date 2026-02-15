@@ -17,7 +17,7 @@ class PlatformViewModel extends ChangeNotifier {
   bool scaled = false;
   bool isGunActive = false;
   final Size _screensize;
-  double platformCenter;
+  // double _platformCenter;
 
   double velocityX = 0;
 
@@ -27,7 +27,8 @@ class PlatformViewModel extends ChangeNotifier {
         baseWidth = screenSize.width * 0.2,
         width = screenSize.width * 0.2,
         _position = Vector2(screenSize.width / 2, screenSize.height * 0.9),
-        platformCenter = screenSize.width / 2,
+        // platformCenterX = screenSize.width / 2,
+        // platformCenterX = _position.
         _physics = PlatformPhysics(
           speed: 600,
           screenWidth: screenSize.width,
@@ -48,6 +49,8 @@ class PlatformViewModel extends ChangeNotifier {
         width: width,
         height: height,
       );
+
+  double get platformCenterX => _position.x;
 
   void setInput(double axis) {
     velocityX = axis.clamp(-1.0, 1.0) * _physics.speed;
