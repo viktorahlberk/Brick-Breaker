@@ -3,6 +3,7 @@ import 'package:bouncer/core/platform_detector.dart';
 import 'package:bouncer/core/timeManager.dart';
 import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/core/enums/game_state.dart';
+import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
 import 'package:bouncer/features/game/managers/game_loop_manager.dart';
 import 'package:bouncer/features/game/game_ui_state.dart';
 import 'package:bouncer/features/game/managers/collisionManager.dart';
@@ -34,6 +35,7 @@ class GameViewModel extends ChangeNotifier {
   final BonusActivator bonusActivator;
   final ScoreManager scoreManager;
   final TimeManager timeManager;
+  final ArchitectViewModel architectViewModel;
 
   // ========================================
   // ИГРОВОЙ ЦИКЛ
@@ -68,6 +70,7 @@ class GameViewModel extends ChangeNotifier {
     required this.bonusActivator,
     required this.scoreManager,
     required this.timeManager,
+    required this.architectViewModel,
   }) {
     // Создаём игровой цикл с callback'ом
     _gameLoop = GameLoopManager(onUpdate: _onUpdate)..start();
@@ -122,6 +125,7 @@ class GameViewModel extends ChangeNotifier {
   /// Обновление всех систем
   void _updateSystems(double dt) {
     _updatePlatform(dt);
+    architectViewModel.update(dt, this);
 
     // Обновление игровых объектов
     final scaledDt = dt * timeManager.timeScale;
@@ -262,4 +266,12 @@ class GameViewModel extends ChangeNotifier {
     _gameLoop.dispose(); // ← Вместо _ticker.dispose()
     super.dispose();
   }
+
+  // void spawnStructuralBarrier() {
+  //   field.spawnBarrier();
+  // }
+
+  // void shrinkPlayfield(double dt) {
+  //   field.shrink(dt);
+  // }
 }

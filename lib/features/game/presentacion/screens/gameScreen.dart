@@ -2,6 +2,9 @@ import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/features/bonuses/presentacion/bonusWidget.dart';
+// import 'package:bouncer/features/bosses/architect/domain/architect_boss.dart';
+import 'package:bouncer/features/bosses/architect/presentacion/architect_boss_widget.dart';
+// import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
 import 'package:bouncer/features/game/presentacion/screens/bulletLayerView.dart';
 import 'package:bouncer/features/game/presentacion/screens/levelCompleteScreen.dart';
 import 'package:bouncer/features/game/presentacion/widgets/ballWidget.dart';
@@ -56,10 +59,12 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     final input = context.read<InputController>();
     final gameState = context.select((GameViewModel vm) => vm.gameState);
+    final architectViewModel =
+        context.select((GameViewModel vm) => vm.architectViewModel);
     _maybeOpenLevelComplete(gameState);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey,
       body: GestureDetector(
         onPanUpdate: (details) => input.setTarget(details.localPosition.dx),
         onPanEnd: (_) => input.resetTarget(),
@@ -88,19 +93,20 @@ class _GameScreenState extends State<GameScreen> {
 
             return KeyEventResult.handled;
           },
-          child: const Stack(
+          child: Stack(
             children: [
-              ScoreWidget(),
-              GunWidget(),
+              ArchitectBossWidget(vm: architectViewModel),
+              // ScoreWidget(),
+              // GunWidget(),
               BallWidget(),
               PlatformWidget(),
-              BulletLayerView(),
+              // BulletLayerView(),
               _BricksLayer(),
-              _BonusesLayer(),
-              _ParticlesLayer(),
+              // _BonusesLayer(),
+              // _ParticlesLayer(),
               _OverlayLayer(),
               _PauseButton(),
-              _SettingsButton(),
+              // _SettingsButton(),
             ],
           ),
         ),
@@ -167,37 +173,36 @@ class _OverlayLayer extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (state == GameState.gameOver)
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 20),
-                  child: Text(
-                    'Game over.',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 32,
-                    ),
-                  ),
-                ),
-              ElevatedButton.icon(
-                onPressed: game.onActionButtonPressed,
-                icon: Icon(uiState.buttonIcon, size: 30),
-                label: Text(
-                  uiState.buttonText,
-                  style: const TextStyle(fontSize: 18),
-                ),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 15,
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (state == GameState.gameOver)
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: Text(
+                  'Game over.',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 32,
                   ),
                 ),
               ),
-            ],
-          ),
+            ElevatedButton.icon(
+              onPressed: game.onActionButtonPressed,
+              icon: Icon(uiState.buttonIcon, size: 30),
+              label: Text(
+                uiState.buttonText,
+                style: const TextStyle(fontSize: 18),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 15,
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

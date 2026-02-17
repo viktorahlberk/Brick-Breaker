@@ -13,26 +13,29 @@ class LevelManager {
   final TimeManager timeManager;
   final PlatformViewModel platformViewModel;
 
-  bool _levelCompletionScheduled = false;
-
   LevelManager(
       {required this.brickViewModel,
       required this.ballViewModel,
       required this.timeManager,
       required this.platformViewModel});
 
+  bool _isBossLevel = true;
+  bool get isBossLevel => _isBossLevel;
+  bool _levelCompletionScheduled = false;
+
   void resetLevel() {
     log('Level resetted.');
     ballViewModel.reset();
     ballViewModel.launch();
     platformViewModel.reset();
-    _generateLevel();
+    if (!_isBossLevel) _generateBricks();
+    // _generateBricks();
     _levelCompletionScheduled = false;
   }
 
   void checkLevelCompletion(VoidCallback onLevelCompleted) {
     if (_levelCompletionScheduled) return;
-
+    if (_isBossLevel) return;
     if (brickViewModel.isEmpty) {
       _levelCompletionScheduled = true;
       timeManager.slowMotion(0.3, milliseconds: 2000);
@@ -40,7 +43,7 @@ class LevelManager {
     }
   }
 
-  void _generateLevel() {
+  void _generateBricks() {
     final testBricks = ProceduralLevelGenerator().generate(
       difficulty: const LevelDifficulty(
         // bonusChance: 2,

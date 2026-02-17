@@ -1,5 +1,11 @@
 import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/features/bonuses/bonusManager.dart';
+import 'package:bouncer/features/bosses/architect/domain/architect_ai.dart';
+import 'package:bouncer/features/bosses/architect/domain/architect_boss.dart';
+import 'package:bouncer/features/bosses/architect/domain/architect_config.dart';
+import 'package:bouncer/features/bosses/architect/domain/architect_phase.dart';
+import 'package:bouncer/features/bosses/architect/domain/architect_state.dart';
+import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
 import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/features/game/managers/levelManager.dart';
@@ -116,6 +122,15 @@ class AppCompositionRoot {
       scoreManager: scoreManager,
     );
 
+    ArchitectViewModel architectViewModel = ArchitectViewModel(
+      boss: ArchitectBoss(
+        ArchitectState(
+            hp: 100, phase: ArchitectPhase.gridLock, timeSinceLastGrid: 1000),
+        ArchitectAI(ArchitectConfig.create()),
+      ),
+      screenSize: screenSize,
+    );
+
     // ========================================
     // 4. ROOT VIEWMODEL (зависит от всего)
     // ========================================
@@ -132,6 +147,7 @@ class AppCompositionRoot {
       bonusActivator: bonusActivator,
       scoreManager: scoreManager,
       timeManager: timeManager,
+      architectViewModel: architectViewModel,
     );
   }
 
