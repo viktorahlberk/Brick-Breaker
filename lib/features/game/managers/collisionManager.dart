@@ -51,12 +51,17 @@ class CollisionManager {
     final brick = brickViewModel.bricks[collision.brickIndex!];
     final brickRect = _getBrickRect(brick);
 
-    if (collision.isHardBrick) {
-      brick.type = BrickType.normal;
-      brick.color = Colors.white;
-    } else {
+    brick.hp -= collision.power;
+    if (brick.hp < 0) {
       _destroyBrick(brick, brickRect.center);
     }
+    // if (collision.isHardBrick) {
+    // brick.type = BrickType.normal;
+    // brick.color = Colors.white;
+    // } else {
+    // _destroyBrick(brick, brickRect.center);
+    // }
+
     _addScore();
     ballViewModel.velocityY = -ballViewModel.velocityY;
   }

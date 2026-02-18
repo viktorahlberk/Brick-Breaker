@@ -11,6 +11,7 @@ class BrickModel {
   final double y;
   final double width;
   final double height;
+  double hp = 200;
   BrickType type;
   Color color;
 
@@ -41,4 +42,3 @@ class BrickModel {
     }
   }
 }
-

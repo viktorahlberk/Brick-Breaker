@@ -86,12 +86,14 @@ class BrickViewModel extends ChangeNotifier {
             brickIndex: brickIndex,
             destroyed: false,
             isHardBrick: true,
+            power: ball.model.power,
           ));
         } else {
           results.add(CollisionResult(
             brickIndex: brickIndex,
             destroyed: true,
             isHardBrick: false,
+            power: ball.model.power,
           ));
         }
       }
@@ -108,6 +110,7 @@ class BrickViewModel extends ChangeNotifier {
               destroyed: false,
               isHardBrick: true,
               bulletIndex: bulletIndex,
+              power: 20,
             ));
           } else {
             results.add(CollisionResult(
@@ -115,6 +118,7 @@ class BrickViewModel extends ChangeNotifier {
               destroyed: true,
               isHardBrick: false,
               bulletIndex: bulletIndex,
+              power: 20,
             ));
           }
         }
@@ -148,11 +152,13 @@ class CollisionResult {
   final bool destroyed; // кирпич уничтожен или просто повреждён
   final bool isHardBrick;
   final int? bulletIndex; // если столкновение с пулей
+  final double power;
 
   CollisionResult({
     this.brickIndex,
     this.destroyed = false,
     this.isHardBrick = false,
     this.bulletIndex,
+    required this.power,
   });
 }
