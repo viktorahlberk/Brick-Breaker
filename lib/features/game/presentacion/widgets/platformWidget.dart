@@ -11,12 +11,12 @@ class PlatformWidget extends StatelessWidget {
       builder: (__, platform, _) {
         return Stack(children: [
           Positioned(
-            left: platform.position.x - (platform.baseWidth / 2),
+            left: platform.position.x - (platform.width / 2),
             top: platform.position.y - (platform.height / 2),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(3),
               child: Container(
-                width: platform.baseWidth,
+                width: platform.width,
                 height: platform.height,
                 color: Colors.white,
               ),

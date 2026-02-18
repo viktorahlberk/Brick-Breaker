@@ -17,6 +17,7 @@ import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 import 'package:bouncer/core/particles.dart';
+import 'package:bouncer/features/upgrades/upgradeManager.dart';
 import 'package:flutter/material.dart';
 
 /// Composition Root - единственное место создания зависимостей
@@ -39,6 +40,7 @@ class AppCompositionRoot {
   late final TimeManager timeManager;
   late final BonusManager bonusManager;
   late final ScoreManager scoreManager;
+  late final UpgradeManager upgradeManager;
 
   // ViewModels
   late final BallViewModel ballViewModel;
@@ -84,6 +86,7 @@ class AppCompositionRoot {
     inputController = InputController();
     bonusManager = BonusManager();
     scoreManager = ScoreManager();
+    upgradeManager = UpgradeManager();
 
     // ========================================
     // 2. VIEWMODELS (зависят от сервисов)
@@ -148,6 +151,7 @@ class AppCompositionRoot {
       scoreManager: scoreManager,
       timeManager: timeManager,
       architectViewModel: architectViewModel,
+      upgradeManager: upgradeManager,
     );
   }
 

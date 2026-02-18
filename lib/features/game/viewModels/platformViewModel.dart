@@ -79,7 +79,7 @@ class PlatformViewModel extends ChangeNotifier {
     width = baseWidth * value;
   }
 
-  void normalizeScale() {
+  void _normalizeScale() {
     scale = 1;
     width = baseWidth;
     scaled = false;
@@ -88,7 +88,7 @@ class PlatformViewModel extends ChangeNotifier {
   void reset() {
     _position = Vector2(_screensize.width / 2, _screensize.height * 0.9);
     velocityX = 0;
-    normalizeScale();
+    // _normalizeScale();
     notifyListeners();
   }
 }

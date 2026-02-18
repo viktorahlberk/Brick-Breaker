@@ -19,7 +19,7 @@ class LevelManager {
       required this.timeManager,
       required this.platformViewModel});
 
-  bool _isBossLevel = true;
+  bool _isBossLevel = false;
   bool get isBossLevel => _isBossLevel;
   bool _levelCompletionScheduled = false;
 
@@ -38,8 +38,8 @@ class LevelManager {
     if (_isBossLevel) return;
     if (brickViewModel.isEmpty) {
       _levelCompletionScheduled = true;
-      timeManager.slowMotion(0.3, milliseconds: 2000);
-      Future.delayed(Duration(seconds: 2), onLevelCompleted);
+      timeManager.slowMotion(0.3, milliseconds: 5000);
+      Future.delayed(Duration(seconds: 3), onLevelCompleted);
     }
   }
 
@@ -47,10 +47,10 @@ class LevelManager {
     final testBricks = ProceduralLevelGenerator().generate(
       difficulty: const LevelDifficulty(
         // bonusChance: 2,
-        cols: 9,
-        emptyChance: 10,
-        rows: 4,
-        strongBrickChance: 30,
+        cols: 1,
+        emptyChance: 0,
+        rows: 1,
+        strongBrickChance: 0,
       ),
       screenSize: brickViewModel.screenSize,
     );

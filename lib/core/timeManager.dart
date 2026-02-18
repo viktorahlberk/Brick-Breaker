@@ -1,4 +1,4 @@
-import 'package:bouncer/core/inputController.dart';
+// import 'package:bouncer/core/inputController.dart';w
 
 class TimeManager {
   // final InputController input;
@@ -15,23 +15,22 @@ class TimeManager {
     _hitStopActive = true;
 
     final prevScale = timeScale;
-    setSlowMotion(0.0001);
+    _setSlowMotion(0.0001);
 
     await Future.delayed(Duration(milliseconds: (duration * 1000).toInt()));
 
-    setSlowMotion(prevScale);
+    _setSlowMotion(prevScale);
     _hitStopActive = false;
   }
 
   void slowMotion(double factor, {int milliseconds = 1000}) {
-    setSlowMotion(factor);
+    _setSlowMotion(factor);
     Future.delayed(
         Duration(milliseconds: milliseconds), () => _resetTimeScale());
   }
 
-  void setSlowMotion(double scale) {
+  void _setSlowMotion(double scale) {
     _timeScale = scale.clamp(0.05, 1.0);
-    // notifyListeners();
   }
 
   void _resetTimeScale() {

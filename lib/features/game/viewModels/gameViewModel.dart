@@ -16,6 +16,9 @@ import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 import 'package:bouncer/core/particles.dart';
+import 'package:bouncer/features/upgrades/domain/entities/upgradeEffect.dart';
+import 'package:bouncer/features/upgrades/effects/increasePlatformSizeEffect.dart';
+import 'package:bouncer/features/upgrades/upgradeManager.dart';
 import 'package:flutter/material.dart';
 
 class GameViewModel extends ChangeNotifier {
@@ -36,6 +39,7 @@ class GameViewModel extends ChangeNotifier {
   final ScoreManager scoreManager;
   final TimeManager timeManager;
   final ArchitectViewModel architectViewModel;
+  final UpgradeManager upgradeManager;
 
   // ========================================
   // ИГРОВОЙ ЦИКЛ
@@ -71,6 +75,7 @@ class GameViewModel extends ChangeNotifier {
     required this.scoreManager,
     required this.timeManager,
     required this.architectViewModel,
+    required this.upgradeManager,
   }) {
     // Создаём игровой цикл с callback'ом
     _gameLoop = GameLoopManager(onUpdate: _onUpdate)..start();
@@ -89,6 +94,8 @@ class GameViewModel extends ChangeNotifier {
   ///
   /// Вызывается из GameLoopManager с deltaTime
   void _onUpdate(double dt) {
+    final scaledDt = dt * timeManager.timeScale;
+    particleSystem.update(scaledDt);
     // Пропускаем обновление если на паузе или не играем
     if (_gameState == GameState.initial) {
       _updatePlatform(dt);
@@ -131,7 +138,6 @@ class GameViewModel extends ChangeNotifier {
     final scaledDt = dt * timeManager.timeScale;
     ballViewModel.updateAndMove(scaledDt, platformViewModel);
     gunViewModel.update(scaledDt);
-    particleSystem.update(scaledDt);
 
     // Обновление и проверка бонусов
     bonusManager.update(scaledDt);
@@ -158,6 +164,7 @@ class GameViewModel extends ChangeNotifier {
     levelManager.checkLevelCompletion(() {
       _gameState = GameState.levelCompleted;
       dev.log('🎉 Level Completed');
+      notifyListeners();
     });
   }
 
@@ -267,6 +274,9 @@ class GameViewModel extends ChangeNotifier {
     super.dispose();
   }
 
+  void addUpgrade(UpgradeEffect upgradeEffect) {
+    upgradeManager.addUpgrade(upgradeEffect, this);
+  }
   // void spawnStructuralBarrier() {
   //   field.spawnBarrier();
   // }

@@ -1,6 +1,9 @@
+import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/features/bosses/architect/presentacion/architect_painter.dart';
 import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
+import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ArchitectBossWidget extends StatelessWidget {
   final ArchitectViewModel vm;
@@ -9,22 +12,28 @@ class ArchitectBossWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: vm.position.dx,
-      top: vm.position.dy,
-      child: AnimatedBuilder(
-        animation: vm,
-        builder: (_, __) {
-          return CustomPaint(
-            painter: ArchitectPainter(
-              hpRatio: vm.hp,
-              phase: vm.phase,
-            ),
-            // size: Size(150, 150),
-            size: Size(vm.boss.size, vm.boss.size),
-          );
-        },
-      ),
+    return Selector<GameViewModel, bool>(
+      builder: (_, isBossLevel, __) {
+        return isBossLevel == true
+            ? Positioned(
+                left: vm.position.dx,
+                top: vm.position.dy,
+                child: AnimatedBuilder(
+                  animation: vm,
+                  builder: (_, __) {
+                    return CustomPaint(
+                      painter: ArchitectPainter(
+                        hpRatio: vm.hp,
+                        phase: vm.phase,
+                      ),
+                      size: Size(vm.boss.size, vm.boss.size),
+                    );
+                  },
+                ),
+              )
+            : Container();
+      },
+      selector: (context, vm) => vm.levelManager.isBossLevel,
     );
   }
 }

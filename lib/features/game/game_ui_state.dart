@@ -77,16 +77,16 @@ class GameUIState {
   String get buttonText {
     switch (gameState) {
       case GameState.initial:
-        return 'ИГРАТЬ';
+        return 'Play';
 
       case GameState.paused:
-        return 'ПРОДОЛЖИТЬ';
+        return 'Continue';
 
       case GameState.gameOver:
-        return 'ИГРАТЬ СНОВА';
+        return 'Replay';
 
       case GameState.levelCompleted:
-        return 'СЛЕДУЮЩИЙ УРОВЕНЬ';
+        return 'Next level';
 
       case GameState.playing:
         return ''; // Не используется (кнопка скрыта)

@@ -45,7 +45,7 @@ class BigPlatformEffect extends BonusEffect {
   void onRemove() {
     _mainTimer?.cancel();
     _blinkTimer?.cancel();
-    platformViewModel.normalizeScale();
+    // platformViewModel.normalizeScale();a
     platformViewModel.isBlinking = false;
     // platformViewModel.scaled = false;
     // platformViewModel.isBlinking = false;
