@@ -77,6 +77,7 @@ class _AppInitializerState extends State<AppInitializer> {
       providers: [
         // Core services
         ChangeNotifierProvider.value(value: root.inputController),
+        ChangeNotifierProvider.value(value: root.flashController),
         // ChangeNotifierProvider.value(value: root.bonusManager),
 
         // ViewModels - порядок не важен, т.к. объекты уже созданы

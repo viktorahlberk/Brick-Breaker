@@ -1,3 +1,4 @@
+import 'package:bouncer/core/effects/flashController.dart';
 import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
 import 'package:bouncer/features/upgrades/effects/increasePlatformSizeEffect.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +10,12 @@ class IncreasePlatformSizeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         var vm = Provider.of<GameViewModel>(context, listen: false);
 
         vm.addUpgrade(IncreasePlatformSizeEffect(0.2));
+        Provider.of<FlashController>(context, listen: false).trigger();
+        // await FlashController().trigger();
         vm.startNextLevel();
       },
       child: Container(

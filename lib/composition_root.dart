@@ -1,3 +1,4 @@
+import 'package:bouncer/core/effects/flashController.dart';
 import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/features/bonuses/bonusManager.dart';
 import 'package:bouncer/features/bosses/architect/domain/architect_ai.dart';
@@ -41,6 +42,7 @@ class AppCompositionRoot {
   late final BonusManager bonusManager;
   late final ScoreManager scoreManager;
   late final UpgradeManager upgradeManager;
+  late final FlashController flashController;
 
   // ViewModels
   late final BallViewModel ballViewModel;
@@ -87,6 +89,7 @@ class AppCompositionRoot {
     bonusManager = BonusManager();
     scoreManager = ScoreManager();
     upgradeManager = UpgradeManager();
+    flashController = FlashController();
 
     // ========================================
     // 2. VIEWMODELS (зависят от сервисов)

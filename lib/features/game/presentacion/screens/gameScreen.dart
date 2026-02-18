@@ -13,6 +13,7 @@ import 'package:bouncer/features/game/presentacion/widgets/gunWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/levelCompleteOverlay.dart';
 import 'package:bouncer/features/game/presentacion/widgets/platformWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/scoreWidget.dart';
+import 'package:bouncer/features/game/presentacion/widgets/screenFlashOverlay.dart';
 import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -109,6 +110,7 @@ class _GameScreenState extends State<GameScreen> {
               _OverlayLayer(),
               _PauseButton(),
               // _SettingsButton(),
+              ScreenFlashOverlay(),
             ],
           ),
         ),
