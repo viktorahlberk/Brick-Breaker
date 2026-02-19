@@ -36,25 +36,12 @@ class GameViewModel extends ChangeNotifier {
   final ArchitectViewModel architectViewModel;
   final UpgradeManager upgradeManager;
 
-  // ========================================
-  // ИГРОВОЙ ЦИКЛ
-  // ========================================
-
-  late final GameLoopManager _gameLoopManager; // ← Вместо Ticker
-
-  // ========================================
-  // СОСТОЯНИЕ
-  // ========================================
+  late final GameLoopManager _gameLoopManager;
 
   GameState _gameState = GameState.initial;
   GameState get gameState => _gameState;
 
-  /// UI состояние (вычисляемое свойство)
   GameUIState get uiState => GameUIState(_gameState);
-
-  // ========================================
-  // КОНСТРУКТОР
-  // ========================================
 
   GameViewModel({
     required this.ballViewModel,
@@ -75,22 +62,12 @@ class GameViewModel extends ChangeNotifier {
     _gameLoopManager = GameLoopManager(onUpdate: _onUpdate);
     _initializeGame();
   }
-
-  // ========================================
-  // ИГРОВОЙ ЦИКЛ
-  // ========================================
-
-  /// Обновление каждый кадр
-  ///
-  /// Вызывается из GameLoopManager с deltaTime
   void _onUpdate(double dt) {
     final scaledDt = dt * timeManager.timeScale;
     particleSystem.update(scaledDt);
-    // Пропускаем обновление если на паузе или не играем
     if (_gameState == GameState.initial) {
       _updatePlatform(dt);
       ballViewModel.moveToPlatformCenter(platformViewModel);
-      // return;
     }
     if (input.paused || _gameState != GameState.playing) {
       return;
@@ -101,7 +78,6 @@ class GameViewModel extends ChangeNotifier {
     _checkGameOver();
     _checkLevelCompletion();
 
-    // Останавливаем цикл при game over
     if (_gameState == GameState.gameOver) {
       _gameLoopManager.stopGameloop();
     }
@@ -116,32 +92,23 @@ class GameViewModel extends ChangeNotifier {
       platformViewModel.setInput(input.axis);
       platformViewModel.update(dt * timeManager.timeScale);
     }
-    // notifyListeners();
   }
 
-  /// Обновление всех систем
   void _updateSystems(double dt) {
     _updatePlatform(dt);
     architectViewModel.update(dt, this);
 
-    // Обновление игровых объектов
     final scaledDt = dt * timeManager.timeScale;
     ballViewModel.updateAndMove(scaledDt, platformViewModel);
     gunViewModel.update(scaledDt);
 
-    // Обновление и проверка бонусов
     bonusManager.update(scaledDt);
     bonusManager.checkCollect(
       platformViewModel,
-      bonusActivator.activate, // ← Используем BonusActivator
+      bonusActivator.activate,
     );
   }
 
-  // ========================================
-  // ПРОВЕРКИ СОСТОЯНИЯ
-  // ========================================
-
-  /// Проверка game over
   void _checkGameOver() {
     if (ballViewModel.isBelowScreen) {
       _gameState = GameState.gameOver;
@@ -149,7 +116,6 @@ class GameViewModel extends ChangeNotifier {
     }
   }
 
-  /// Проверка завершения уровня
   void _checkLevelCompletion() {
     levelManager.checkLevelCompletion(() {
       _gameState = GameState.levelCompleted;
@@ -158,13 +124,6 @@ class GameViewModel extends ChangeNotifier {
     });
   }
 
-  // ========================================
-  // УПРАВЛЕНИЕ ИГРОЙ
-  // ========================================
-
-  /// Обработка нажатия кнопки действия
-  ///
-  /// Кнопка меняет поведение в зависимости от состояния
   void onActionButtonPressed() {
     switch (_gameState) {
       case GameState.initial:
@@ -172,7 +131,6 @@ class GameViewModel extends ChangeNotifier {
         break;
 
       case GameState.gameOver:
-        // _gameState = GameState.initial;
         _initializeGame();
         break;
 
@@ -185,7 +143,6 @@ class GameViewModel extends ChangeNotifier {
         break;
 
       case GameState.playing:
-        // Кнопка скрыта в этом состоянии
         break;
     }
   }
@@ -214,7 +171,6 @@ class GameViewModel extends ChangeNotifier {
     dev.log('🎮 Game initialized');
   }
 
-  /// Продолжить игру
   void resumeGame() {
     dev.log('🎮 Resuming game');
 
@@ -224,7 +180,6 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Пауза
   void pauseGame() {
     dev.log('🎮 Pausing game');
 
@@ -234,10 +189,6 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ========================================
-  // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
-  // ========================================
-
   void _resetLevel() {
     levelManager.resetLevel();
     particleSystem.clear();
@@ -246,13 +197,9 @@ class GameViewModel extends ChangeNotifier {
     input.reset();
   }
 
-  // ========================================
-  // LIFECYCLE
-  // ========================================
-
   @override
   void dispose() {
-    _gameLoopManager.dispose(); // ← Вместо _ticker.dispose()
+    _gameLoopManager.dispose();
     super.dispose();
   }
 
