@@ -60,7 +60,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final input = context.read<InputController>();
-    final gameState = context.select((GameViewModel vm) => vm.gameState);
+    // final gameState = context.select((GameViewModel vm) => vm.gameState);
     final architectViewModel =
         context.select((GameViewModel vm) => vm.architectViewModel);
     // _maybeOpenLevelComplete(gameState);

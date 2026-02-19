@@ -21,7 +21,7 @@ class GameLoopManager {
 
   bool get isRunning => _isRunning;
 
-  void start() {
+  void startGameloop() {
     if (!_isRunning) {
       _lastTick = null; // Сброс для правильного первого кадра
       _ticker.start();
@@ -29,7 +29,7 @@ class GameLoopManager {
     }
   }
 
-  void stop() {
+  void stopGameloop() {
     if (_isRunning) {
       _ticker.stop();
       _isRunning = false;

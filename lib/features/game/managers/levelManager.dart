@@ -24,12 +24,11 @@ class LevelManager {
   bool _levelCompletionScheduled = false;
 
   void resetLevel() {
-    log('Level resetted.');
+    // log('Level resetted.');
     ballViewModel.reset();
     ballViewModel.launch();
     platformViewModel.reset();
     if (!_isBossLevel) _generateBricks();
-    // _generateBricks();
     _levelCompletionScheduled = false;
   }
 

@@ -9,7 +9,7 @@ class ScreenFlashOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<FlashController>(
       builder: (context, flash, _) {
-        debugPrint(flash.intensity.toString());
+        // debugPrint(flash.intensity.toString());
         if (flash.intensity == 0) {
           return const SizedBox();
         }

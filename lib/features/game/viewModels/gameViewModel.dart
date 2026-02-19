@@ -16,9 +16,9 @@ import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 import 'package:bouncer/core/particles.dart';
-import 'package:bouncer/features/upgrades/domain/entities/upgradeEffect.dart';
+// import 'package:bouncer/features/upgrades/domain/entities/upgradeEffect.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEntity.dart';
-import 'package:bouncer/features/upgrades/effects/increasePlatformSizeEffect.dart';
+// import 'package:bouncer/features/upgrades/effects/increasePlatformSizeEffect.dart';
 import 'package:bouncer/features/upgrades/upgradeManager.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +46,7 @@ class GameViewModel extends ChangeNotifier {
   // ИГРОВОЙ ЦИКЛ
   // ========================================
 
-  late final GameLoopManager _gameLoop; // ← Вместо Ticker
+  late final GameLoopManager _gameLoopManager; // ← Вместо Ticker
 
   // ========================================
   // СОСТОЯНИЕ
@@ -78,13 +78,8 @@ class GameViewModel extends ChangeNotifier {
     required this.architectViewModel,
     required this.upgradeManager,
   }) {
-    // Создаём игровой цикл с callback'ом
-    _gameLoop = GameLoopManager(onUpdate: _onUpdate)..start();
-
-    // Инициализируем уровень
-    levelManager.resetLevel();
-
-    dev.log('🎮 GameViewModel initialized');
+    _gameLoopManager = GameLoopManager(onUpdate: _onUpdate);
+    _initializeGame();
   }
 
   // ========================================
@@ -114,7 +109,7 @@ class GameViewModel extends ChangeNotifier {
 
     // Останавливаем цикл при game over
     if (_gameState == GameState.gameOver) {
-      _gameLoop.stop();
+      _gameLoopManager.stopGameloop();
     }
 
     notifyListeners();
@@ -179,14 +174,12 @@ class GameViewModel extends ChangeNotifier {
   void onActionButtonPressed() {
     switch (_gameState) {
       case GameState.initial:
-        startNewGame();
+        startGame();
         break;
 
       case GameState.gameOver:
-        // _initializeLevel();
-        // startNewGame();
-        startNewGame();
-        // _gameState = GameState.initial;
+        _gameState = GameState.initial;
+        _initializeGame();
         break;
 
       case GameState.paused:
@@ -205,30 +198,29 @@ class GameViewModel extends ChangeNotifier {
 
   _initializeLevel() {
     _gameState = GameState.initial;
-
-    _gameLoop.start();
+    _gameLoopManager.startGameloop();
     _resetLevel();
     notifyListeners();
   }
 
   /// Начать новую игру
-  void startNewGame() {
+  void startGame() {
     dev.log('🎮 Starting new game');
 
     // _resetGame();
     scoreManager.resetScore();
-    _initializeLevel();
+    // _initializeLevel();
+    _initializeGame();
 
     _gameState = GameState.playing;
-    _gameLoop.start();
+    _gameLoopManager.startGameloop();
 
     // notifyListeners();
   }
 
   /// Начать следующий уровень
   void startNextLevel() {
-    dev.log('🎮 Starting next level');
-
+    // dev.log('🎮 Starting next level');
     // _resetGame();
     _initializeLevel();
     _gameState = GameState.initial;
@@ -236,12 +228,20 @@ class GameViewModel extends ChangeNotifier {
     // notifyListeners();
   }
 
+  _initializeGame() {
+    _gameState == GameState.initial;
+    scoreManager.resetScore();
+    _initializeLevel();
+    _gameLoopManager.startGameloop();
+    dev.log('🎮 Game initialized');
+  }
+
   /// Продолжить игру
   void resumeGame() {
     dev.log('🎮 Resuming game');
 
     _gameState = GameState.playing;
-    _gameLoop.start();
+    _gameLoopManager.startGameloop();
 
     notifyListeners();
   }
@@ -250,7 +250,7 @@ class GameViewModel extends ChangeNotifier {
   void pauseGame() {
     dev.log('🎮 Pausing game');
 
-    _gameLoop.stop();
+    _gameLoopManager.stopGameloop();
     _gameState = GameState.paused;
 
     notifyListeners();
@@ -260,14 +260,12 @@ class GameViewModel extends ChangeNotifier {
   // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
   // ========================================
 
-  /// Сброс игры
   void _resetLevel() {
     levelManager.resetLevel();
     particleSystem.clear();
     bonusManager.reset();
     gunViewModel.reset();
     input.reset();
-    // scoreManager.resetScore();
   }
 
   // ========================================
@@ -276,7 +274,7 @@ class GameViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    _gameLoop.dispose(); // ← Вместо _ticker.dispose()
+    _gameLoopManager.dispose(); // ← Вместо _ticker.dispose()
     super.dispose();
   }
 
