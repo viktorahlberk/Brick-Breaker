@@ -27,3 +27,4 @@ flutter:
 
   assets:
     - assets/sounds/collision.mp3
+    - assets/sounds/add_update.mp3

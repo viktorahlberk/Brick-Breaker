@@ -53,7 +53,7 @@ class BallViewModel extends ChangeNotifier {
       _isBelowScreen = true;
 
     if (ballRect.overlaps(platform.rect) && velocityY > 0) {
-      audioManager.playSound();
+      audioManager.playCollisionSound();
       final bounce = physics.bounceFromPlatform(
         ballX: _model.position.dx,
         platformCenterX: platform.position.x,
@@ -149,15 +149,15 @@ class BallPhysics {
 
     if (pos.x - radius <= 0 && vx < 0) {
       vx = -vx;
-      AudioManager().playSound();
+      AudioManager().playCollisionSound();
     }
     if (pos.x + radius >= screenWidth && vx > 0) {
       vx = -vx;
-      AudioManager().playSound();
+      AudioManager().playCollisionSound();
     }
     if (pos.y - radius <= 0 && vy < 0) {
       vy = -vy;
-      AudioManager().playSound();
+      AudioManager().playCollisionSound();
     }
 
     return Vector2(vx, vy);

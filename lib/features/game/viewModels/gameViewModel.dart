@@ -17,6 +17,7 @@ import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEffect.dart';
+import 'package:bouncer/features/upgrades/domain/entities/upgradeEntity.dart';
 import 'package:bouncer/features/upgrades/effects/increasePlatformSizeEffect.dart';
 import 'package:bouncer/features/upgrades/upgradeManager.dart';
 import 'package:flutter/material.dart';
@@ -182,8 +183,9 @@ class GameViewModel extends ChangeNotifier {
         break;
 
       case GameState.gameOver:
-        _initializeGame();
+        // _initializeLevel();
         // startNewGame();
+        startNewGame();
         // _gameState = GameState.initial;
         break;
 
@@ -201,10 +203,11 @@ class GameViewModel extends ChangeNotifier {
     }
   }
 
-  _initializeGame() {
+  _initializeLevel() {
     _gameState = GameState.initial;
+
     _gameLoop.start();
-    _resetGame();
+    _resetLevel();
     notifyListeners();
   }
 
@@ -213,6 +216,9 @@ class GameViewModel extends ChangeNotifier {
     dev.log('🎮 Starting new game');
 
     // _resetGame();
+    scoreManager.resetScore();
+    _initializeLevel();
+
     _gameState = GameState.playing;
     _gameLoop.start();
 
@@ -224,7 +230,7 @@ class GameViewModel extends ChangeNotifier {
     dev.log('🎮 Starting next level');
 
     // _resetGame();
-    _initializeGame();
+    _initializeLevel();
     _gameState = GameState.initial;
 
     // notifyListeners();
@@ -255,13 +261,13 @@ class GameViewModel extends ChangeNotifier {
   // ========================================
 
   /// Сброс игры
-  void _resetGame() {
+  void _resetLevel() {
     levelManager.resetLevel();
     particleSystem.clear();
     bonusManager.reset();
     gunViewModel.reset();
     input.reset();
-    scoreManager.resetScore();
+    // scoreManager.resetScore();
   }
 
   // ========================================
@@ -274,8 +280,8 @@ class GameViewModel extends ChangeNotifier {
     super.dispose();
   }
 
-  void addUpgrade(UpgradeEffect upgradeEffect) {
-    upgradeManager.addUpgrade(upgradeEffect, this);
+  void addUpgrade(UpgradeEntity upgradeEntity) {
+    upgradeManager.addUpgrade(upgradeEntity, this);
   }
   // void spawnStructuralBarrier() {
   //   field.spawnBarrier();

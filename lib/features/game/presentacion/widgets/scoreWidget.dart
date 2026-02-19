@@ -7,18 +7,29 @@ class ScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameViewModel>(
-      builder: (BuildContext context, value, Widget? child) {
+    return Selector<GameViewModel, int>(
+      builder: (__, score, _) {
         return Align(
-          alignment: Alignment.topCenter,
+          alignment: Alignment.topLeft,
           child: Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Text(
-              value.scoreManager.score.toString(),
-              style: TextStyle(color: Colors.white, fontSize: 30),
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              children: [
+                Text(
+                  'Score',
+                  style: TextStyle(color: Colors.white, fontSize: 10),
+                ),
+                Text(
+                  score.toString(),
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ],
             ),
           ),
         );
+      },
+      selector: (_, GameViewModel vm) {
+        return vm.scoreManager.score;
       },
     );
   }

@@ -30,7 +30,7 @@ class CollisionManager {
 
     if (collisions.isEmpty) return;
 
-    AudioManager().playSound();
+    AudioManager().playCollisionSound();
     final sortedCollisions = collisions
         .where((c) => c.brickIndex != null)
         .toList()
@@ -52,7 +52,7 @@ class CollisionManager {
     final brickRect = _getBrickRect(brick);
 
     brick.hp -= collision.power;
-    if (brick.hp < 0) {
+    if (brick.hp <= 0) {
       _destroyBrick(brick, brickRect.center);
     }
     // if (collision.isHardBrick) {

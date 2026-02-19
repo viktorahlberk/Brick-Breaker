@@ -1,6 +1,6 @@
 import 'package:bouncer/core/enums/game_state.dart';
+import 'package:bouncer/features/game/presentacion/widgets/upgradesToChooseWidget.dart';
 import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
-import 'package:bouncer/features/upgrades/presentacion/increasePlatformSizeWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -67,16 +67,7 @@ class _OverlayContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              IncreasePlatformSizeWidget()
-              // IconButton(
-              //   onPressed: () {
-              //     context.read<GameViewModel>().startNextLevel();
-              //   },
-              //   icon: const Icon(
-              //     Icons.fast_forward,
-              //     color: Colors.white,
-              //   ),
-              // ),
+              UpgradesToChooseWidget(),
             ],
           ),
         ),
