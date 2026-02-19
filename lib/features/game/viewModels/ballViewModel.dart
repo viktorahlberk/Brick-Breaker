@@ -33,7 +33,7 @@ class BallViewModel extends ChangeNotifier {
       Rect.fromCircle(center: _model.position, radius: _model.radius);
 
   void moveToPlatformCenter(PlatformViewModel platform) {
-    _model.position = Offset(platform.platformCenterX, _model.position.dy);
+    _model.position = Offset(platform.platformCenterX, _startingPosition.dy);
     notifyListeners();
   }
 
@@ -92,10 +92,11 @@ class BallViewModel extends ChangeNotifier {
     velocityY = physics._speed * sin(angle);
   }
 
-  void reset() {
+  void reset(PlatformViewModel p) {
     _isBelowScreen = false;
     _model.trail.clear();
-    _model.position = _startingPosition;
+    // _model.position = _startingPosition;
+    moveToPlatformCenter(p);
     velocityX = 0;
     velocityY = 0;
     notifyListeners();

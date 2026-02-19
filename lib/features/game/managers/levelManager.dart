@@ -24,10 +24,9 @@ class LevelManager {
   bool _levelCompletionScheduled = false;
 
   void resetLevel() {
-    // log('Level resetted.');
-    ballViewModel.reset();
+    ballViewModel.reset(platformViewModel);
     ballViewModel.launch();
-    platformViewModel.reset();
+    // platformViewModel.reset();
     if (!_isBossLevel) _generateBricks();
     _levelCompletionScheduled = false;
   }
@@ -45,7 +44,6 @@ class LevelManager {
   void _generateBricks() {
     final testBricks = ProceduralLevelGenerator().generate(
       difficulty: const LevelDifficulty(
-        // bonusChance: 2,
         cols: 2,
         emptyChance: 0,
         rows: 1,
@@ -67,6 +65,6 @@ class LevelManager {
 
     // brickViewModel.setBricks(normalBricks);
     brickViewModel.setBricks(testBricks);
-    log('Level generated');
+    // log('Level generated');
   }
 }

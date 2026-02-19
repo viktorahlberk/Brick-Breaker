@@ -5,7 +5,7 @@ class BallModel {
   Offset position;
   double radius;
   Queue<Offset> trail;
-  double power = 200;
+  double power = 100;
 
   BallModel({
     required this.position,

@@ -28,7 +28,7 @@ class BrickViewModel extends ChangeNotifier {
   void setBricks(List<BrickModel> bricks) {
     _bricks = bricks;
     // notifyListeners();
-    log('${_bricks.length} bricks are created.');
+    // log('${_bricks.length} bricks are created.');
   }
 
   // void _createBricks() {

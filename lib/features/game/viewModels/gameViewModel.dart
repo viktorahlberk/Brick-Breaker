@@ -16,17 +16,11 @@ import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 import 'package:bouncer/core/particles.dart';
-// import 'package:bouncer/features/upgrades/domain/entities/upgradeEffect.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEntity.dart';
-// import 'package:bouncer/features/upgrades/effects/increasePlatformSizeEffect.dart';
 import 'package:bouncer/features/upgrades/upgradeManager.dart';
 import 'package:flutter/material.dart';
 
 class GameViewModel extends ChangeNotifier {
-  // ========================================
-  // ЗАВИСИМОСТИ
-  // ========================================
-
   final BallViewModel ballViewModel;
   final PlatformViewModel platformViewModel;
   final BrickViewModel brickViewModel;
@@ -206,10 +200,7 @@ class GameViewModel extends ChangeNotifier {
   /// Начать новую игру
   void startGame() {
     dev.log('🎮 Starting new game');
-
-    // _resetGame();
     scoreManager.resetScore();
-    // _initializeLevel();
     _initializeGame();
 
     _gameState = GameState.playing;
