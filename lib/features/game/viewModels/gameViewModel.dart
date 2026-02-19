@@ -172,7 +172,7 @@ class GameViewModel extends ChangeNotifier {
         break;
 
       case GameState.gameOver:
-        _gameState = GameState.initial;
+        // _gameState = GameState.initial;
         _initializeGame();
         break;
 
@@ -197,26 +197,13 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Начать новую игру
   void startGame() {
-    dev.log('🎮 Starting new game');
-    scoreManager.resetScore();
-    _initializeGame();
-
     _gameState = GameState.playing;
     _gameLoopManager.startGameloop();
-
-    // notifyListeners();
   }
 
-  /// Начать следующий уровень
   void startNextLevel() {
-    // dev.log('🎮 Starting next level');
-    // _resetGame();
     _initializeLevel();
-    _gameState = GameState.initial;
-
-    // notifyListeners();
   }
 
   _initializeGame() {

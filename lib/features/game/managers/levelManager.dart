@@ -44,7 +44,7 @@ class LevelManager {
   void _generateBricks() {
     final testBricks = ProceduralLevelGenerator().generate(
       difficulty: const LevelDifficulty(
-        cols: 2,
+        cols: 1,
         emptyChance: 0,
         rows: 1,
         strongBrickChance: 0,
