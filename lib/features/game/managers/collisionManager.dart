@@ -31,6 +31,7 @@ class CollisionManager {
     if (collisions.isEmpty) return;
 
     AudioManager().playCollisionSound();
+
     final sortedCollisions = collisions
         .where((c) => c.brickIndex != null)
         .toList()
@@ -49,19 +50,18 @@ class CollisionManager {
     if (collision.brickIndex == null) return;
 
     final brick = brickViewModel.bricks[collision.brickIndex!];
-    final brickRect = _getBrickRect(brick);
+    // final brickRect = _getBrickRect(brick);
 
-    brick.hp -= collision.power;
-    if (brick.hp <= 0) {
-      _destroyBrick(brick, brickRect.center);
-    }
     // if (collision.isHardBrick) {
-    // brick.type = BrickType.normal;
-    // brick.color = Colors.white;
+    //   brick.hp -= collision.power / 3;
     // } else {
-    // _destroyBrick(brick, brickRect.center);
+    //   brick.hp -= collision.power;
     // }
 
+    // if (brick.hp <= 0) {
+    //   _destroyBrick(brick, brickRect.center);
+    // }
+    _handleBrickHealth(brick, collision);
     _addScore();
     ballViewModel.velocityY = -ballViewModel.velocityY;
   }
@@ -71,17 +71,34 @@ class CollisionManager {
 
     final brick = brickViewModel.bricks[collision.brickIndex!];
     final bullet = gunViewModel.bulletsList[collision.bulletIndex!];
-    final brickRect = _getBrickRect(brick);
+    // final brickRect = _getBrickRect(brick);
 
     gunViewModel.bulletsList.remove(bullet);
 
+    // if (collision.isHardBrick) {
+    //   brick.hp -= collision.power / 3;
+    // } else {
+    //   brick.hp -= collision.power;
+    // }
+
+    // if (brick.hp <= 0) {
+    //   _destroyBrick(brick, brickRect.center);
+    // }
+    _handleBrickHealth(brick, collision);
+    _addScore();
+  }
+
+  _handleBrickHealth(BrickModel brick, CollisionResult collision) {
     if (collision.isHardBrick) {
-      brick.type = BrickType.normal;
-      brick.color = Colors.white;
-    } else if (collision.destroyed) {
+      brick.hp -= collision.power / 3;
+    } else {
+      brick.hp -= collision.power;
+    }
+
+    if (brick.hp <= 0) {
+      final brickRect = _getBrickRect(brick);
       _destroyBrick(brick, brickRect.center);
     }
-    _addScore();
   }
 
   _addScore() {

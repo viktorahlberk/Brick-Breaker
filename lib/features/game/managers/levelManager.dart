@@ -19,14 +19,13 @@ class LevelManager {
       required this.timeManager,
       required this.platformViewModel});
 
-  bool _isBossLevel = false;
+  final bool _isBossLevel = false;
   bool get isBossLevel => _isBossLevel;
   bool _levelCompletionScheduled = false;
 
   void resetLevel() {
     ballViewModel.reset(platformViewModel);
     ballViewModel.launch();
-    // platformViewModel.reset();
     if (!_isBossLevel) _generateBricks();
     _levelCompletionScheduled = false;
   }
@@ -63,8 +62,8 @@ class LevelManager {
       screenSize: brickViewModel.screenSize,
     );
 
-    // brickViewModel.setBricks(normalBricks);
-    brickViewModel.setBricks(testBricks);
+    brickViewModel.setBricks(normalBricks);
+    // brickViewModel.setBricks(testBricks);
     // log('Level generated');
   }
 }

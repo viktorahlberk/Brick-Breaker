@@ -99,7 +99,7 @@ class AppCompositionRoot {
     ballViewModel = BallViewModel(screenSize: screenSize);
     platformViewModel = PlatformViewModel(screenSize);
     brickViewModel = BrickViewModel(
-      particleSystem: particleSystem,
+      // particleSystem: particleSystem,
       screenSize: screenSize,
     );
     gunViewModel = GunViewModel(platformViewModel);

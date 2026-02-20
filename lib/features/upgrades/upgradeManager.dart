@@ -13,12 +13,12 @@ class UpgradeManager {
     UpgradeEntity(
         title: 'IncreaseBallPower',
         description: 'Increases ball power, so ball do more damage on bricks',
-        rarity: UpgradeRarity.epic,
+        rarity: UpgradeRarity.rare,
         effect: IncreaseBallPowerEffect()),
     UpgradeEntity(
         title: 'IncreasePlatformSize',
         description: 'Increases platform width',
-        rarity: UpgradeRarity.epic,
+        rarity: UpgradeRarity.rare,
         effect: IncreasePlatformSizeEffect(0.2))
   ];
   // addUpgrade(UpgradeEntity entity, GameCoordinator coordinator) {

@@ -3,6 +3,7 @@ import 'package:bouncer/core/effects/flashController.dart';
 import 'package:bouncer/features/game/gameCoordinator.dart';
 // import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEntity.dart';
+import 'package:bouncer/features/upgrades/domain/entities/upgradeRarity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,12 +23,23 @@ class UpgradeWidget extends StatelessWidget {
     }
   }
 
+  Color _chooseBorderColor(UpgradeRarity rarity) {
+    switch (rarity) {
+      case UpgradeRarity.rare:
+        return Colors.blue;
+      default:
+        throw UnimplementedError();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+        decoration: BoxDecoration(
+            border:
+                Border.all(color: _chooseBorderColor(upgradeEntity.rarity))),
         child: IconButton(
           onPressed: () {
             context.read<FlashController>().trigger();

@@ -9,18 +9,18 @@ import 'package:flutter/material.dart';
 
 class BrickViewModel extends ChangeNotifier {
   List<BrickModel> _bricks = [];
-  final ParticleSystem particleSystem;
+  // final ParticleSystem particleSystem;
   Size screenSize;
 
-  BrickViewModel({required this.screenSize, required this.particleSystem});
+  BrickViewModel({required this.screenSize});
 
-  static const int bricksQuantity = 25;
-  static const int maxBricksPerRow = 7;
-  static const double brickWidth = 0.2;
-  static const double brickHeight = 0.05;
-  static const double brickGap = 0.03; //Ширина между рядами
-  static const double sideMargin = 0.1;
-  static const double availableSpace = 2;
+  // static const int bricksQuantity = 25;
+  // static const int maxBricksPerRow = 7;
+  // static const double brickWidth = 0.2;
+  // static const double brickHeight = 0.05;
+  // static const double brickGap = 0.03; //Ширина между рядами
+  // static const double sideMargin = 0.1;
+  // static const double availableSpace = 2;
 
   List<BrickModel> get bricks => _bricks;
   bool get isEmpty => _bricks.isEmpty;
