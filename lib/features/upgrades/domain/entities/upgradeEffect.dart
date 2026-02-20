@@ -1,8 +1,9 @@
-// import 'package:bouncer/features/game/gameCoordinator.dart';
-// import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
+import 'package:bouncer/features/game/gameCoordinator.dart';
+import 'package:bouncer/features/game/runtimeContext.dart';
+import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 
-// abstract class UpgradeEffect {
-//   bool get applied;
-//   void apply(GameCoordinator state);
-//   void remove(GameViewModel state);
-// }
+abstract class UpgradeEffect {
+  bool get applied;
+  void apply(RuntimeContext context);
+  // void remove();
+}

@@ -11,17 +11,15 @@ import 'package:bouncer/features/upgrades/effects/increasePlatformSizeEffect.dar
 class UpgradeManager {
   final List<UpgradeEntity> _upgradesPool = [
     UpgradeEntity(
-      title: 'IncreaseBallPower',
-      description: 'Increases ball power, so ball do more damage on bricks',
-      rarity: UpgradeRarity.epic,
-      // effect: IncreaseBallPowerEffect()
-    ),
+        title: 'IncreaseBallPower',
+        description: 'Increases ball power, so ball do more damage on bricks',
+        rarity: UpgradeRarity.epic,
+        effect: IncreaseBallPowerEffect()),
     UpgradeEntity(
-      title: 'IncreasePlatformSize',
-      description: 'Increases platform width',
-      rarity: UpgradeRarity.epic,
-      // effect: IncreasePlatformSizeEffect(0.2)
-    )
+        title: 'IncreasePlatformSize',
+        description: 'Increases platform width',
+        rarity: UpgradeRarity.epic,
+        effect: IncreasePlatformSizeEffect(0.2))
   ];
   // addUpgrade(UpgradeEntity entity, GameCoordinator coordinator) {
   //   entity.effect.apply(coordinator);

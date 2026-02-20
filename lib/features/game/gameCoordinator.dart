@@ -15,10 +15,12 @@ import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/features/game/managers/game_loop_manager.dart';
 import 'package:bouncer/features/game/managers/levelManager.dart';
 import 'package:bouncer/features/game/managers/scoreManager.dart';
+import 'package:bouncer/features/game/runtimeContext.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
+import 'package:bouncer/features/upgrades/domain/entities/upgradeEffect.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEntity.dart';
 import 'package:bouncer/features/upgrades/upgradeManager.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +68,8 @@ class GameCoordinator extends ChangeNotifier {
   int get score => _scoreManager.score;
   List<BonusPickupViewModel> get bonusesToPickup => _bonusManager.pickups;
   get isBossLevel => _levelManager.isBossLevel;
+  RuntimeContext get runtimeContext =>
+      RuntimeContext(_ballViewModel, _platformViewModel);
 
   void _onUpdate(double dt) {
     final scaledDt = dt * _timeManager.timeScale;
@@ -203,16 +207,8 @@ class GameCoordinator extends ChangeNotifier {
     _initializeLevel();
   }
 
-  void applyUpgrade(UpgradeEntity upgradeEntity) {
-    switch (upgradeEntity.title) {
-      case 'IncreasePlatformSize':
-        _platformViewModel.width += (_platformViewModel.baseWidth * 0.2);
-        break;
-      case 'IncreaseBallPower':
-        _ballViewModel.model.power += 20;
-        break;
-      default:
-    }
+  void applyUpgrade(UpgradeEffect upgradeEffect) {
+    upgradeEffect.apply(runtimeContext);
   }
 
   List<UpgradeEntity> getUpgrades() {

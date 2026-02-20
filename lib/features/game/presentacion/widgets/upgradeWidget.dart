@@ -32,7 +32,7 @@ class UpgradeWidget extends StatelessWidget {
           onPressed: () {
             context.read<FlashController>().trigger();
             AudioManager().playAddUpdateSound();
-            context.read<GameCoordinator>().applyUpgrade(upgradeEntity);
+            context.read<GameCoordinator>().applyUpgrade(upgradeEntity.effect);
             context.read<GameCoordinator>().startNextLevel();
           },
           icon: Icon(
