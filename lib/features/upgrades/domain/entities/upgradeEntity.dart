@@ -7,7 +7,7 @@ class UpgradeEntity {
   final String description;
   final UpgradeRarity rarity;
   // final List<UpgradeTag> tags;
-  final UpgradeEffect effect;
+  // final UpgradeEffect effect;
 
   const UpgradeEntity({
     // required this.id,
@@ -15,6 +15,6 @@ class UpgradeEntity {
     required this.description,
     required this.rarity,
     // required this.tags,
-    required this.effect,
+    // required this.effect,
   });
 }

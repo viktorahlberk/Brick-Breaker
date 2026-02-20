@@ -1,6 +1,7 @@
 import 'package:bouncer/core/enums/game_state.dart';
+import 'package:bouncer/features/game/gameCoordinator.dart';
 import 'package:bouncer/features/game/presentacion/widgets/upgradesToChooseWidget.dart';
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,8 +10,8 @@ class LevelCompleteOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<GameViewModel, GameState>(
-      selector: (_, vm) => vm.gameState,
+    return Selector<GameCoordinator, GameState>(
+      selector: (_, gameCoordinator) => gameCoordinator.gameState,
       builder: (context, state, _) {
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 400),

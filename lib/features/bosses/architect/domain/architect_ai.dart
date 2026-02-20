@@ -2,7 +2,7 @@ import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/features/bosses/architect/domain/architect_config.dart';
 import 'package:bouncer/features/bosses/architect/domain/architect_phase.dart';
 import 'package:bouncer/features/bosses/architect/domain/architect_state.dart';
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:flutter/material.dart';
 
 class ArchitectAI {
@@ -13,12 +13,12 @@ class ArchitectAI {
   void update(
     ArchitectState boss,
     double dt,
-    GameViewModel state,
+    // GameViewModel state,
   ) {
     boss.timeSinceLastGrid += dt;
 
     _handlePhaseTransition(boss);
-    _handlePhaseLogic(boss, state, dt);
+    // _handlePhaseLogic(boss, state, dt);
   }
 
   void _handlePhaseTransition(ArchitectState boss) {
@@ -33,12 +33,12 @@ class ArchitectAI {
 
   void _handlePhaseLogic(
     ArchitectState boss,
-    GameViewModel state,
+    // GameViewModel state,
     double dt,
   ) {
     switch (boss.phase) {
       case ArchitectPhase.gridLock:
-        _gridLock(boss, state);
+        // _gridLock(boss, state);
         break;
 
       // case ArchitectPhase.adaptiveShield:
@@ -51,13 +51,13 @@ class ArchitectAI {
     }
   }
 
-  void _gridLock(ArchitectState boss, GameViewModel state) {
-    if (boss.timeSinceLastGrid >= config.gridSpawnInterval) {
-      // state.spawnStructuralBarrier();
-      debugPrint('spawnStructuralBarrier');
-      boss.timeSinceLastGrid = 0;
-    }
-  }
+  // void _gridLock(ArchitectState boss, GameViewModel state) {
+  //   if (boss.timeSinceLastGrid >= config.gridSpawnInterval) {
+  //     // state.spawnStructuralBarrier();
+  //     debugPrint('spawnStructuralBarrier');
+  //     boss.timeSinceLastGrid = 0;
+  //   }
+  // }
 
   // void _adaptiveShield(GameState state) {
   //   if (state.ball.activeBalls > config.antiMultiballThreshold) {

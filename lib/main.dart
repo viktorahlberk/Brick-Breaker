@@ -87,7 +87,8 @@ class _AppInitializerState extends State<AppInitializer> {
         ChangeNotifierProvider.value(value: root.gunViewModel),
 
         // Root ViewModel - главный ViewModel игры
-        ChangeNotifierProvider.value(value: root.gameViewModel),
+        // ChangeNotifierProvider.value(value: root.gameViewModel),
+        ChangeNotifierProvider.value(value: root.gameCoordinator),
       ],
       child: const GameScreen(),
     );

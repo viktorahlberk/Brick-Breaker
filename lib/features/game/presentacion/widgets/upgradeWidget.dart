@@ -1,6 +1,7 @@
 import 'package:bouncer/core/audio_manager.dart';
 import 'package:bouncer/core/effects/flashController.dart';
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/features/game/gameCoordinator.dart';
+// import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEntity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +32,8 @@ class UpgradeWidget extends StatelessWidget {
           onPressed: () {
             context.read<FlashController>().trigger();
             AudioManager().playAddUpdateSound();
-            context.read<GameViewModel>().addUpgrade(upgradeEntity);
-            context.read<GameViewModel>().startNextLevel();
+            context.read<GameCoordinator>().applyUpgrade(upgradeEntity);
+            context.read<GameCoordinator>().startNextLevel();
           },
           icon: Icon(
             _chooseIconData(upgradeEntity),

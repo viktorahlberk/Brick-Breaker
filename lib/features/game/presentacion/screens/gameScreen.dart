@@ -4,6 +4,7 @@ import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/features/bonuses/presentacion/bonusWidget.dart';
 // import 'package:bouncer/features/bosses/architect/domain/architect_boss.dart';
 import 'package:bouncer/features/bosses/architect/presentacion/architect_boss_widget.dart';
+import 'package:bouncer/features/game/gameCoordinator.dart';
 // import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
 import 'package:bouncer/features/game/presentacion/screens/bulletLayerView.dart';
 import 'package:bouncer/features/game/presentacion/screens/levelCompleteScreen.dart';
@@ -14,7 +15,7 @@ import 'package:bouncer/features/game/presentacion/widgets/levelCompleteOverlay.
 import 'package:bouncer/features/game/presentacion/widgets/platformWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/scoreWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/screenFlashOverlay.dart';
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -27,43 +28,41 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  bool _levelCompleteRouteOpen = false;
+  // bool _levelCompleteRouteOpen = false;
 
-  void _maybeOpenLevelComplete(GameState state) {
-    if (state != GameState.levelCompleted) {
-      _levelCompleteRouteOpen = false;
-      return;
-    }
+  // void _maybeOpenLevelComplete(GameState state) {
+  //   if (state != GameState.levelCompleted) {
+  //     _levelCompleteRouteOpen = false;
+  //     return;
+  //   }
 
-    if (_levelCompleteRouteOpen || !mounted) return;
-    _levelCompleteRouteOpen = true;
+  //   if (_levelCompleteRouteOpen || !mounted) return;
+  //   _levelCompleteRouteOpen = true;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      Navigator.of(context)
-          .push(
-        MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider.value(
-            value: context.read<GameViewModel>(),
-            child: const LevelCompleteScreen(),
-          ),
-        ),
-      )
-          .then((_) {
-        if (mounted) {
-          _levelCompleteRouteOpen = false;
-        }
-      });
-    });
-  }
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (!mounted) return;
+  //     Navigator.of(context)
+  //         .push(
+  //       MaterialPageRoute(
+  //         builder: (_) => ChangeNotifierProvider.value(
+  //           value: context.read<GameViewModel>(),
+  //           child: const LevelCompleteScreen(),
+  //         ),
+  //       ),
+  //     )
+  //         .then((_) {
+  //       if (mounted) {
+  //         _levelCompleteRouteOpen = false;
+  //       }
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     final input = context.read<InputController>();
-    // final gameState = context.select((GameViewModel vm) => vm.gameState);
-    final architectViewModel =
-        context.select((GameViewModel vm) => vm.architectViewModel);
-    // _maybeOpenLevelComplete(gameState);
+    // final architectViewModel =
+    //     context.select((GameViewModel vm) => vm.architectViewModel);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -97,7 +96,7 @@ class _GameScreenState extends State<GameScreen> {
           },
           child: Stack(
             children: [
-              ArchitectBossWidget(vm: architectViewModel),
+              // ArchitectBossWidget(vm: architectViewModel),
               ScoreWidget(),
               GunWidget(),
               BallWidget(),
@@ -124,11 +123,10 @@ class _BricksLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameViewModel>(
+    return Consumer<GameCoordinator>(
       builder: (_, game, __) => Stack(
-        children: game.brickViewModel.bricks
-            .map((brick) => BrickWidget(model: brick))
-            .toList(),
+        children:
+            game.bricks.map((brick) => BrickWidget(model: brick)).toList(),
       ),
     );
   }
@@ -139,11 +137,17 @@ class _BonusesLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameViewModel>(
-      builder: (_, game, __) => Stack(
-        children:
-            game.bonusManager.pickups.map((vm) => BonusWidget(vm)).toList(),
-      ),
+    // return Consumer<GameViewModel>(
+    //   builder: (_, game, __) => Stack(
+    //     children:
+    //         game.bonusManager.pickups.map((vm) => BonusWidget(vm)).toList(),
+    //   ),
+    // );
+    var pickups = context.read<GameCoordinator>().bonusesToPickup;
+    return Stack(
+      children: [
+        ...pickups.map((vm) => BonusWidget(vm)),
+      ],
     );
   }
 }
@@ -153,7 +157,7 @@ class _ParticlesLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameViewModel>(
+    return Consumer<GameCoordinator>(
       builder: (_, game, __) => CustomPaint(
         painter: ParticlePainter(game.particleSystem),
         size: Size.infinite,
@@ -167,10 +171,10 @@ class _OverlayLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<GameViewModel, GameState>(
+    return Selector<GameCoordinator, GameState>(
       selector: (_, game) => game.gameState,
       builder: (_, state, __) {
-        final game = context.read<GameViewModel>();
+        final game = context.read<GameCoordinator>();
         final uiState = game.uiState;
 
         if (!uiState.shouldShowActionButton) {
@@ -182,7 +186,6 @@ class _OverlayLayer extends StatelessWidget {
             padding: const EdgeInsets.only(top: 60.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (state == GameState.gameOver)
                   const Padding(
@@ -223,7 +226,7 @@ class _PauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<GameViewModel, GameState>(
+    return Selector<GameCoordinator, GameState>(
       selector: (_, game) => game.gameState,
       builder: (_, state, __) {
         if (state != GameState.playing) {
@@ -234,7 +237,7 @@ class _PauseButton extends StatelessWidget {
           top: 20,
           right: 20,
           child: IconButton(
-            onPressed: context.read<GameViewModel>().pauseGame,
+            onPressed: () => context.read<GameCoordinator>().pauseGame(),
             icon: const Icon(
               Icons.pause,
               color: Colors.white,
@@ -247,21 +250,21 @@ class _PauseButton extends StatelessWidget {
   }
 }
 
-class _SettingsButton extends StatelessWidget {
-  const _SettingsButton();
+// class _SettingsButton extends StatelessWidget {
+//   const _SettingsButton();
 
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 20,
-      left: 20,
-      child: IconButton(
-        onPressed: () {},
-        icon: const Icon(
-          Icons.settings,
-          size: 30,
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Positioned(
+//       top: 20,
+//       left: 20,
+//       child: IconButton(
+//         onPressed: () {},
+//         icon: const Icon(
+//           Icons.settings,
+//           size: 30,
+//         ),
+//       ),
+//     );
+//   }
+// }

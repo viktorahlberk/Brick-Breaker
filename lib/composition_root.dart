@@ -1,12 +1,13 @@
 import 'package:bouncer/core/effects/flashController.dart';
 import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/features/bonuses/bonusManager.dart';
-import 'package:bouncer/features/bosses/architect/domain/architect_ai.dart';
-import 'package:bouncer/features/bosses/architect/domain/architect_boss.dart';
-import 'package:bouncer/features/bosses/architect/domain/architect_config.dart';
-import 'package:bouncer/features/bosses/architect/domain/architect_phase.dart';
-import 'package:bouncer/features/bosses/architect/domain/architect_state.dart';
-import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
+// import 'package:bouncer/features/bosses/architect/domain/architect_ai.dart';
+// import 'package:bouncer/features/bosses/architect/domain/architect_boss.dart';
+// import 'package:bouncer/features/bosses/architect/domain/architect_config.dart';
+// import 'package:bouncer/features/bosses/architect/domain/architect_phase.dart';
+// import 'package:bouncer/features/bosses/architect/domain/architect_state.dart';
+// import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
+import 'package:bouncer/features/game/gameCoordinator.dart';
 import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/features/game/managers/levelManager.dart';
@@ -15,7 +16,7 @@ import 'package:bouncer/features/game/managers/scoreManager.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+// import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/features/upgrades/upgradeManager.dart';
@@ -55,7 +56,8 @@ class AppCompositionRoot {
   late final CollisionManager collisionManager;
 
   // Root ViewModel
-  late final GameViewModel gameViewModel;
+  // late final GameViewModel gameViewModel;
+  late final GameCoordinator gameCoordinator;
 
   // Screen size - передаётся при инициализации
   late final Size screenSize;
@@ -128,39 +130,53 @@ class AppCompositionRoot {
       scoreManager: scoreManager,
     );
 
-    ArchitectViewModel architectViewModel = ArchitectViewModel(
-      boss: ArchitectBoss(
-        ArchitectState(
-            hp: 100, phase: ArchitectPhase.gridLock, timeSinceLastGrid: 1000),
-        ArchitectAI(ArchitectConfig.create()),
-      ),
-      screenSize: screenSize,
-    );
+    // ArchitectViewModel architectViewModel = ArchitectViewModel(
+    //   boss: ArchitectBoss(
+    //     ArchitectState(
+    //         hp: 100, phase: ArchitectPhase.gridLock, timeSinceLastGrid: 1000),
+    //     ArchitectAI(ArchitectConfig.create()),
+    //   ),
+    //   screenSize: screenSize,
+    // );
 
     // ========================================
     // 4. ROOT VIEWMODEL (зависит от всего)
     // ========================================
-    gameViewModel = GameViewModel(
-      ballViewModel: ballViewModel,
-      platformViewModel: platformViewModel,
-      brickViewModel: brickViewModel,
-      particleSystem: particleSystem,
-      gunViewModel: gunViewModel,
-      input: inputController,
-      collisionManager: collisionManager,
-      levelManager: levelManager,
-      bonusManager: bonusManager,
-      bonusActivator: bonusActivator,
-      scoreManager: scoreManager,
-      timeManager: timeManager,
-      architectViewModel: architectViewModel,
-      upgradeManager: upgradeManager,
-    );
+    // gameViewModel = GameViewModel(
+    // ballViewModel: ballViewModel,
+    // platformViewModel: platformViewModel,
+    // brickViewModel: brickViewModel,
+    // particleSystem: particleSystem,
+    // gunViewModel: gunViewModel,
+    // input: inputController,
+    // collisionManager: collisionManager,
+    // levelManager: levelManager,
+    // bonusManager: bonusManager,
+    // bonusActivator: bonusActivator,
+    // scoreManager: scoreManager,
+    // timeManager: timeManager,
+    // architectViewModel: architectViewModel,
+    // upgradeManager: upgradeManager,
+    // );
+    gameCoordinator = GameCoordinator(
+        scoreManager,
+        levelManager,
+        particleSystem,
+        bonusManager,
+        gunViewModel,
+        inputController,
+        timeManager,
+        ballViewModel,
+        platformViewModel,
+        collisionManager,
+        bonusActivator,
+        upgradeManager,
+        brickViewModel);
   }
 
   /// Очистка ресурсов при закрытии приложения
   void dispose() {
-    gameViewModel.dispose();
+    // gameViewModel.dispose();
     ballViewModel.dispose();
     platformViewModel.dispose();
     brickViewModel.dispose();

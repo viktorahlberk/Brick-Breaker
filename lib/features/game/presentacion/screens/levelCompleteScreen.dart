@@ -1,4 +1,5 @@
-import 'package:bouncer/features/game/viewModels/gameViewModel.dart';
+import 'package:bouncer/features/game/gameCoordinator.dart';
+import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class LevelCompleteScreen extends StatelessWidget {
             ),
             IconButton(
               onPressed: () {
-                context.read<GameViewModel>().startNextLevel();
+                context.read<GameCoordinator>().startNextLevel();
                 Navigator.of(context).pop();
               },
               icon: Icon(Icons.fast_forward_rounded),
