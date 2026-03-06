@@ -21,87 +21,87 @@ class BrickViewModel extends ChangeNotifier {
     _bricks = bricks;
   }
 
-  List<CollisionResult> checkCollisions(
-      BallManager ballManager, GunViewModel gunViewModel) {
-    List<CollisionResult> results = [];
-    for (BallViewModel ball in ballManager.ballPool) {
-      for (int brickIndex = 0; brickIndex < _bricks.length; brickIndex++) {
-        final brick = _bricks[brickIndex];
-        final brickRect = _brickToRect(brick, ball.screenSize);
-        final ballRect = ball.ballRect;
+//   List<CollisionResult> checkCollisions(
+//       BallManager ballManager, GunViewModel gunViewModel) {
+//     List<CollisionResult> results = [];
+//     for (BallViewModel ball in ballManager.ballPool) {
+//       for (int brickIndex = 0; brickIndex < _bricks.length; brickIndex++) {
+//         final brick = _bricks[brickIndex];
+//         final brickRect = _brickToRect(brick, ball.screenSize);
+//         final ballRect = ball.ballRect;
 
-        // === Collision with ball ===
-        if (ballRect.overlaps(brickRect)) {
-          if (brick.type == BrickType.strong) {
-            results.add(CollisionResult(
-              brickIndex: brickIndex,
-              destroyed: false,
-              isHardBrick: true,
-              power: ball.model.power,
-            ));
-          } else {
-            results.add(CollisionResult(
-              brickIndex: brickIndex,
-              destroyed: true,
-              isHardBrick: false,
-              power: ball.model.power,
-            ));
-          }
-        }
+//         // === Collision with ball ===
+//         if (ballRect.overlaps(brickRect)) {
+//           if (brick.type == BrickType.strong) {
+//             results.add(CollisionResult(
+//               brickIndex: brickIndex,
+//               destroyed: false,
+//               isHardBrick: true,
+//               power: ball.model.power,
+//             ));
+//           } else {
+//             results.add(CollisionResult(
+//               brickIndex: brickIndex,
+//               destroyed: true,
+//               isHardBrick: false,
+//               power: ball.model.power,
+//             ));
+//           }
+//         }
 
-        // === Collision with bullets ===
-        for (int bulletIndex = 0;
-            bulletIndex < gunViewModel.bulletsList.length;
-            bulletIndex++) {
-          final bullet = gunViewModel.bulletsList[bulletIndex];
-          if (bullet.bulletRect.overlaps(brickRect)) {
-            if (brick.type == BrickType.strong) {
-              results.add(CollisionResult(
-                brickIndex: brickIndex,
-                destroyed: false,
-                isHardBrick: true,
-                bulletIndex: bulletIndex,
-                power: 20,
-              ));
-            } else {
-              results.add(CollisionResult(
-                brickIndex: brickIndex,
-                destroyed: true,
-                isHardBrick: false,
-                bulletIndex: bulletIndex,
-                power: 20,
-              ));
-            }
-          }
-        }
-      }
-    }
+//         // === Collision with bullets ===
+//         for (int bulletIndex = 0;
+//             bulletIndex < gunViewModel.bulletsList.length;
+//             bulletIndex++) {
+//           final bullet = gunViewModel.bulletsList[bulletIndex];
+//           if (bullet.bulletRect.overlaps(brickRect)) {
+//             if (brick.type == BrickType.strong) {
+//               results.add(CollisionResult(
+//                 brickIndex: brickIndex,
+//                 destroyed: false,
+//                 isHardBrick: true,
+//                 bulletIndex: bulletIndex,
+//                 power: 20,
+//               ));
+//             } else {
+//               results.add(CollisionResult(
+//                 brickIndex: brickIndex,
+//                 destroyed: true,
+//                 isHardBrick: false,
+//                 bulletIndex: bulletIndex,
+//                 power: 20,
+//               ));
+//             }
+//           }
+//         }
+//       }
+//     }
 
-    return results;
-  }
+//     return results;
+//   }
 
-  Rect _brickToRect(BrickModel model, Size screenSize) {
-    final pixelX = (model.x + 1) * 0.5 * screenSize.width;
-    final pixelY = (model.y + 1) * 0.5 * screenSize.height;
-    final pixelWidth = model.width * screenSize.width * 0.5;
-    final pixelHeight = model.height * screenSize.height * 0.5;
+//   Rect _brickToRect(BrickModel model, Size screenSize) {
+//     final pixelX = (model.x + 1) * 0.5 * screenSize.width;
+//     final pixelY = (model.y + 1) * 0.5 * screenSize.height;
+//     final pixelWidth = model.width * screenSize.width * 0.5;
+//     final pixelHeight = model.height * screenSize.height * 0.5;
 
-    return Rect.fromLTWH(pixelX, pixelY, pixelWidth, pixelHeight);
-  }
+//     return Rect.fromLTWH(pixelX, pixelY, pixelWidth, pixelHeight);
+//   }
 }
 
-class CollisionResult {
-  final int? brickIndex; // индекс столкнувшегося кирпича
-  final bool destroyed; // кирпич уничтожен или просто повреждён
-  final bool isHardBrick;
-  final int? bulletIndex; // если столкновение с пулей
-  final double power;
+// class CollisionResult {
+//   final int? brickIndex; // индекс столкнувшегося кирпича
+//   final bool destroyed; // кирпич уничтожен или просто повреждён
+//   final bool isHardBrick;
+//   final int? bulletIndex; // если столкновение с пулей
+//   final double power;
 
-  CollisionResult({
-    this.brickIndex,
-    this.destroyed = false,
-    this.isHardBrick = false,
-    this.bulletIndex,
-    required this.power,
-  });
-}
+//   CollisionResult({
+//     this.brickIndex,
+//     this.destroyed = false,
+//     this.isHardBrick = false,
+//     this.bulletIndex,
+//     required this.power,
+//   });
+// }

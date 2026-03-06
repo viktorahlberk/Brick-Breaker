@@ -49,8 +49,9 @@ class BallViewModel extends ChangeNotifier {
     velocityX = wallVelocity.x;
     velocityY = wallVelocity.y;
 
-    if (_model.position.dy + _model.radius >= screenSize.height)
+    if (_model.position.dy + _model.radius >= screenSize.height) {
       _isBelowScreen = true;
+    }
 
     if (ballRect.overlaps(platform.rect) && velocityY > 0) {
       audioManager.playCollisionSound();
