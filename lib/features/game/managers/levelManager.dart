@@ -2,20 +2,21 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:bouncer/core/timeManager.dart';
+import 'package:bouncer/features/game/managers/ballManager.dart';
 import 'package:bouncer/features/game/managers/levelGenerator.dart';
-import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
+// import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 
 class LevelManager {
   final BrickViewModel brickViewModel;
-  final BallViewModel ballViewModel;
+  final BallManager ballManager;
   final TimeManager timeManager;
   final PlatformViewModel platformViewModel;
 
   LevelManager(
       {required this.brickViewModel,
-      required this.ballViewModel,
+      required this.ballManager,
       required this.timeManager,
       required this.platformViewModel});
 
@@ -24,8 +25,7 @@ class LevelManager {
   bool _levelCompletionScheduled = false;
 
   void resetLevel() {
-    ballViewModel.reset(platformViewModel);
-    ballViewModel.launch();
+    ballManager.resetAllBalls(platformViewModel);
     if (!_isBossLevel) _generateBricks();
     _levelCompletionScheduled = false;
   }

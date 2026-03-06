@@ -6,6 +6,7 @@ class BallModel {
   double radius;
   Queue<Offset> trail;
   double power = 100;
+  // int index =
 
   BallModel({
     required this.position,

@@ -7,6 +7,6 @@ class IncreaseBallPowerEffect implements UpgradeEffect {
 
   @override
   void apply(RuntimeContext context) {
-    context.ballViewModel.model.power += 20;
+    // context.ballViewModel.model.power += 20;
   }
 }

@@ -81,7 +81,8 @@ class _AppInitializerState extends State<AppInitializer> {
         // ChangeNotifierProvider.value(value: root.bonusManager),
 
         // ViewModels - порядок не важен, т.к. объекты уже созданы
-        ChangeNotifierProvider.value(value: root.ballViewModel),
+        // ChangeNotifierProvider.value(value: root.ballViewModel),
+        ChangeNotifierProvider.value(value: root.ballManager),
         ChangeNotifierProvider.value(value: root.platformViewModel),
         ChangeNotifierProvider.value(value: root.brickViewModel),
         ChangeNotifierProvider.value(value: root.gunViewModel),

@@ -8,7 +8,7 @@ import 'package:bouncer/features/game/gameCoordinator.dart';
 // import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
 import 'package:bouncer/features/game/presentacion/screens/bulletLayerView.dart';
 import 'package:bouncer/features/game/presentacion/screens/levelCompleteScreen.dart';
-import 'package:bouncer/features/game/presentacion/widgets/ballWidget.dart';
+import 'package:bouncer/features/game/presentacion/widgets/ballLayer.dart';
 import 'package:bouncer/features/game/presentacion/widgets/brickWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/gunWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/levelCompleteOverlay.dart';
@@ -99,7 +99,7 @@ class _GameScreenState extends State<GameScreen> {
               // ArchitectBossWidget(vm: architectViewModel),
               ScoreWidget(),
               GunWidget(),
-              BallWidget(),
+              BallLayer(),
               PlatformWidget(),
               BulletLayerView(),
               _BricksLayer(),

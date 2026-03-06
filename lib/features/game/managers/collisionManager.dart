@@ -1,4 +1,5 @@
 import 'package:bouncer/core/audio_manager.dart';
+import 'package:bouncer/features/game/managers/ballManager.dart';
 import 'package:bouncer/features/game/managers/scoreManager.dart';
 import 'package:flutter/material.dart';
 import 'package:bouncer/features/game/domain/brickModel.dart';
@@ -13,7 +14,7 @@ class CollisionManager {
   final ParticleSystem particleSystem;
   final GunViewModel gunViewModel;
   final BonusManager bonusManager;
-  final BallViewModel ballViewModel;
+  final BallManager ballManager;
   final ScoreManager scoreManager;
 
   CollisionManager(
@@ -21,12 +22,12 @@ class CollisionManager {
       required this.particleSystem,
       required this.gunViewModel,
       required this.bonusManager,
-      required this.ballViewModel,
+      required this.ballManager,
       required this.scoreManager});
 
   void checkCollisions() {
     final collisions =
-        brickViewModel.checkCollisions(ballViewModel, gunViewModel);
+        brickViewModel.checkCollisions(ballManager, gunViewModel);
 
     if (collisions.isEmpty) return;
 
@@ -50,20 +51,9 @@ class CollisionManager {
     if (collision.brickIndex == null) return;
 
     final brick = brickViewModel.bricks[collision.brickIndex!];
-    // final brickRect = _getBrickRect(brick);
-
-    // if (collision.isHardBrick) {
-    //   brick.hp -= collision.power / 3;
-    // } else {
-    //   brick.hp -= collision.power;
-    // }
-
-    // if (brick.hp <= 0) {
-    //   _destroyBrick(brick, brickRect.center);
-    // }
     _handleBrickHealth(brick, collision);
     _addScore();
-    ballViewModel.velocityY = -ballViewModel.velocityY;
+    // ballViewModel.velocityY = -ballViewModel.velocityY;
   }
 
   void _handleBulletCollision(CollisionResult collision) {
@@ -113,10 +103,26 @@ class CollisionManager {
 
   Rect _getBrickRect(BrickModel brick) {
     return Rect.fromLTWH(
-      (brick.x + 1) * 0.5 * ballViewModel.screenSize.width,
-      (brick.y + 1) * 0.5 * ballViewModel.screenSize.height,
-      brick.width * ballViewModel.screenSize.width * 0.5,
-      brick.height * ballViewModel.screenSize.height * 0.5,
+      (brick.x + 1) * 0.5 * ballManager.screenSize.width,
+      (brick.y + 1) * 0.5 * ballManager.screenSize.height,
+      brick.width * ballManager.screenSize.width * 0.5,
+      brick.height * ballManager.screenSize.height * 0.5,
     );
   }
 }
+
+// class CollisionResult {
+//   final int? brickIndex; // индекс столкнувшегося кирпича
+//   final bool destroyed; // кирпич уничтожен или просто повреждён
+//   final bool isHardBrick;
+//   final int? bulletIndex; // если столкновение с пулей
+//   final double power;
+
+//   CollisionResult({
+//     this.brickIndex,
+//     this.destroyed = false,
+//     this.isHardBrick = false,
+//     this.bulletIndex,
+//     required this.power,
+//   });
+// }

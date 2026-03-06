@@ -1,9 +1,9 @@
-import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
+import 'package:bouncer/features/game/managers/ballManager.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
 
 class RuntimeContext {
-  final BallViewModel ballViewModel;
+  final BallManager ballManager;
   final PlatformViewModel platformViewModel;
 
-  RuntimeContext(this.ballViewModel, this.platformViewModel);
+  RuntimeContext(this.ballManager, this.platformViewModel);
 }

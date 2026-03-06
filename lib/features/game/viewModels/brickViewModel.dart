@@ -1,129 +1,82 @@
-import 'dart:developer';
-import 'dart:math' as math;
+// import 'dart:developer';
+// import 'dart:math' as math;
 
 import 'package:bouncer/features/game/domain/brickModel.dart';
+import 'package:bouncer/features/game/managers/ballManager.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
-import 'package:bouncer/core/particles.dart';
+// import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:flutter/material.dart';
 
 class BrickViewModel extends ChangeNotifier {
   List<BrickModel> _bricks = [];
-  // final ParticleSystem particleSystem;
   Size screenSize;
 
   BrickViewModel({required this.screenSize});
-
-  // static const int bricksQuantity = 25;
-  // static const int maxBricksPerRow = 7;
-  // static const double brickWidth = 0.2;
-  // static const double brickHeight = 0.05;
-  // static const double brickGap = 0.03; //Ширина между рядами
-  // static const double sideMargin = 0.1;
-  // static const double availableSpace = 2;
 
   List<BrickModel> get bricks => _bricks;
   bool get isEmpty => _bricks.isEmpty;
 
   void setBricks(List<BrickModel> bricks) {
     _bricks = bricks;
-    // notifyListeners();
-    // log('${_bricks.length} bricks are created.');
   }
 
-  // void _createBricks() {
-  //   if (bricksQuantity <= 0) return;
-
-  //   // Определяем количество рядов и колонок
-  //   final int rows = (bricksQuantity / maxBricksPerRow).ceil();
-
-  //   int bricksCreated = 0;
-
-  //   for (int row = 0; row < rows && bricksCreated < bricksQuantity; row++) {
-  //     // Сколько кирпичей в этом ряду
-  //     final int bricksInThisRow =
-  //         math.min(maxBricksPerRow, bricksQuantity - bricksCreated);
-
-  //     // Y позиция ряда
-  //     double y = -0.9 + row * (brickHeight + brickGap * 3);
-
-  //     // Центрируем ряд
-  //     final double totalRowWidth =
-  //         bricksInThisRow * brickWidth + (bricksInThisRow - 1) * brickGap;
-  //     final double startX = -totalRowWidth / 2;
-
-  //     for (int col = 0; col < bricksInThisRow; col++) {
-  //       double x = startX + col * (brickWidth + brickGap);
-
-  //       _bricks.add(BrickModel(
-  //         x: x,
-  //         y: y,
-  //         width: brickWidth,
-  //         height: brickHeight,
-  //         // color: _randomColor(),
-  //         type: col % 2 == 0 ? BrickType.normal : BrickType.strong,
-  //       ));
-
-  //       bricksCreated++;
-  //     }
-  //   }
-
-  //   log('Created $bricksCreated bricks in $rows rows');
-  // }
-
   List<CollisionResult> checkCollisions(
-      BallViewModel ball, GunViewModel gunViewModel) {
+      BallManager ballManager, GunViewModel gunViewModel) {
     List<CollisionResult> results = [];
-    for (int brickIndex = 0; brickIndex < _bricks.length; brickIndex++) {
-      final brick = _bricks[brickIndex];
-      final brickRect = _brickToRect(brick, ball.screenSize);
-      final ballRect = ball.ballRect;
+    for (BallViewModel ball in ballManager.ballPool) {
+      for (int brickIndex = 0; brickIndex < _bricks.length; brickIndex++) {
+        final brick = _bricks[brickIndex];
+        final brickRect = _brickToRect(brick, ball.screenSize);
+        final ballRect = ball.ballRect;
 
-      // === Collision with ball ===
-      if (ballRect.overlaps(brickRect)) {
-        if (brick.type == BrickType.strong) {
-          results.add(CollisionResult(
-            brickIndex: brickIndex,
-            destroyed: false,
-            isHardBrick: true,
-            power: ball.model.power,
-          ));
-        } else {
-          results.add(CollisionResult(
-            brickIndex: brickIndex,
-            destroyed: true,
-            isHardBrick: false,
-            power: ball.model.power,
-          ));
-        }
-      }
-
-      // === Collision with bullets ===
-      for (int bulletIndex = 0;
-          bulletIndex < gunViewModel.bulletsList.length;
-          bulletIndex++) {
-        final bullet = gunViewModel.bulletsList[bulletIndex];
-        if (bullet.bulletRect.overlaps(brickRect)) {
+        // === Collision with ball ===
+        if (ballRect.overlaps(brickRect)) {
           if (brick.type == BrickType.strong) {
             results.add(CollisionResult(
               brickIndex: brickIndex,
               destroyed: false,
               isHardBrick: true,
-              bulletIndex: bulletIndex,
-              power: 20,
+              power: ball.model.power,
             ));
           } else {
             results.add(CollisionResult(
               brickIndex: brickIndex,
               destroyed: true,
               isHardBrick: false,
-              bulletIndex: bulletIndex,
-              power: 20,
+              power: ball.model.power,
             ));
+          }
+        }
+
+        // === Collision with bullets ===
+        for (int bulletIndex = 0;
+            bulletIndex < gunViewModel.bulletsList.length;
+            bulletIndex++) {
+          final bullet = gunViewModel.bulletsList[bulletIndex];
+          if (bullet.bulletRect.overlaps(brickRect)) {
+            if (brick.type == BrickType.strong) {
+              results.add(CollisionResult(
+                brickIndex: brickIndex,
+                destroyed: false,
+                isHardBrick: true,
+                bulletIndex: bulletIndex,
+                power: 20,
+              ));
+            } else {
+              results.add(CollisionResult(
+                brickIndex: brickIndex,
+                destroyed: true,
+                isHardBrick: false,
+                bulletIndex: bulletIndex,
+                power: 20,
+              ));
+            }
           }
         }
       }
     }
+
     return results;
   }
 
@@ -135,16 +88,6 @@ class BrickViewModel extends ChangeNotifier {
 
     return Rect.fromLTWH(pixelX, pixelY, pixelWidth, pixelHeight);
   }
-
-  // Color _randomColor() {
-  //   Random random = Random();
-  //   return Color.fromARGB(
-  //     255,
-  //     random.nextInt(256),
-  //     random.nextInt(256),
-  //     random.nextInt(256),
-  //   );
-  // }
 }
 
 class CollisionResult {

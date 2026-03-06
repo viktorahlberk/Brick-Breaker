@@ -8,6 +8,7 @@ import 'package:bouncer/features/bonuses/bonusManager.dart';
 // import 'package:bouncer/features/bosses/architect/domain/architect_state.dart';
 // import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
 import 'package:bouncer/features/game/gameCoordinator.dart';
+import 'package:bouncer/features/game/managers/ballManager.dart';
 import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/features/game/managers/levelManager.dart';
@@ -44,9 +45,10 @@ class AppCompositionRoot {
   late final ScoreManager scoreManager;
   late final UpgradeManager upgradeManager;
   late final FlashController flashController;
+  late final BallManager ballManager;
 
   // ViewModels
-  late final BallViewModel ballViewModel;
+  // late final BallViewModel ballViewModel;
   late final PlatformViewModel platformViewModel;
   late final BrickViewModel brickViewModel;
   late final GunViewModel gunViewModel;
@@ -90,13 +92,14 @@ class AppCompositionRoot {
     inputController = InputController();
     bonusManager = BonusManager();
     scoreManager = ScoreManager();
+    ballManager = BallManager(screenSize);
     upgradeManager = UpgradeManager();
     flashController = FlashController();
 
     // ========================================
     // 2. VIEWMODELS (зависят от сервисов)
     // ========================================
-    ballViewModel = BallViewModel(screenSize: screenSize);
+    // ballViewModel = BallViewModel(screenSize: screenSize);
     platformViewModel = PlatformViewModel(screenSize);
     brickViewModel = BrickViewModel(
       // particleSystem: particleSystem,
@@ -115,7 +118,7 @@ class AppCompositionRoot {
     // LevelManager зависит от ViewModels
     levelManager = LevelManager(
       brickViewModel: brickViewModel,
-      ballViewModel: ballViewModel,
+      ballManager: ballManager,
       timeManager: timeManager,
       platformViewModel: platformViewModel,
     );
@@ -126,7 +129,7 @@ class AppCompositionRoot {
       particleSystem: particleSystem,
       gunViewModel: gunViewModel,
       bonusManager: bonusManager,
-      ballViewModel: ballViewModel,
+      ballManager: ballManager,
       scoreManager: scoreManager,
     );
 
@@ -166,7 +169,8 @@ class AppCompositionRoot {
         gunViewModel,
         inputController,
         timeManager,
-        ballViewModel,
+        // ballViewModel,
+        ballManager,
         platformViewModel,
         collisionManager,
         bonusActivator,
@@ -177,7 +181,8 @@ class AppCompositionRoot {
   /// Очистка ресурсов при закрытии приложения
   void dispose() {
     // gameViewModel.dispose();
-    ballViewModel.dispose();
+    // ballViewModel.dispose();
+    // ballManager.dispose();
     platformViewModel.dispose();
     brickViewModel.dispose();
     gunViewModel.dispose();

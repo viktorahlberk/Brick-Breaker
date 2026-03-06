@@ -11,6 +11,7 @@ import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/features/bonuses/presentacion/bonusPickupVmModel.dart';
 import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:bouncer/features/game/game_ui_state.dart';
+import 'package:bouncer/features/game/managers/ballManager.dart';
 import 'package:bouncer/features/game/managers/collisionManager.dart';
 import 'package:bouncer/features/game/managers/game_loop_manager.dart';
 import 'package:bouncer/features/game/managers/levelManager.dart';
@@ -34,7 +35,8 @@ class GameCoordinator extends ChangeNotifier {
   final GunViewModel _gunViewModel;
   final InputController _inputController;
   final TimeManager _timeManager;
-  final BallViewModel _ballViewModel;
+  // final BallViewModel _ballViewModel;
+  final BallManager _ballManager;
   final PlatformViewModel _platformViewModel;
   final CollisionManager _collisionManager;
   final BonusActivator _bonusActivator;
@@ -49,7 +51,7 @@ class GameCoordinator extends ChangeNotifier {
     this._gunViewModel,
     this._inputController,
     this._timeManager,
-    this._ballViewModel,
+    this._ballManager,
     this._platformViewModel,
     this._collisionManager,
     this._bonusActivator,
@@ -60,6 +62,7 @@ class GameCoordinator extends ChangeNotifier {
     _initializeGame();
   }
   GameState _gameState = GameState.initial;
+  int _lives = 1;
 
   GameUIState get uiState => GameUIState(_gameState);
   GameState get gameState => _gameState;
@@ -69,14 +72,14 @@ class GameCoordinator extends ChangeNotifier {
   List<BonusPickupViewModel> get bonusesToPickup => _bonusManager.pickups;
   get isBossLevel => _levelManager.isBossLevel;
   RuntimeContext get runtimeContext =>
-      RuntimeContext(_ballViewModel, _platformViewModel);
+      RuntimeContext(_ballManager, _platformViewModel);
 
   void _onUpdate(double dt) {
     final scaledDt = dt * _timeManager.timeScale;
     _particleSystem.update(scaledDt);
     if (_gameState == GameState.initial) {
       _updatePlatform(dt);
-      _ballViewModel.moveToPlatformCenter(_platformViewModel);
+      _ballManager.moveToPlatformCenter(_platformViewModel);
     }
     if (_inputController.paused || _gameState != GameState.playing) {
       return;
@@ -99,7 +102,7 @@ class GameCoordinator extends ChangeNotifier {
     // architectViewModel.update(dt, this);
 
     final scaledDt = dt * _timeManager.timeScale;
-    _ballViewModel.updateAndMove(scaledDt, _platformViewModel);
+    _ballManager.updateAndMove(scaledDt, _platformViewModel);
     _gunViewModel.update(scaledDt);
 
     _bonusManager.update(scaledDt);
@@ -142,7 +145,7 @@ class GameCoordinator extends ChangeNotifier {
   }
 
   void _checkGameOver() {
-    if (_ballViewModel.isBelowScreen) {
+    if (_ballManager.allBallsIsBelowScreen) {
       _gameState = GameState.gameOver;
       log('💀 Game Over');
     }
