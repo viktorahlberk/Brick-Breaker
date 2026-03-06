@@ -105,11 +105,11 @@ class GameCoordinator extends ChangeNotifier {
     _ballManager.updateAndMove(scaledDt, _platformViewModel);
     _gunViewModel.update(scaledDt);
 
-    _bonusManager.update(scaledDt);
-    _bonusManager.checkCollect(
-      _platformViewModel,
-      _bonusActivator.activate,
-    );
+    // _bonusManager.update(scaledDt);
+    // _bonusManager.checkCollect(
+    //   _platformViewModel,
+    //   _bonusActivator.activate,
+    // );
   }
 
   _initializeGame() {
