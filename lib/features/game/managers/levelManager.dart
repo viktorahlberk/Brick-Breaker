@@ -62,8 +62,8 @@ class LevelManager {
       screenSize: brickViewModel.screenSize,
     );
 
-    // brickViewModel.setBricks(normalBricks);
-    brickViewModel.setBricks(testBricks);
+    brickViewModel.setBricks(normalBricks);
+    // brickViewModel.setBricks(testBricks);
     // log('Level generated');
   }
 }

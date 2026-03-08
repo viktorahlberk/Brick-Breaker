@@ -255,10 +255,17 @@ class _OverlayLayer extends StatelessWidget {
                   ),
                 ElevatedButton.icon(
                   onPressed: game.onActionButtonPressed,
-                  icon: Icon(uiState.buttonIcon, size: 30),
+                  icon: Icon(
+                    uiState.buttonIcon,
+                    size: 30,
+                    color: Colors.black,
+                  ),
                   label: Text(
                     uiState.buttonText,
-                    style: const TextStyle(fontSize: 18),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
