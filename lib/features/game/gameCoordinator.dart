@@ -17,7 +17,7 @@ import 'package:bouncer/features/game/managers/game_loop_manager.dart';
 import 'package:bouncer/features/game/managers/levelManager.dart';
 import 'package:bouncer/features/game/managers/scoreManager.dart';
 import 'package:bouncer/features/game/runtimeContext.dart';
-import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
+// import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
@@ -39,7 +39,7 @@ class GameCoordinator extends ChangeNotifier {
   final BallManager _ballManager;
   final PlatformViewModel _platformViewModel;
   final CollisionManager _collisionManager;
-  final BonusActivator _bonusActivator;
+  // final BonusActivator _bonusActivator;
   final UpgradeManager _upgradeManager;
   final BrickViewModel _brickViewModel;
 
@@ -54,7 +54,7 @@ class GameCoordinator extends ChangeNotifier {
     this._ballManager,
     this._platformViewModel,
     this._collisionManager,
-    this._bonusActivator,
+    // this._bonusActivator,
     this._upgradeManager,
     this._brickViewModel,
   ) {
@@ -75,6 +75,7 @@ class GameCoordinator extends ChangeNotifier {
       RuntimeContext(_ballManager, _platformViewModel);
 
   void _onUpdate(double dt) {
+    // print(gameState);
     final scaledDt = dt * _timeManager.timeScale;
     _particleSystem.update(scaledDt);
     if (_gameState == GameState.initial) {
@@ -112,8 +113,14 @@ class GameCoordinator extends ChangeNotifier {
     // );
   }
 
+  _changeGameState(GameState state) {
+    _gameState = state;
+    notifyListeners();
+  }
+
   _initializeGame() {
     _gameState == GameState.initial;
+    // _changeGameState(GameState.initial);
     _scoreManager.resetScore();
     _initializeLevel();
     _gameLoopManager.startGameloop();

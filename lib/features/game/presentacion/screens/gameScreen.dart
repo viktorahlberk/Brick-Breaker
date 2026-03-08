@@ -128,21 +128,33 @@ class _BricksLayer extends StatefulWidget {
 class _BricksLayerState extends State<_BricksLayer>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
+  GameState? state;
   @override
   void initState() {
+    super.initState();
     controller =
         AnimationController(duration: Duration(seconds: 3), vsync: this);
     controller.forward();
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    GameState? prevState;
+    // print('reb');
     return Consumer<GameCoordinator>(
       builder: (_, game, __) => AnimatedBuilder(
         animation: controller,
         builder: (BuildContext context, Widget? child) {
+          if (prevState != game.gameState) {
+            prevState = game.gameState;
+
+            if (game.gameState == GameState.initial) {
+              controller
+                ..reset()
+                ..forward();
+            }
+          }
           return Stack(
               children:
                   // game.bricks.map((brick) => BrickWidget(model: brick)).toList(),

@@ -15,7 +15,7 @@ import 'package:bouncer/features/game/managers/levelManager.dart';
 import 'package:bouncer/core/timeManager.dart';
 import 'package:bouncer/features/game/managers/scoreManager.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
-import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
+// import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 // import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
@@ -173,7 +173,7 @@ class AppCompositionRoot {
         ballManager,
         platformViewModel,
         collisionManager,
-        bonusActivator,
+        // bonusActivator,
         upgradeManager,
         brickViewModel);
   }
