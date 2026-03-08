@@ -13,11 +13,14 @@ class UpgradeWidget extends StatelessWidget {
   final UpgradeEntity upgradeEntity;
 
   IconData _chooseIconData(UpgradeEntity entity) {
+    // print(entity.title);
     switch (entity.title) {
       case 'IncreaseBallPower':
         return Icons.arrow_circle_up;
       case 'IncreasePlatformSize':
         return Icons.sync_alt;
+      case 'AddOneBall':
+        return Icons.plus_one;
       default:
         throw UnimplementedError('Unknown upgrade: ${entity.title}');
     }
@@ -27,8 +30,11 @@ class UpgradeWidget extends StatelessWidget {
     switch (rarity) {
       case UpgradeRarity.rare:
         return Colors.blue;
+      case UpgradeRarity.epic:
+        return Colors.purpleAccent;
       default:
-        throw UnimplementedError();
+        throw UnimplementedError(
+            'Unimplemented color for upgrade rarity: $rarity');
     }
   }
 

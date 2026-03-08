@@ -1,7 +1,7 @@
 import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/features/game/gameCoordinator.dart';
 import 'package:bouncer/features/game/presentacion/widgets/upgradesToChooseWidget.dart';
-import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
+// import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

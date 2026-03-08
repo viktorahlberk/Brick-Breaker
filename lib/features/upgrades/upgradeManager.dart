@@ -1,9 +1,10 @@
 import 'dart:math';
 
-import 'package:bouncer/features/game/gameCoordinator.dart';
-import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
+// import 'package:bouncer/features/game/gameCoordinator.dart';
+// import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEntity.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeRarity.dart';
+import 'package:bouncer/features/upgrades/effects/addOneBall.dart';
 import 'package:bouncer/features/upgrades/effects/increaseBallPowerEffect.dart';
 import 'package:bouncer/features/upgrades/effects/increasePlatformSizeEffect.dart';
 // import 'package:flutter/material.dart';
@@ -19,7 +20,12 @@ class UpgradeManager {
         title: 'IncreasePlatformSize',
         description: 'Increases platform width',
         rarity: UpgradeRarity.rare,
-        effect: IncreasePlatformSizeEffect(0.2))
+        effect: IncreasePlatformSizeEffect(0.2)),
+    UpgradeEntity(
+        title: 'AddOneBall',
+        description: 'Adding 1 ball to game',
+        rarity: UpgradeRarity.epic,
+        effect: AddOneBall()),
   ];
   // addUpgrade(UpgradeEntity entity, GameCoordinator coordinator) {
   //   entity.effect.apply(coordinator);

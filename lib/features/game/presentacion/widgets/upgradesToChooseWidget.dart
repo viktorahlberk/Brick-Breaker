@@ -1,8 +1,8 @@
 import 'package:bouncer/features/game/gameCoordinator.dart';
 import 'package:bouncer/features/game/presentacion/widgets/upgradeWidget.dart';
-import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
+// import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEntity.dart';
-import 'package:bouncer/features/upgrades/upgradeManager.dart';
+// import 'package:bouncer/features/upgrades/upgradeManager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

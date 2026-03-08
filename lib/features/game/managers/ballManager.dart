@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 
 class BallManager extends ChangeNotifier {
   Size screenSize;
-  int starterBalls = 3;
+  int starterBalls = 1;
   List<BallViewModel> ballPool = [];
   BallManager(this.screenSize) {
     _initBalls();
   }
-  _initBalls() {
+  void _initBalls() {
     for (var i = 0; i < starterBalls; i++) {
       ballPool.add(BallViewModel(screenSize: screenSize));
     }
@@ -20,11 +20,11 @@ class BallManager extends ChangeNotifier {
 
   bool get allBallsIsBelowScreen => _isAllBallsIsBelowScreen();
 
-  addBall() {
+  void addBall() {
     ballPool.add(BallViewModel(screenSize: screenSize));
   }
 
-  resetAllBalls(PlatformViewModel platformViewModel) {
+  void resetAllBalls(PlatformViewModel platformViewModel) {
     if (ballPool.isEmpty) {
       _initBalls();
     }
@@ -34,13 +34,13 @@ class BallManager extends ChangeNotifier {
     }
   }
 
-  moveToPlatformCenter(PlatformViewModel platformViewModel) {
+  void moveToPlatformCenter(PlatformViewModel platformViewModel) {
     for (BallViewModel ball in ballPool) {
       ball.moveToPlatformCenter(platformViewModel);
     }
   }
 
-  updateAndMove(scaledDt, platformViewModel) {
+  void updateAndMove(scaledDt, platformViewModel) {
     for (BallViewModel ball in ballPool) {
       ball.updateAndMove(scaledDt, platformViewModel);
       if (ball.isBelowScreen) {
