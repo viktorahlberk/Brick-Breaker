@@ -103,7 +103,7 @@ class _GameScreenState extends State<GameScreen> {
               PlatformWidget(),
               BulletLayerView(),
               _BricksLayer(),
-              _BonusesLayer(),
+              // _BonusesLayer(),
               _ParticlesLayer(),
               LevelCompleteOverlay(),
               _OverlayLayer(),
@@ -118,15 +118,58 @@ class _GameScreenState extends State<GameScreen> {
   }
 }
 
-class _BricksLayer extends StatelessWidget {
+class _BricksLayer extends StatefulWidget {
   const _BricksLayer();
 
   @override
+  State<_BricksLayer> createState() => _BricksLayerState();
+}
+
+class _BricksLayerState extends State<_BricksLayer>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  @override
+  void initState() {
+    controller =
+        AnimationController(duration: Duration(seconds: 3), vsync: this);
+    controller.forward();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Consumer<GameCoordinator>(
-      builder: (_, game, __) => Stack(
-        children:
-            game.bricks.map((brick) => BrickWidget(model: brick)).toList(),
+      builder: (_, game, __) => AnimatedBuilder(
+        animation: controller,
+        builder: (BuildContext context, Widget? child) {
+          return Stack(
+              children:
+                  // game.bricks.map((brick) => BrickWidget(model: brick)).toList(),
+                  game.bricks.asMap().entries.map((entry) {
+            final index = entry.key;
+            final brick = entry.value;
+
+            /// stagger delay
+            final delay = index * 0.06;
+
+            double progress =
+                ((controller.value - delay) / 0.35).clamp(0.0, 1.0);
+
+            final curve = Curves.easeOutCubic.transform(progress);
+
+            /// offset сверху
+            final offsetY = -screenHeight * (1 - curve);
+
+            return Transform.translate(
+              offset: Offset(0, offsetY),
+              child: Opacity(
+                opacity: progress,
+                child: BrickWidget(model: brick),
+              ),
+            );
+          }).toList());
+        },
       ),
     );
   }
