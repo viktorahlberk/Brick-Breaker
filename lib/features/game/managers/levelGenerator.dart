@@ -61,13 +61,6 @@ class ProceduralLevelGenerator {
             type: type,
           ),
         );
-        // inspect(BrickModel(
-        //   x: position.dx,
-        //   y: position.dy,
-        //   width: brickWidth,
-        //   height: brickHeight,
-        //   type: type,
-        // ));
       }
     }
 

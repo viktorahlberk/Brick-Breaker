@@ -2,12 +2,8 @@ import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/features/bonuses/presentacion/bonusWidget.dart';
-// import 'package:bouncer/features/bosses/architect/domain/architect_boss.dart';
-// import 'package:bouncer/features/bosses/architect/presentacion/architect_boss_widget.dart';
 import 'package:bouncer/features/game/gameCoordinator.dart';
-// import 'package:bouncer/features/bosses/architect/presentacion/architect_viewmodel.dart';
 import 'package:bouncer/features/game/presentacion/screens/bulletLayerView.dart';
-// import 'package:bouncer/features/game/presentacion/screens/levelCompleteScreen.dart';
 import 'package:bouncer/features/game/presentacion/widgets/ballLayer.dart';
 import 'package:bouncer/features/game/presentacion/widgets/brickWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/gunWidget.dart';
@@ -15,7 +11,6 @@ import 'package:bouncer/features/game/presentacion/widgets/levelCompleteOverlay.
 import 'package:bouncer/features/game/presentacion/widgets/platformWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/scoreWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/screenFlashOverlay.dart';
-// import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -28,41 +23,9 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  // bool _levelCompleteRouteOpen = false;
-
-  // void _maybeOpenLevelComplete(GameState state) {
-  //   if (state != GameState.levelCompleted) {
-  //     _levelCompleteRouteOpen = false;
-  //     return;
-  //   }
-
-  //   if (_levelCompleteRouteOpen || !mounted) return;
-  //   _levelCompleteRouteOpen = true;
-
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (!mounted) return;
-  //     Navigator.of(context)
-  //         .push(
-  //       MaterialPageRoute(
-  //         builder: (_) => ChangeNotifierProvider.value(
-  //           value: context.read<GameViewModel>(),
-  //           child: const LevelCompleteScreen(),
-  //         ),
-  //       ),
-  //     )
-  //         .then((_) {
-  //       if (mounted) {
-  //         _levelCompleteRouteOpen = false;
-  //       }
-  //     });
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final input = context.read<InputController>();
-    // final architectViewModel =
-    //     context.select((GameViewModel vm) => vm.architectViewModel);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -129,19 +92,26 @@ class _BricksLayerState extends State<_BricksLayer>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
   GameState? state;
+  final delayStep = 0.07;
+  final brickDuration = 0.7;
+  late double totalAnimationTime;
+
   @override
   void initState() {
     super.initState();
-    controller =
-        AnimationController(duration: Duration(seconds: 3), vsync: this);
-    controller.forward();
+    final bricksCount = context.read<GameCoordinator>().bricks.length;
+    totalAnimationTime = (bricksCount - 1) * delayStep + brickDuration;
+
+    controller = AnimationController(
+      duration: Duration(milliseconds: (totalAnimationTime * 1000).toInt()),
+      vsync: this,
+    )..forward();
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     GameState? prevState;
-    // print('reb');
     return Consumer<GameCoordinator>(
       builder: (_, game, __) => AnimatedBuilder(
         animation: controller,
@@ -156,18 +126,12 @@ class _BricksLayerState extends State<_BricksLayer>
             }
           }
           return Stack(
-              children:
-                  // game.bricks.map((brick) => BrickWidget(model: brick)).toList(),
-                  game.bricks.asMap().entries.map((entry) {
+              children: game.bricks.asMap().entries.map((entry) {
             final index = entry.key;
             final brick = entry.value;
-
-            /// stagger delay
-            final delay = index * 0.06;
-
-            double progress =
-                ((controller.value - delay) / 0.35).clamp(0.0, 1.0);
-
+            final time = controller.value * totalAnimationTime;
+            final delay = index * delayStep;
+            double progress = ((time - delay) / brickDuration).clamp(0.0, 1.0);
             final curve = Curves.easeOutCubic.transform(progress);
 
             /// offset сверху
