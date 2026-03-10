@@ -60,6 +60,7 @@ class _GameScreenState extends State<GameScreen> {
           child: Stack(
             children: [
               // ArchitectBossWidget(vm: architectViewModel),
+              _LevelWidget(),
               ScoreWidget(),
               GunWidget(),
               BallLayer(),
@@ -76,6 +77,23 @@ class _GameScreenState extends State<GameScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _LevelWidget extends StatelessWidget {
+  const _LevelWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Text(
+        'Level ${context.read<GameCoordinator>().level}',
+        style: TextStyle(color: Colors.white),
       ),
     );
   }

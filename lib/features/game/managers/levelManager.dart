@@ -23,6 +23,7 @@ class LevelManager {
   final bool _isBossLevel = false;
   bool get isBossLevel => _isBossLevel;
   bool _levelCompletionScheduled = false;
+  int level = 1;
 
   void resetLevel() {
     ballManager.resetAllBalls(platformViewModel);

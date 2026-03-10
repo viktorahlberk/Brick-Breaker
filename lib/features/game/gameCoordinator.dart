@@ -63,6 +63,7 @@ class GameCoordinator extends ChangeNotifier {
   }
   GameState _gameState = GameState.initial;
   int _lives = 1;
+  int get level => _levelManager.level;
 
   GameUIState get uiState => GameUIState(_gameState);
   GameState get gameState => _gameState;
@@ -214,6 +215,7 @@ class GameCoordinator extends ChangeNotifier {
   }
 
   void startNextLevel() {
+    _levelManager.level += 1;
     _initializeLevel();
   }
 
