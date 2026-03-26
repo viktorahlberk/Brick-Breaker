@@ -27,7 +27,7 @@ class BrickWidget extends StatelessWidget {
           width: pixelWidth,
           color: model.color,
           child: Center(
-            child: Text(model.hp.toString()),
+            child: Text(model.hp.round().toString()),
           ),
         ),
       ),

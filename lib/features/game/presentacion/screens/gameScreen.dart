@@ -72,6 +72,7 @@ class _GameScreenState extends State<GameScreen> {
               LevelCompleteOverlay(),
               _OverlayLayer(),
               _PauseButton(),
+              _BonusesSideDrawer(),
               // _SettingsButton(),
               ScreenFlashOverlay(),
             ],
@@ -291,6 +292,22 @@ class _PauseButton extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _BonusesSideDrawer extends StatelessWidget {
+  
+  
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+    onPressed: () {},
+    icon: const Icon(
+      Icons.star,
+      color: Colors.white,
+      size: 30,
+    ),
+  );;
   }
 }
 
