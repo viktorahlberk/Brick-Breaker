@@ -30,6 +30,7 @@ class UpgradeManager {
   // addUpgrade(UpgradeEntity entity, GameCoordinator coordinator) {
   //   entity.effect.apply(coordinator);
   // }
+  List<UpgradeEntity> pickedUpgrades = [];
 
   List<UpgradeEntity> getUpgrades(int quantity) {
     List<UpgradeEntity> picked = [];

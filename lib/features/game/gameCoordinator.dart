@@ -7,7 +7,7 @@ import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/core/platform_detector.dart';
 import 'package:bouncer/core/timeManager.dart';
 import 'package:bouncer/features/bonuses/bonusManager.dart';
-import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
+// import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/features/bonuses/presentacion/bonusPickupVmModel.dart';
 import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:bouncer/features/game/game_ui_state.dart';
@@ -21,7 +21,7 @@ import 'package:bouncer/features/game/runtimeContext.dart';
 import 'package:bouncer/features/game/viewModels/brickViewModel.dart';
 import 'package:bouncer/features/game/viewModels/gunViewModel.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
-import 'package:bouncer/features/upgrades/domain/entities/upgradeEffect.dart';
+// import 'package:bouncer/features/upgrades/domain/entities/upgradeEffect.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEntity.dart';
 import 'package:bouncer/features/upgrades/upgradeManager.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +74,7 @@ class GameCoordinator extends ChangeNotifier {
   get isBossLevel => _levelManager.isBossLevel;
   RuntimeContext get runtimeContext =>
       RuntimeContext(_ballManager, _platformViewModel);
+  List<UpgradeEntity> get pickedUpgrades => _upgradeManager.pickedUpgrades;
 
   void _onUpdate(double dt) {
     // print(gameState);
@@ -219,8 +220,9 @@ class GameCoordinator extends ChangeNotifier {
     _initializeLevel();
   }
 
-  void applyUpgrade(UpgradeEffect upgradeEffect) {
-    upgradeEffect.apply(runtimeContext);
+  void applyUpgrade(UpgradeEntity upgradeEntity) {
+    upgradeEntity.effect.apply(runtimeContext);
+    _upgradeManager.pickedUpgrades.add(upgradeEntity);
   }
 
   List<UpgradeEntity> getUpgrades() {

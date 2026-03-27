@@ -5,6 +5,8 @@ import 'package:bouncer/features/bonuses/presentacion/bonusWidget.dart';
 import 'package:bouncer/features/game/gameCoordinator.dart';
 import 'package:bouncer/features/game/presentacion/screens/bulletLayerView.dart';
 import 'package:bouncer/features/game/presentacion/widgets/ballLayer.dart';
+import 'package:bouncer/features/game/presentacion/widgets/bonusesSideDrawer.dart';
+// import 'package:bouncer/features/game/presentacion/widgets/bonusesSideDrawer.dart';
 import 'package:bouncer/features/game/presentacion/widgets/brickWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/gunWidget.dart';
 import 'package:bouncer/features/game/presentacion/widgets/levelCompleteOverlay.dart';
@@ -23,12 +25,39 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final input = context.read<InputController>();
 
     return Scaffold(
       backgroundColor: Colors.black,
+      // key: _scaffoldKey,
+      drawer: Opacity(
+        opacity: 0.8,
+        child: Drawer(
+          child: Column(
+            children: [
+              Text(
+                'Active bonuses',
+                textAlign: TextAlign.center,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount:
+                      context.read<GameCoordinator>().pickedUpgrades.length,
+                  itemBuilder: (context, index) {
+                    return Text(context
+                        .read<GameCoordinator>()
+                        .pickedUpgrades[index]
+                        .title);
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
       body: GestureDetector(
         onPanUpdate: (details) => input.setTarget(details.localPosition.dx),
         onPanEnd: (_) => input.resetTarget(),
@@ -61,7 +90,7 @@ class _GameScreenState extends State<GameScreen> {
             children: [
               // ArchitectBossWidget(vm: architectViewModel),
               _LevelWidget(),
-              ScoreWidget(),
+
               GunWidget(),
               BallLayer(),
               PlatformWidget(),
@@ -72,9 +101,18 @@ class _GameScreenState extends State<GameScreen> {
               LevelCompleteOverlay(),
               _OverlayLayer(),
               _PauseButton(),
-              _BonusesSideDrawer(),
+              // BonusesSideDrawer(),
               // _SettingsButton(),
               ScreenFlashOverlay(),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ScoreWidget(),
+                  BonusesSideDrawer(
+                      // scaffoldKey: _scaffoldKey,
+                      ),
+                ],
+              ),
             ],
           ),
         ),
@@ -295,22 +333,6 @@ class _PauseButton extends StatelessWidget {
   }
 }
 
-class _BonusesSideDrawer extends StatelessWidget {
-  
-  
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-    onPressed: () {},
-    icon: const Icon(
-      Icons.star,
-      color: Colors.white,
-      size: 30,
-    ),
-  );;
-  }
-}
-
 // class _SettingsButton extends StatelessWidget {
 //   const _SettingsButton();
 
@@ -326,6 +348,33 @@ class _BonusesSideDrawer extends StatelessWidget {
 //           size: 30,
 //         ),
 //       ),
+//     );
+//   }
+// }
+// class BonusesSideDrawer extends StatelessWidget {
+//   const BonusesSideDrawer({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Selector<GameCoordinator, GameState>(
+//       builder: (BuildContext context, state, _) {
+//         if (state != GameState.paused) {
+//           return const SizedBox.shrink();
+//         }
+
+//         return IconButton(
+//           onPressed: () {
+//             Scaffold.of(context).openDrawer();
+//           },
+//           icon: const Icon(
+//             Icons.star,
+//             color: Colors.white,
+//             // size: 30,
+//           ),
+//         );
+//       },
+//       selector: (_, game) => game.gameState,
+//       // child:
 //     );
 //   }
 // }
