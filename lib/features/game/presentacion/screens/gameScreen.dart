@@ -38,9 +38,12 @@ class _GameScreenState extends State<GameScreen> {
         child: Drawer(
           child: Column(
             children: [
-              Text(
-                'Active bonuses',
-                textAlign: TextAlign.center,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'A c t i v e  b o n u s e s',
+                  textAlign: TextAlign.center,
+                ),
               ),
               Expanded(
                 child: ListView.builder(
