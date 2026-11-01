@@ -32,7 +32,6 @@ class PlatformViewModel extends ChangeNotifier {
         _physics = PlatformPhysics(
           speed: 600,
           screenWidth: screenSize.width,
-          baseWidth: screenSize.width * 0.2,
         ) {
     // setScale(1.5);
   }
@@ -57,7 +56,12 @@ class PlatformViewModel extends ChangeNotifier {
   }
 
   void update(double dt) {
-    _position = _physics.move(_position, velocityX, dt);
+    _position = _physics.move(
+      _position,
+      velocityX,
+      dt,
+      platformWidth: width,
+    );
     notifyListeners();
   }
 
@@ -70,18 +74,27 @@ class PlatformViewModel extends ChangeNotifier {
     final step = _physics.speed * dt;
     final move = delta.clamp(-step, step);
 
-    _position = Vector2(_position.x + move, _position.y);
+    _position = Vector2(_clampCenterX(_position.x + move), _position.y);
     notifyListeners();
   }
 
   void setScale(double value) {
     scale = value;
-    width = baseWidth * value;
+    width = (baseWidth * value).clamp(0, _screensize.width).toDouble();
+    _keepPlatformOnScreen();
   }
 
   void increaseWidth(double amount) {
-    width += amount;
+    width = (width + amount).clamp(0, _screensize.width).toDouble();
+    _keepPlatformOnScreen();
     notifyListeners();
+  }
+
+  double _clampCenterX(double x) =>
+      x.clamp(width / 2, _screensize.width - width / 2).toDouble();
+
+  void _keepPlatformOnScreen() {
+    _position = Vector2(_clampCenterX(_position.x), _position.y);
   }
 
   void _normalizeScale() {

@@ -3,16 +3,18 @@ import 'package:bouncer/core/vector2.dart';
 class PlatformPhysics {
   final double speed;
   final double screenWidth;
-  final double baseWidth;
 
-  PlatformPhysics(
-      {required this.speed,
-      required this.screenWidth,
-      required this.baseWidth});
+  PlatformPhysics({required this.speed, required this.screenWidth});
 
-  Vector2 move(Vector2 position, double velocityX, double dt) {
-    double x = (position.x + velocityX * dt)
-        .clamp(baseWidth / 2, screenWidth - baseWidth / 2);
+  Vector2 move(
+    Vector2 position,
+    double velocityX,
+    double dt, {
+    required double platformWidth,
+  }) {
+    final x = (position.x + velocityX * dt)
+        .clamp(platformWidth / 2, screenWidth - platformWidth / 2)
+        .toDouble();
     return Vector2(x, position.y);
   }
 }
