@@ -1,3 +1,4 @@
+import 'package:bouncer/features/game/runtimeContext.dart';
 import 'package:bouncer/features/upgrades/domain/entities/upgradeEffect.dart';
 
 class IncreasePlatformSizeEffect implements UpgradeEffect {
@@ -7,8 +8,9 @@ class IncreasePlatformSizeEffect implements UpgradeEffect {
   IncreasePlatformSizeEffect(this.multiplier);
 
   @override
-  void apply(context) {
-    context.platformViewModel.width +=
-        (context.platformViewModel.baseWidth * multiplier);
+  void apply(RuntimeContext context) {
+    final platform = context.platformViewModel;
+    platform.increaseWidth(platform.baseWidth * multiplier);
+    applied = true;
   }
 }

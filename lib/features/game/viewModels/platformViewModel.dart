@@ -79,6 +79,11 @@ class PlatformViewModel extends ChangeNotifier {
     width = baseWidth * value;
   }
 
+  void increaseWidth(double amount) {
+    width += amount;
+    notifyListeners();
+  }
+
   void _normalizeScale() {
     scale = 1;
     width = baseWidth;
