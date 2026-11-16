@@ -131,12 +131,20 @@ class _LevelWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Text(
-        'Level ${context.read<GameCoordinator>().level}',
-        style: TextStyle(color: Colors.white),
-      ),
+    return Selector<GameCoordinator, int>(
+      selector: (_, game) => game.level,
+      builder: (context, level, _) {
+        final isBossLevel = context.read<GameCoordinator>().isBossLevel;
+        return Align(
+          alignment: Alignment.topCenter,
+          child: Text(
+            isBossLevel ? 'BOSS - Level $level' : 'Level $level',
+            style: TextStyle(
+              color: isBossLevel ? Colors.redAccent : Colors.white,
+            ),
+          ),
+        );
+      },
     );
   }
 }
