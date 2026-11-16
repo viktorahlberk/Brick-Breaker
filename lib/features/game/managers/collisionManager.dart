@@ -2,6 +2,7 @@ import 'package:bouncer/core/audio_manager.dart';
 import 'package:bouncer/features/game/managers/ballManager.dart';
 import 'package:bouncer/features/game/managers/scoreManager.dart';
 import 'package:bouncer/features/game/viewModels/ballViewModel.dart';
+import 'package:bouncer/features/game/domain/bulletModel.dart';
 import 'package:flutter/material.dart';
 import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:bouncer/core/particles.dart';
@@ -32,13 +33,8 @@ class CollisionManager {
 
     AudioManager.instance.playCollisionSound();
 
-    final sortedCollisions = collisions
-        .where((c) => c.brickIndex != null)
-        .toList()
-      ..sort((a, b) => b.brickIndex!.compareTo(a.brickIndex!));
-
-    for (final collision in sortedCollisions) {
-      if (collision.bulletIndex == null) {
+    for (final collision in collisions) {
+      if (collision.bullet == null) {
         _handleBallCollision(collision);
       } else {
         _handleBulletCollision(collision);
@@ -47,26 +43,24 @@ class CollisionManager {
   }
 
   void _handleBallCollision(CollisionResult collision) {
-    if (collision.brickIndex == null) return;
-
-    final brick = brickViewModel.bricks[collision.brickIndex!];
-    _handleBrickHealth(brick, collision);
-    _addScore();
+    final brick = collision.brick;
+    if (brickViewModel.bricks.contains(brick)) {
+      _handleBrickHealth(brick, collision);
+    }
     collision.ball!.velocityY = -collision.ball!.velocityY;
   }
 
   void _handleBulletCollision(CollisionResult collision) {
-    if (collision.brickIndex == null || collision.bulletIndex == null) return;
+    final brick = collision.brick;
+    final bullet = collision.bullet!;
+    if (!gunViewModel.bulletsList.remove(bullet)) return;
 
-    final brick = brickViewModel.bricks[collision.brickIndex!];
-    final bullet = gunViewModel.bulletsList[collision.bulletIndex!];
-
-    gunViewModel.bulletsList.remove(bullet);
-    _handleBrickHealth(brick, collision);
-    _addScore();
+    if (brickViewModel.bricks.contains(brick)) {
+      _handleBrickHealth(brick, collision);
+    }
   }
 
-  _handleBrickHealth(BrickModel brick, CollisionResult collision) {
+  void _handleBrickHealth(BrickModel brick, CollisionResult collision) {
     if (collision.isHardBrick) {
       brick.hp -= collision.power / 3;
     } else {
@@ -79,13 +73,11 @@ class CollisionManager {
     }
   }
 
-  _addScore() {
-    scoreManager.add(BrickType.normal);
-  }
-
   void _destroyBrick(BrickModel brick, Offset center) {
+    if (!brickViewModel.bricks.remove(brick)) return;
+
+    scoreManager.add(brick.type);
     bonusManager.trySpawnBonus(position: center);
-    brickViewModel.bricks.remove(brick);
     particleSystem.addBrickExplosion(center, brick.color);
   }
 
@@ -113,16 +105,14 @@ class CollisionManager {
         if (ballRect.overlaps(brickRect)) {
           if (brick.type == BrickType.strong) {
             results.add(CollisionResult(
-              brickIndex: brickIndex,
-              destroyed: false,
+              brick: brick,
               isHardBrick: true,
               power: ball.model.power,
               ball: ball,
             ));
           } else {
             results.add(CollisionResult(
-              brickIndex: brickIndex,
-              destroyed: true,
+              brick: brick,
               isHardBrick: false,
               power: ball.model.power,
               ball: ball,
@@ -138,18 +128,16 @@ class CollisionManager {
           if (bullet.bulletRect.overlaps(brickRect)) {
             if (brick.type == BrickType.strong) {
               results.add(CollisionResult(
-                brickIndex: brickIndex,
-                destroyed: false,
+                brick: brick,
                 isHardBrick: true,
-                bulletIndex: bulletIndex,
+                bullet: bullet,
                 power: 20,
               ));
             } else {
               results.add(CollisionResult(
-                brickIndex: brickIndex,
-                destroyed: true,
+                brick: brick,
                 isHardBrick: false,
-                bulletIndex: bulletIndex,
+                bullet: bullet,
                 power: 20,
               ));
             }
@@ -172,18 +160,16 @@ Rect _brickToRect(BrickModel model, Size screenSize) {
 }
 
 class CollisionResult {
-  final int? brickIndex; // индекс столкнувшегося кирпича
-  final bool destroyed; // кирпич уничтожен или просто повреждён
+  final BrickModel brick;
   final bool isHardBrick;
-  final int? bulletIndex; // если столкновение с пулей
+  final BulletModel? bullet;
   final double power;
   final BallViewModel? ball;
 
   CollisionResult({
-    this.brickIndex,
-    this.destroyed = false,
+    required this.brick,
     this.isHardBrick = false,
-    this.bulletIndex,
+    this.bullet,
     required this.power,
     this.ball,
   });
