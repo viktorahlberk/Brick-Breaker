@@ -1,21 +1,12 @@
 import 'package:bouncer/features/bonuses/domain/bonusEffect.dart';
+import 'package:bouncer/features/bonuses/domain/bonusType.dart';
 
 class ActiveBonus {
   ActiveBonus({
+    required this.type,
     required this.effect,
-    required double duration,
-  }) : _remaining = duration;
+  });
 
+  final BonusType type;
   final BonusEffect effect;
-  double _remaining;
-
-  double get remaining => _remaining;
-
-  bool get isExpired => _remaining <= 0;
-
-  void update(double dt) {
-    if (isExpired) return;
-    _remaining -= dt;
-    // effect.onApply();
-  }
 }

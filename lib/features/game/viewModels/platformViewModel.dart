@@ -80,8 +80,20 @@ class PlatformViewModel extends ChangeNotifier {
 
   void setScale(double value) {
     scale = value;
+    scaled = value != 1;
     width = (baseWidth * value).clamp(0, _screensize.width).toDouble();
     _keepPlatformOnScreen();
+    notifyListeners();
+  }
+
+  void setBlinking(bool value) {
+    isBlinking = value;
+    notifyListeners();
+  }
+
+  void setGunActive(bool value) {
+    isGunActive = value;
+    notifyListeners();
   }
 
   void increaseWidth(double amount) {
@@ -95,12 +107,6 @@ class PlatformViewModel extends ChangeNotifier {
 
   void _keepPlatformOnScreen() {
     _position = Vector2(_clampCenterX(_position.x), _position.y);
-  }
-
-  void _normalizeScale() {
-    scale = 1;
-    width = baseWidth;
-    scaled = false;
   }
 
   void reset() {

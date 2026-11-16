@@ -9,14 +9,22 @@ class PlatformGunEffect extends BonusEffect {
 
   Duration duration;
 
+  bool _isActive = false;
+
   PlatformGunEffect({
     required this.platformViewModel,
     this.duration = const Duration(seconds: 7),
   });
 
   @override
+  bool get isActive => _isActive;
+
+  @override
   void onApply() {
-    platformViewModel.isGunActive = true;
+    if (_isActive || platformViewModel.isGunActive) return;
+
+    _isActive = true;
+    platformViewModel.setGunActive(true);
     _timer = Timer(duration, () {
       onRemove();
     });
@@ -24,9 +32,13 @@ class PlatformGunEffect extends BonusEffect {
 
   @override
   void onRemove() {
-    platformViewModel.isGunActive = false;
+    if (!_isActive) return;
+
     _timer?.cancel();
     _timer = null;
+    _isActive = false;
+    platformViewModel.setGunActive(false);
+    onExpired?.call();
   }
 
   @override

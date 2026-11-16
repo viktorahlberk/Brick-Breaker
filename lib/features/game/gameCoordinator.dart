@@ -6,8 +6,8 @@ import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/core/particles.dart';
 import 'package:bouncer/core/platform_detector.dart';
 import 'package:bouncer/core/timeManager.dart';
+import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/features/bonuses/bonusManager.dart';
-// import 'package:bouncer/features/bonuses/domain/bonus_activator.dart';
 import 'package:bouncer/features/bonuses/presentacion/bonusPickupVmModel.dart';
 import 'package:bouncer/features/game/domain/brickModel.dart';
 import 'package:bouncer/features/game/game_ui_state.dart';
@@ -32,6 +32,7 @@ class GameCoordinator extends ChangeNotifier {
   final LevelManager _levelManager;
   final ParticleSystem _particleSystem;
   final BonusManager _bonusManager;
+  final BonusActivator _bonusActivator;
   final GunViewModel _gunViewModel;
   final InputController _inputController;
   final TimeManager _timeManager;
@@ -48,6 +49,7 @@ class GameCoordinator extends ChangeNotifier {
     this._levelManager,
     this._particleSystem,
     this._bonusManager,
+    this._bonusActivator,
     this._gunViewModel,
     this._inputController,
     this._timeManager,
@@ -108,11 +110,11 @@ class GameCoordinator extends ChangeNotifier {
     _ballManager.updateAndMove(scaledDt, _platformViewModel);
     _gunViewModel.update(scaledDt);
 
-    // _bonusManager.update(scaledDt);
-    // _bonusManager.checkCollect(
-    //   _platformViewModel,
-    //   _bonusActivator.activate,
-    // );
+    _bonusManager.update(scaledDt);
+    _bonusManager.checkCollect(
+      _platformViewModel,
+      _bonusActivator.activate,
+    );
   }
 
   _changeGameState(GameState state) {

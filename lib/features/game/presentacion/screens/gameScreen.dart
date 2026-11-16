@@ -1,6 +1,8 @@
 import 'package:bouncer/core/enums/game_state.dart';
 import 'package:bouncer/core/inputController.dart';
 import 'package:bouncer/core/particles.dart';
+import 'package:bouncer/features/bonuses/bonusManager.dart';
+import 'package:bouncer/features/bonuses/domain/bonusType.dart';
 import 'package:bouncer/features/bonuses/presentacion/bonusWidget.dart';
 import 'package:bouncer/features/game/gameCoordinator.dart';
 import 'package:bouncer/features/game/presentacion/screens/bulletLayerView.dart';
@@ -36,28 +38,70 @@ class _GameScreenState extends State<GameScreen> {
       drawer: Opacity(
         opacity: 0.8,
         child: Drawer(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'A c t i v e  b o n u s e s',
-                  textAlign: TextAlign.center,
+          child: SafeArea(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'COLLECTED BONUSES',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount:
-                      context.read<GameCoordinator>().pickedUpgrades.length,
-                  itemBuilder: (context, index) {
-                    return Text(context
-                        .read<GameCoordinator>()
-                        .pickedUpgrades[index]
-                        .title);
+                const Divider(),
+                const ListTile(
+                  title: Text(
+                    'Selected upgrades',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Consumer<GameCoordinator>(
+                  builder: (context, game, _) {
+                    if (game.pickedUpgrades.isEmpty) {
+                      return const ListTile(title: Text('None yet'));
+                    }
+
+                    return Column(
+                      children: game.pickedUpgrades
+                          .map(
+                            (upgrade) => ListTile(
+                              title: Text(upgrade.title),
+                              subtitle: Text(upgrade.description),
+                            ),
+                          )
+                          .toList(),
+                    );
                   },
                 ),
-              )
-            ],
+                const Divider(),
+                const ListTile(
+                  title: Text(
+                    'Active bonuses',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Consumer<BonusManager>(
+                  builder: (context, bonusManager, _) {
+                    if (bonusManager.activeBonuses.isEmpty) {
+                      return const ListTile(title: Text('None active'));
+                    }
+
+                    return Column(
+                      children: bonusManager.activeBonuses
+                          .map(
+                            (bonus) => ListTile(
+                              leading: Icon(_bonusIcon(bonus.type)),
+                              title: Text(_bonusTitle(bonus.type)),
+                              subtitle: const Text('Active'),
+                            ),
+                          )
+                          .toList(),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -99,7 +143,7 @@ class _GameScreenState extends State<GameScreen> {
               PlatformWidget(),
               BulletLayerView(),
               _BricksLayer(),
-              // _BonusesLayer(),
+              _BonusesLayer(),
               _ParticlesLayer(),
               LevelCompleteOverlay(),
               _OverlayLayer(),
@@ -224,18 +268,30 @@ class _BonusesLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Consumer<GameViewModel>(
-    //   builder: (_, game, __) => Stack(
-    //     children:
-    //         game.bonusManager.pickups.map((vm) => BonusWidget(vm)).toList(),
-    //   ),
-    // );
-    var pickups = context.read<GameCoordinator>().bonusesToPickup;
-    return Stack(
-      children: [
-        ...pickups.map((vm) => BonusWidget(vm)),
-      ],
+    return Consumer<GameCoordinator>(
+      builder: (_, game, __) => Stack(
+        children:
+            game.bonusesToPickup.map((pickup) => BonusWidget(pickup)).toList(),
+      ),
     );
+  }
+}
+
+String _bonusTitle(BonusType type) {
+  switch (type) {
+    case BonusType.platformGun:
+      return 'Platform gun';
+    case BonusType.bigPlatform:
+      return 'Large platform';
+  }
+}
+
+IconData _bonusIcon(BonusType type) {
+  switch (type) {
+    case BonusType.platformGun:
+      return Icons.gps_fixed;
+    case BonusType.bigPlatform:
+      return Icons.swap_horiz;
   }
 }
 

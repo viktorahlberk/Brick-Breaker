@@ -162,20 +162,21 @@ class AppCompositionRoot {
     // upgradeManager: upgradeManager,
     // );
     gameCoordinator = GameCoordinator(
-        scoreManager,
-        levelManager,
-        particleSystem,
-        bonusManager,
-        gunViewModel,
-        inputController,
-        timeManager,
-        // ballViewModel,
-        ballManager,
-        platformViewModel,
-        collisionManager,
-        // bonusActivator,
-        upgradeManager,
-        brickViewModel);
+      scoreManager,
+      levelManager,
+      particleSystem,
+      bonusManager,
+      bonusActivator,
+      gunViewModel,
+      inputController,
+      timeManager,
+      // ballViewModel,
+      ballManager,
+      platformViewModel,
+      collisionManager,
+      upgradeManager,
+      brickViewModel,
+    );
   }
 
   /// Очистка ресурсов при закрытии приложения

@@ -11,6 +11,7 @@ class BigPlatformEffect extends BonusEffect {
 
   Timer? _mainTimer;
   Timer? _blinkTimer;
+  bool _isActive = false;
 
   BigPlatformEffect({
     required this.platformViewModel,
@@ -18,22 +19,26 @@ class BigPlatformEffect extends BonusEffect {
     this.duration = const Duration(seconds: 15),
   });
 
+  @override
+  bool get isActive => _isActive;
+
   void _startBlinking() {
-    platformViewModel.isBlinking = true;
+    if (!_isActive) return;
+    platformViewModel.setBlinking(true);
   }
 
   @override
   void onApply() {
-    if (platformViewModel.scaled) return;
+    if (_isActive || platformViewModel.scaled) return;
 
     platformViewModel.setScale(scale);
-    platformViewModel.scaled = true;
+    _isActive = true;
     _mainTimer = Timer(duration, () {
       onRemove();
     });
 
     if (duration > blinkDuration) {
-      Timer(duration - blinkDuration, () {
+      _blinkTimer = Timer(duration - blinkDuration, () {
         _startBlinking();
       });
     } else {
@@ -43,17 +48,17 @@ class BigPlatformEffect extends BonusEffect {
 
   @override
   void onRemove() {
+    if (!_isActive) return;
+
     _mainTimer?.cancel();
     _blinkTimer?.cancel();
-    // platformViewModel.normalizeScale();a
-    platformViewModel.isBlinking = false;
-    // platformViewModel.scaled = false;
-    // platformViewModel.isBlinking = false;
-    // platformViewModel.blinkVisible = true;
-    // platformViewModel.notifyListeners();
+    platformViewModel.setScale(1);
+    platformViewModel.setBlinking(false);
 
     _mainTimer = null;
-    // _blinkTimer = null;
+    _blinkTimer = null;
+    _isActive = false;
+    onExpired?.call();
   }
 
   @override

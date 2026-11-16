@@ -45,7 +45,9 @@ class BonusActivator {
 
     if (effect != null) {
       effect.onApply();
-      bonusManager.registerActiveEffect(effect);
+      if (effect.isActive) {
+        bonusManager.registerActiveEffect(type, effect);
+      }
     }
   }
 
@@ -160,12 +162,12 @@ class MultiballEffect implements BonusEffect {
 // ========================================
 
 /// Базовый интерфейс для эффектов бонусов
-/// 
+///
 /// Все эффекты должны имплементировать этот интерфейс
 // abstract class BonusEffect {
 //   /// Применить эффект
 //   void onApply();
-  
+
 //   /// Эффект истёк (опционально)
 //   void onExpire() {}
 // }

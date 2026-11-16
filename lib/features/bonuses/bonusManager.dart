@@ -1,18 +1,21 @@
-import 'dart:developer';
 import 'dart:math' hide log;
 import 'dart:ui';
 
 import 'package:bouncer/features/bonuses/domain/bonusEffect.dart';
+import 'package:bouncer/features/bonuses/domain/activeBonus.dart';
 import 'package:bouncer/features/bonuses/domain/bonusModel.dart';
 import 'package:bouncer/features/bonuses/presentacion/bonusPickupVmModel.dart';
 import 'package:bouncer/features/bonuses/domain/bonusType.dart';
 import 'package:bouncer/features/game/viewModels/platformViewModel.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
-class BonusManager {
+class BonusManager extends ChangeNotifier {
   final pickups = <BonusPickupViewModel>[];
-  final _activeEffects = <BonusEffect>[];
+  final List<ActiveBonus> _activeEffects = [];
   final double _bonusSpawnChanceProcent = 10;
+
+  List<ActiveBonus> get activeBonuses =>
+      List<ActiveBonus>.unmodifiable(_activeEffects);
 
   void trySpawnBonus({
     required Offset position,
@@ -63,15 +66,24 @@ class BonusManager {
     pickups.removeWhere((b) => b.collected);
   }
 
-  void registerActiveEffect(BonusEffect effect) {
-    _activeEffects.add(effect);
+  void registerActiveEffect(BonusType type, BonusEffect effect) {
+    final activeBonus = ActiveBonus(type: type, effect: effect);
+    _activeEffects.add(activeBonus);
+    effect.onExpired = () {
+      if (_activeEffects.remove(activeBonus)) {
+        notifyListeners();
+      }
+    };
+    notifyListeners();
   }
 
   void reset() {
-    for (final effect in _activeEffects) {
-      effect.onRemove();
+    for (final activeBonus in List<ActiveBonus>.of(_activeEffects)) {
+      activeBonus.effect.onExpired = null;
+      activeBonus.effect.onRemove();
     }
     _activeEffects.clear();
     pickups.clear();
+    notifyListeners();
   }
 }
