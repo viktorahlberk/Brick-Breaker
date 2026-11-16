@@ -1,5 +1,4 @@
 import 'package:bouncer/features/game/gameCoordinator.dart';
-import 'package:bouncer/features/game/viewModels/gameScreenViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,13 +15,28 @@ class ScoreWidget extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'Score',
                     style: TextStyle(color: Colors.white, fontSize: 10),
                   ),
-                  Text(
-                    score.toString(),
-                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.easeOutBack,
+                    switchOutCurve: Curves.easeIn,
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(
+                          scale: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Text(
+                      score.toString(),
+                      key: ValueKey<int>(score),
+                      style: const TextStyle(color: Colors.white, fontSize: 20),
+                    ),
                   ),
                 ],
               ),

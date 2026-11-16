@@ -1,4 +1,5 @@
 import 'package:bouncer/composition_root.dart';
+import 'package:bouncer/core/audio_manager.dart';
 import 'package:bouncer/features/game/presentacion/screens/gameScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  await AudioManager.instance.initialize();
 
   runApp(const MainApp());
 }

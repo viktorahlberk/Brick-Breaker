@@ -1,19 +1,31 @@
 import 'package:audioplayers/audioplayers.dart';
 
 class AudioManager {
-  // final _player = AudioPlayer();
-  Future<AudioPool> collisionPool = AudioPool.create(
-      source: AssetSource('sounds/collision.mp3'), maxPlayers: 2);
-  Future<AudioPool> updatesoundPool = AudioPool.create(
-      source: AssetSource('sounds/add_update.mp3'), maxPlayers: 2);
+  AudioManager._();
 
-  playCollisionSound() async {
-    AudioPool cp = await collisionPool;
-    await cp.start();
+  static final AudioManager instance = AudioManager._();
+
+  late final Future<AudioPool> _collisionPool = AudioPool.create(
+    source: AssetSource('sounds/collision.wav'),
+    minPlayers: 2,
+    maxPlayers: 2,
+  );
+  late final Future<AudioPool> _updateSoundPool = AudioPool.create(
+    source: AssetSource('sounds/add_update.mp3'),
+    maxPlayers: 2,
+  );
+
+  Future<void> initialize() async {
+    await Future.wait([_collisionPool, _updateSoundPool]);
   }
 
-  playAddUpdateSound() async {
-    AudioPool up = await updatesoundPool;
-    await up.start();
+  Future<void> playCollisionSound() async {
+    final pool = await _collisionPool;
+    await pool.start();
+  }
+
+  Future<void> playAddUpdateSound() async {
+    final pool = await _updateSoundPool;
+    await pool.start();
   }
 }

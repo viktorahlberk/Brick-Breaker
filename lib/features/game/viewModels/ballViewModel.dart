@@ -10,7 +10,7 @@ class BallViewModel extends ChangeNotifier {
   final BallPhysics physics;
   final BallModel _model;
   final Offset _startingPosition;
-  final audioManager = AudioManager();
+  final audioManager = AudioManager.instance;
 
   bool _isBelowScreen = false;
   bool get isBelowScreen => _isBelowScreen;
@@ -151,15 +151,15 @@ class BallPhysics {
 
     if (pos.x - radius <= 0 && vx < 0) {
       vx = -vx;
-      AudioManager().playCollisionSound();
+      AudioManager.instance.playCollisionSound();
     }
     if (pos.x + radius >= screenWidth && vx > 0) {
       vx = -vx;
-      AudioManager().playCollisionSound();
+      AudioManager.instance.playCollisionSound();
     }
     if (pos.y - radius <= 0 && vy < 0) {
       vy = -vy;
-      AudioManager().playCollisionSound();
+      AudioManager.instance.playCollisionSound();
     }
 
     return Vector2(vx, vy);

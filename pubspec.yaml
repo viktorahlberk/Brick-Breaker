@@ -26,5 +26,5 @@ flutter:
     - assets/shaders/platform_shader.frag
 
   assets:
-    - assets/sounds/collision.mp3
+    - assets/sounds/collision.wav
     - assets/sounds/add_update.mp3

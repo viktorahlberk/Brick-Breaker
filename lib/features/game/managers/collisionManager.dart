@@ -30,7 +30,7 @@ class CollisionManager {
 
     if (collisions.isEmpty) return;
 
-    AudioManager().playCollisionSound();
+    AudioManager.instance.playCollisionSound();
 
     final sortedCollisions = collisions
         .where((c) => c.brickIndex != null)
